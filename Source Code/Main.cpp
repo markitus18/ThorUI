@@ -1,5 +1,5 @@
 #include <iostream>
-#include <SDL2-2.0.6\include\SDL.h>
+#include "SDL2-2.0.6\include\SDL.h"
 
 #pragma comment( lib, "SDL2-2.0.6/libx86/SDL2.lib" )
 #pragma comment( lib, "SDL2-2.0.6/libx86/SDL2main.lib" )
