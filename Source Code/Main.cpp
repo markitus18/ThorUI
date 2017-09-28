@@ -1,11 +1,16 @@
 #include <iostream>
 #include "SDL2-2.0.6\include\SDL.h"
 #include "glew-2.1.0\include\GL\glew.h"
+#include "glut-3.6\glut.h"
 
 #pragma comment( lib, "SDL2-2.0.6/libx86/SDL2.lib" )
 #pragma comment( lib, "SDL2-2.0.6/libx86/SDL2main.lib" )
 
 #pragma comment( lib, "glew-2.1.0/libx86/glew32.lib" )
+#pragma comment (lib, "opengl32.lib")
+#pragma comment (lib, "glu32.lib")
+#pragma comment (lib, "glut-3.6/glut32.lib" )
+
 
 SDL_Window* gWindow = nullptr;
 SDL_Surface* gScreenSurface = nullptr;
@@ -40,13 +45,14 @@ bool init()
 
 
 //	SDL_GL_CreateContext()
+	glutInitDisplayMode(GLUT_RGB);
 	GLenum error = glewInit();
-
+//
 	if (error != GL_NO_ERROR)
-	{
-		//printf("Error initializing glew library! %s", glGetError());
-		success = false;
-	}
+//	{
+//		//printf("Error initializing glew library! %s", glGetError());
+//		success = false;
+//	}
 
 	return success;
 }
@@ -99,8 +105,16 @@ int main(int argc, char** args)
 		else
 		{
 			//Apply the image
-			SDL_BlitSurface(gHelloWorld, NULL, gScreenSurface, NULL);
-			SDL_UpdateWindowSurface(gWindow);
+			//SDL_BlitSurface(gHelloWorld, NULL, gScreenSurface, NULL);
+			//SDL_UpdateWindowSurface(gWindow);
+
+			glBegin(GL_LINES);
+
+			GLenum error = glGetError();
+
+			glVertex3f(0.0, 0.0, 0.0);
+			glVertex3f(1.0, 1.0, 0.0);
+
 			SDL_Delay(5000);
 
 
