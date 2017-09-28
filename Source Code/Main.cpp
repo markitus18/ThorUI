@@ -15,6 +15,51 @@
 SDL_Window* gWindow = nullptr;
 SDL_Surface* gScreenSurface = nullptr;
 SDL_Surface* gHelloWorld = nullptr;
+SDL_GLContext gContext;
+
+
+bool initGL()
+{
+	bool success = true;
+	GLenum error = GL_NO_ERROR;
+
+	//Initialize Projection Matrix
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	//Check for error
+	error = glGetError();
+	if (error != GL_NO_ERROR)
+	{
+		printf("Error initializing OpenGL! %s\n", gluErrorString(error));
+		success = false;
+	}
+
+	//Initialize Modelview Matrix
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	//Check for error
+	error = glGetError();
+	if (error != GL_NO_ERROR)
+	{
+		printf("Error initializing OpenGL! %s\n", gluErrorString(error));
+		success = false;
+	}
+
+	//Initialize clear color
+	glClearColor(0.f, 0.f, 0.f, 1.f);
+
+	//Check for error
+	error = glGetError();
+	if (error != GL_NO_ERROR)
+	{
+		printf("Error initializing OpenGL! %s\n", gluErrorString(error));
+		success = false;
+	}
+
+	return success;
+}
 
 bool init()
 {
@@ -30,7 +75,7 @@ bool init()
 	else
 	{
 		//Create window
-		gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 700, 500, SDL_WINDOW_SHOWN);
+		gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 700, 500, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 		if (gWindow == NULL)
 		{
 			printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -39,20 +84,11 @@ bool init()
 		else
 		{
 			//Get window surface
-			gScreenSurface = SDL_GetWindowSurface(gWindow);
+			gContext = SDL_GL_CreateContext(gWindow);
+			initGL();
+			//gScreenSurface = SDL_GetWindowSurface(gWindow);
 		}
 	}
-
-
-//	SDL_GL_CreateContext()
-	glutInitDisplayMode(GLUT_RGB);
-	GLenum error = glewInit();
-//
-	if (error != GL_NO_ERROR)
-//	{
-//		//printf("Error initializing glew library! %s", glGetError());
-//		success = false;
-//	}
 
 	return success;
 }
@@ -104,20 +140,19 @@ int main(int argc, char** args)
 		}
 		else
 		{
-			//Apply the image
-			//SDL_BlitSurface(gHelloWorld, NULL, gScreenSurface, NULL);
-			//SDL_UpdateWindowSurface(gWindow);
+			while (true)
+			{
+				glClear(GL_COLOR_BUFFER_BIT);
 
-			glBegin(GL_LINES);
+				glBegin(GL_QUADS);
+				glVertex2f(-0.5f, -0.5f);
+				glVertex2f(0.5f, -0.5f);
+				glVertex2f(0.5f, 0.5f);
+				glVertex2f(-0.5f, 0.5f);
+				glEnd();
 
-			GLenum error = glGetError();
-
-			glVertex3f(0.0, 0.0, 0.0);
-			glVertex3f(1.0, 1.0, 0.0);
-
-			SDL_Delay(5000);
-
-
+				SDL_GL_SwapWindow(gWindow);
+			}
 		}
 	}
 
