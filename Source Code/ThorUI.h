@@ -3,10 +3,23 @@
 
 enum SDL_Event;
 
+
 namespace ThorUI
 {
-	void GetEvent(SDL_Event event);
+	enum Key_State
+	{
+		KEY_IDLE,
+		KEY_DOWN,
+		KEY_REPEAT,
+		KEY_UP
+	};
 
+	Key_State* keys;
+
+	void Init();
+	void UpdateKeyboardState();
+	void GetEvent(SDL_Event event);
+	
 };
 
 #endif
