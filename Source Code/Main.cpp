@@ -13,7 +13,8 @@
 #pragma comment (lib, "glu32.lib")
 #pragma comment (lib, "glut-3.6/glut32.lib" )
 
-
+#include "Vec2.h"
+#include "Color.h"
 
 SDL_Window* gWindow = nullptr;
 SDL_Surface* gScreenSurface = nullptr;
@@ -153,16 +154,18 @@ int main(int argc, char** args)
 
 			SDL_StartTextInput();
 			ThorUI::Init();
+			int texture = ThorUI::LoadTexture("photo.bmp");
 			while (true)
 			{
 				glClear(GL_COLOR_BUFFER_BIT);
 
-				glBegin(GL_QUADS);
-				glVertex2f(-0.5f, -0.5f);
-				glVertex2f(0.5f, -0.5f);
-				glVertex2f(0.5f, 0.5f);
-				glVertex2f(-0.5f, 0.5f);
-				glEnd();
+				Vec2 pos(-0.5, -0.5);
+				Vec2 size(1, 1);
+
+				if (ThorUI::GetKeyState(SDL_SCANCODE_A) == KEY_REPEAT)
+					ThorUI::DrawImage(pos, size, texture);
+				else
+					ThorUI::DrawQuad(pos, size, Color::Blue());
 
 				SDL_GL_SwapWindow(gWindow);
 				ThorUI::UpdateKeyboardState();
