@@ -1,7 +1,7 @@
 #ifndef __THORUI_H__
 #define __THORUI_H__
 
-enum SDL_Event;
+typedef union SDL_Event;
 
 
 namespace ThorUI
@@ -13,11 +13,12 @@ namespace ThorUI
 		KEY_REPEAT,
 		KEY_UP
 	};
-
-	Key_State* keys;
+	extern Key_State* keyboard;
 
 	void Init();
 	void UpdateKeyboardState();
+	void DebugKeyboardState(int key, Key_State state);
+
 	void GetEvent(SDL_Event event);
 	
 };

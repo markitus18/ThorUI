@@ -1,3 +1,5 @@
+#include "ThorUI.h"
+
 #include <iostream>
 #include "SDL2-2.0.6\include\SDL.h"
 #include "glew-2.1.0\include\GL\glew.h"
@@ -10,6 +12,7 @@
 #pragma comment (lib, "opengl32.lib")
 #pragma comment (lib, "glu32.lib")
 #pragma comment (lib, "glut-3.6/glut32.lib" )
+
 
 
 SDL_Window* gWindow = nullptr;
@@ -149,6 +152,7 @@ int main(int argc, char** args)
 			}
 
 			SDL_StartTextInput();
+			ThorUI::Init();
 			while (true)
 			{
 				glClear(GL_COLOR_BUFFER_BIT);
@@ -161,7 +165,8 @@ int main(int argc, char** args)
 				glEnd();
 
 				SDL_GL_SwapWindow(gWindow);
-				
+				ThorUI::UpdateKeyboardState();
+
 				while (SDL_PollEvent(&ev) != 0)
 				{
 					if (ev.type == SDL_QUIT)
