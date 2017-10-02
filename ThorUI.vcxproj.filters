@@ -26,6 +26,9 @@
     <ClCompile Include="Source Code\UIImage.cpp">
       <Filter>UI Items</Filter>
     </ClCompile>
+    <ClCompile Include="Source Code\UI_Button.cpp">
+      <Filter>UI Items</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\UI_Item.h">
@@ -42,6 +45,9 @@
       <Filter>Containers</Filter>
     </ClInclude>
     <ClInclude Include="Source Code\UIImage.h">
+      <Filter>UI Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\UI_Button.h">
       <Filter>UI Items</Filter>
     </ClInclude>
   </ItemGroup>

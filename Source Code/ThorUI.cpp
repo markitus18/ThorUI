@@ -109,13 +109,17 @@ namespace ThorUI
 		glBindTexture(GL_TEXTURE_2D, texture_id);
 		glEnable(GL_TEXTURE_2D);
 
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 		glBegin(GL_QUADS);
-		glTexCoord2f(0.0, 1.0);	glVertex2f(pos.x, pos.y);
-		glTexCoord2f(1.0, 1.0);	glVertex2f(pos.x + size.x, pos.y);
-		glTexCoord2f(1.0, 0.0);	glVertex2f(pos.x + size.x, pos.y + size.y);
-		glTexCoord2f(0.0, 0.0);	glVertex2f(pos.x, pos.y + size.y);
+		glColor4f(1.0f, 0.0f, 0.0f, 1.0f); glTexCoord2f(0.0, 1.0);	glVertex2f(pos.x, pos.y);
+		glColor4f(0.0f, 1.0f, 0.0f, 1.0f); glTexCoord2f(1.0, 1.0);	glVertex2f(pos.x + size.x, pos.y);
+		glColor4f(1.0f, 0.0f, 1.0f, 1.0f); glTexCoord2f(1.0, 0.0);	glVertex2f(pos.x + size.x, pos.y + size.y);
+		glColor4f(1.0f, 0.0f, 1.0f, 1.0f); glTexCoord2f(0.0, 0.0);	glVertex2f(pos.x, pos.y + size.y);
 		glEnd();
 
+		glDisable(GL_BLEND);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_TEXTURE_2D);
 

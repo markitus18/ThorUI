@@ -23,9 +23,11 @@
     <ClCompile Include="Source Code\Main.cpp" />
     <ClCompile Include="Source Code\ThorUI.cpp" />
     <ClCompile Include="Source Code\UIImage.cpp" />
+    <ClCompile Include="Source Code\UI_Button.cpp" />
     <ClCompile Include="Source Code\UI_Item.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source Code\UI_Button.h" />
     <ClInclude Include="Source Code\Color.h" />
     <ClInclude Include="Source Code\Log.h" />
     <ClInclude Include="Source Code\ThorUI.h" />
