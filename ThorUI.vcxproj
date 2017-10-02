@@ -20,6 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\Main.cpp" />
+    <ClCompile Include="Source Code\ThorUI.cpp" />
+    <ClCompile Include="Source Code\UI_Item.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source Code\ThorUI.h" />
+    <ClInclude Include="Source Code\UI_Item.h" />
+    <ClInclude Include="Source Code\Vec2.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A0E0751B-9608-4C74-ABC7-94495991F4FB}</ProjectGuid>

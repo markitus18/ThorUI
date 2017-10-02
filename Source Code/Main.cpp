@@ -140,6 +140,15 @@ int main(int argc, char** args)
 		}
 		else
 		{
+			static SDL_Event ev;
+
+			bool quit = false;
+			if (SDL_InitSubSystem(SDL_INIT_EVENTS) < 0)
+			{
+				printf("SDL_EVENTS could not initialize! SDL_Error: %s\n", SDL_GetError());
+			}
+
+			SDL_StartTextInput();
 			while (true)
 			{
 				glClear(GL_COLOR_BUFFER_BIT);
@@ -152,10 +161,19 @@ int main(int argc, char** args)
 				glEnd();
 
 				SDL_GL_SwapWindow(gWindow);
+				
+				while (SDL_PollEvent(&ev) != 0)
+				{
+					if (ev.type == SDL_QUIT)
+					{
+						quit = true;
+					}
+				}
 			}
 		}
 	}
 
+	//SDL_StopTextInput();
 	close();
 	return 0;
 
