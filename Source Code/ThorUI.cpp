@@ -11,6 +11,8 @@ namespace ThorUI
 {
 	Key_State* keyboard = nullptr;
 	std::vector<UI_Item*> items;
+	Vec2 mouse_pos = Vec2(-1000, -1000);
+
 	void Init()
 	{
 		keyboard = new Key_State[SDL_NUM_SCANCODES];
@@ -148,7 +150,7 @@ namespace ThorUI
 
 	bool IsMouseHovering(Vec2 pos, Vec2 size)
 	{
-
+		return false;
 	}
 
 	void AddItem(UI_Item* item)
