@@ -23,10 +23,10 @@
     <ClCompile Include="Source Code\Log.cpp">
       <Filter>Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="Source Code\UIImage.cpp">
+    <ClCompile Include="Source Code\UI_Button.cpp">
       <Filter>UI Items</Filter>
     </ClCompile>
-    <ClCompile Include="Source Code\UI_Button.cpp">
+    <ClCompile Include="Source Code\UI_Image.cpp">
       <Filter>UI Items</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,10 +44,10 @@
     <ClInclude Include="Source Code\Color.h">
       <Filter>Containers</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\UIImage.h">
+    <ClInclude Include="Source Code\UI_Button.h">
       <Filter>UI Items</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\UI_Button.h">
+    <ClInclude Include="Source Code\UI_Image.h">
       <Filter>UI Items</Filter>
     </ClInclude>
   </ItemGroup>

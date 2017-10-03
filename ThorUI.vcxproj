@@ -22,7 +22,7 @@
     <ClCompile Include="Source Code\Log.cpp" />
     <ClCompile Include="Source Code\Main.cpp" />
     <ClCompile Include="Source Code\ThorUI.cpp" />
-    <ClCompile Include="Source Code\UIImage.cpp" />
+    <ClCompile Include="Source Code\UI_Image.cpp" />
     <ClCompile Include="Source Code\UI_Button.cpp" />
     <ClCompile Include="Source Code\UI_Item.cpp" />
   </ItemGroup>
@@ -31,7 +31,7 @@
     <ClInclude Include="Source Code\Color.h" />
     <ClInclude Include="Source Code\Log.h" />
     <ClInclude Include="Source Code\ThorUI.h" />
-    <ClInclude Include="Source Code\UIImage.h" />
+    <ClInclude Include="Source Code\UI_Image.h" />
     <ClInclude Include="Source Code\UI_Item.h" />
     <ClInclude Include="Source Code\Vec2.h" />
   </ItemGroup>

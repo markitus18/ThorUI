@@ -1,5 +1,3 @@
-#include "ThorUI.h"
-
 #include <iostream>
 #include "SDL2-2.0.6\include\SDL.h"
 #include "glew-2.1.0\include\GL\glew.h"
@@ -15,12 +13,15 @@
 
 #include "Vec2.h"
 #include "Color.h"
+#include "ThorUI.h"
+#include "UI_Image.h"
 
 SDL_Window* gWindow = nullptr;
 SDL_Surface* gScreenSurface = nullptr;
 SDL_Surface* gHelloWorld = nullptr;
 SDL_GLContext gContext;
 
+UI_Image* image;
 
 bool initGL()
 {
@@ -128,6 +129,12 @@ void close()
 	SDL_Quit();
 }
 
+void LoadUI()
+{
+	image = new UI_Image(Vec2(-0.5, -0.5), Vec2(1, 1), ThorUI::LoadTexture("photo.bmp"));
+	ThorUI::AddItem(image);
+}
+
 int main(int argc, char** args)
 {
 	//Start up SDL and create window
@@ -154,7 +161,8 @@ int main(int argc, char** args)
 
 			SDL_StartTextInput();
 			ThorUI::Init();
-			int texture = ThorUI::LoadTexture("photo.bmp");
+			LoadUI();
+
 			while (true)
 			{
 				glClear(GL_COLOR_BUFFER_BIT);
@@ -162,10 +170,14 @@ int main(int argc, char** args)
 				Vec2 pos(-0.5, -0.5);
 				Vec2 size(1, 1);
 
-				if (ThorUI::GetKeyState(SDL_SCANCODE_A) == KEY_REPEAT)
-					ThorUI::DrawImage(pos, size, texture);
-				else
-					ThorUI::DrawQuad(pos, size, Color::Blue());
+				ThorUI::Draw();
+				
+				if (ThorUI::GetKeyState(SDL_SCANCODE_A) == KEY_DOWN)
+					image->SetColor(Color::Red());
+				else if (ThorUI::GetKeyState(SDL_SCANCODE_D) == KEY_DOWN)
+					image->SetColor(Color::Blue());
+				else if (ThorUI::GetKeyState(SDL_SCANCODE_S) == KEY_DOWN)
+					image->SetColor(Color::White());
 
 				SDL_GL_SwapWindow(gWindow);
 				ThorUI::UpdateKeyboardState();

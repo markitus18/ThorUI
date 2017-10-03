@@ -5,17 +5,31 @@
 #include "Color.h"
 #include "glew-2.1.0\include\GL\glew.h"
 #include <string>
-
+#include "UI_Item.h"
 
 namespace ThorUI
 {
 	Key_State* keyboard = nullptr;
-
+	std::vector<UI_Item*> items;
 	void Init()
 	{
 		keyboard = new Key_State[SDL_NUM_SCANCODES];
 		for (int i = 0; i < SDL_NUM_SCANCODES; ++i)
 			keyboard[i] = KEY_IDLE;
+	}
+
+	void StartFrame()
+	{
+		UpdateKeyboardState();
+	}
+
+	void Draw()
+	{
+		std::vector<UI_Item*>::iterator it;
+		for (it = items.begin(); it != items.end(); ++it)
+		{
+			(*it)->Draw();
+		}
 	}
 
 	void CleanUp()
@@ -56,6 +70,13 @@ namespace ThorUI
 	Key_State GetKeyState(int key)
 	{
 		return keyboard[key];
+	}
+
+	void UpdateMouseState()
+	{
+		int x, y;
+		SDL_GetMouseState(&x, &y);
+		mouse_pos.Set(x, y);
 	}
 
 	int LoadTexture(char* path)
@@ -104,7 +125,7 @@ namespace ThorUI
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
-	void DrawImage(Vec2 pos, Vec2 size, int texture_id)
+	void DrawImage(Vec2 pos, Vec2 size, int texture_id, Color color)
 	{
 		glBindTexture(GL_TEXTURE_2D, texture_id);
 		glEnable(GL_TEXTURE_2D);
@@ -113,16 +134,26 @@ namespace ThorUI
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		glBegin(GL_QUADS);
-		glColor4f(1.0f, 0.0f, 0.0f, 1.0f); glTexCoord2f(0.0, 1.0);	glVertex2f(pos.x, pos.y);
-		glColor4f(0.0f, 1.0f, 0.0f, 1.0f); glTexCoord2f(1.0, 1.0);	glVertex2f(pos.x + size.x, pos.y);
-		glColor4f(1.0f, 0.0f, 1.0f, 1.0f); glTexCoord2f(1.0, 0.0);	glVertex2f(pos.x + size.x, pos.y + size.y);
-		glColor4f(1.0f, 0.0f, 1.0f, 1.0f); glTexCoord2f(0.0, 0.0);	glVertex2f(pos.x, pos.y + size.y);
+		glColor4fv(color.ptr());
+		glTexCoord2f(0.0, 1.0);	glVertex2f(pos.x, pos.y);
+		glTexCoord2f(1.0, 1.0);	glVertex2f(pos.x + size.x, pos.y);
+		glTexCoord2f(1.0, 0.0);	glVertex2f(pos.x + size.x, pos.y + size.y);
+		glTexCoord2f(0.0, 0.0);	glVertex2f(pos.x, pos.y + size.y);
 		glEnd();
-
+		glColor4fv(Color::White().ptr());
 		glDisable(GL_BLEND);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_TEXTURE_2D);
+	}
 
+	bool IsMouseHovering(Vec2 pos, Vec2 size)
+	{
+
+	}
+
+	void AddItem(UI_Item* item)
+	{
+		items.push_back(item);
 	}
 }
 
