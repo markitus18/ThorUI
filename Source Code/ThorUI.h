@@ -7,6 +7,7 @@ typedef union SDL_Event;
 struct Vec2;
 struct Color;
 class UI_Item;
+struct SDL_Window;
 
 enum Key_State
 {
@@ -19,18 +20,29 @@ enum Key_State
 namespace ThorUI
 {
 	extern Key_State* keyboard;
+	extern Key_State* mouse_buttons;
+	extern Vec2 screen_size;
+	extern bool breakpoint;
 	extern std::vector<UI_Item*> items;
 	extern Vec2 mouse_pos;
+	extern bool mouse_out;
 
-	void Init();
+	void Init(SDL_Window* window);
 	void StartFrame();
 	void Draw();
 
-	//Input event handling -------------------------
+	//Keyboard event handling -------------------------
 	void UpdateKeyboardState();
 	void DebugKeyboardState(int key, Key_State state);
 	Key_State GetKeyState(int key);
 	void UpdateMouseState();
+	//-------------------------------------------------
+
+	//Mouse event handling ----------------------------
+	bool IsMouseHovering(Vec2 pos, Vec2 size);
+	Key_State GetMouseState(int id);
+	bool IsMouseDown(int id);
+	bool IsMouseIdle(int id);
 	//-------------------------------------------------
 
 	//Texture handling --------------------------------
@@ -45,12 +57,9 @@ namespace ThorUI
 	void DrawImage(Vec2 pos, Vec2 size, int texture_id, Color color);
 	//-------------------------------------------------
 
-	//Event Utilities ---------------------------------
-	bool IsMouseHovering(Vec2 pos, Vec2 size);
-	//-------------------------------------------------
-
 	//Item management ---------------------------------
 	void AddItem(UI_Item* item);
+	void UpdateItems();
 	//-------------------------------------------------
 };
 

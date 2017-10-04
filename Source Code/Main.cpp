@@ -15,6 +15,7 @@
 #include "Color.h"
 #include "ThorUI.h"
 #include "UI_Image.h"
+#include "UI_Button.h"
 
 SDL_Window* gWindow = nullptr;
 SDL_Surface* gScreenSurface = nullptr;
@@ -22,6 +23,7 @@ SDL_Surface* gHelloWorld = nullptr;
 SDL_GLContext gContext;
 
 UI_Image* image;
+UI_Button* button;
 
 bool initGL()
 {
@@ -131,8 +133,11 @@ void close()
 
 void LoadUI()
 {
-	image = new UI_Image(Vec2(-0.5, -0.5), Vec2(1, 1), ThorUI::LoadTexture("photo.bmp"));
-	ThorUI::AddItem(image);
+	//image = new UI_Image(Vec2(-0.5, -0.5), Vec2(1, 1), ThorUI::LoadTexture("photo.bmp"));
+	//ThorUI::AddItem(image);
+	button = new UI_Button(Vec2(0.0f, 0.0f), Vec2(2, 2));
+	ThorUI::AddItem(button);
+
 }
 
 int main(int argc, char** args)
@@ -160,16 +165,23 @@ int main(int argc, char** args)
 			}
 
 			SDL_StartTextInput();
-			ThorUI::Init();
+			ThorUI::Init(gWindow);
 			LoadUI();
 
-			while (true)
+			while (quit == false)
 			{
 				glClear(GL_COLOR_BUFFER_BIT);
 
-				Vec2 pos(-0.5, -0.5);
-				Vec2 size(1, 1);
+				while (SDL_PollEvent(&ev) != 0)
+				{
+					ThorUI::GetEvent(ev);
+					if (ev.type == SDL_QUIT)
+					{
+						quit = true;
+					}
+				}
 
+				ThorUI::StartFrame();
 				ThorUI::Draw();
 				
 				if (ThorUI::GetKeyState(SDL_SCANCODE_A) == KEY_DOWN)
@@ -182,13 +194,7 @@ int main(int argc, char** args)
 				SDL_GL_SwapWindow(gWindow);
 				ThorUI::UpdateKeyboardState();
 
-				while (SDL_PollEvent(&ev) != 0)
-				{
-					if (ev.type == SDL_QUIT)
-					{
-						quit = true;
-					}
-				}
+				ThorUI::breakpoint = false;
 			}
 		}
 	}
