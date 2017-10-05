@@ -4,6 +4,17 @@
 #include "UI_Item.h"
 #include "Color.h"
 
+struct Button_Apparence
+{
+	Button_Apparence() { memset(change_attribute, false, 4); };
+	Vec2 size;
+	Vec2 position;
+	int texture_id;
+	Color color;
+	bool change_attribute[4];
+};
+
+
 class UI_Button : public UI_Item
 {
 public:
