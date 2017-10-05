@@ -4,7 +4,7 @@
 
 void UI_Button::Draw()
 {
-	ThorUI::DrawQuad(pos, size, current_color);
+	ThorUI::DrawQuad(pos, size, current_color, true, 5.0f);
 }
 
 void UI_Button::OnItemEvent(Item_Event event)

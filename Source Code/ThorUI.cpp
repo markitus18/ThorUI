@@ -195,35 +195,22 @@ namespace ThorUI
 						mouse_out = false;
 						break;
 					}
-					case(SDL_WINDOWEVENT_FOCUS_GAINED):
-					{
-						//If we gain focus and mouse is inside the window, it was just clicked.
-						//SDL doesnt detect that click, it is faked here
-						//TODO: detect which button was pressed to gain focus
-						//if (mouse_out == false)
-						//{
-						//	SDL_Event ev;
-						//	ev.type = SDL_MOUSEBUTTONDOWN;
-						//	ev.button.button = SDL_BUTTON_LEFT;
-						//	SDL_PushEvent(&ev);
-						//}
-						LOG("Focus gain");
-						break;
-					}
 				}
 			}
 		}
 	}
 
-	void DrawQuad(Vec2 pos, Vec2 size, Color color)
+	void DrawQuad(Vec2 pos, Vec2 size, Color color, bool filled, float lineWidth)
 	{
 		glColor4fv(color.ptr());
-		glBegin(GL_QUADS);
+		filled ? glBegin(GL_QUADS) : glBegin(GL_LINE_LOOP);
+		glLineWidth(lineWidth);
 		glVertex2f(pos.x, pos.y);
 		glVertex2f(pos.x + size.x, pos.y);
 		glVertex2f(pos.x + size.x, pos.y + size.y);
 		glVertex2f(pos.x, pos.y + size.y);
 		glEnd();
+		filled == false ? glLineWidth(1.0f) : 0;
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
