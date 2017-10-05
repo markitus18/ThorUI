@@ -21,9 +21,12 @@ namespace ThorUI
 {
 	extern Key_State* keyboard;
 	extern Key_State* mouse_buttons;
+	extern bool* mouse_button_event;
+
 	extern Vec2 screen_size;
 	extern bool breakpoint;
 	extern std::vector<UI_Item*> items;
+
 	extern Vec2 mouse_pos;
 	extern bool mouse_out;
 

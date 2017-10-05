@@ -133,9 +133,9 @@ void close()
 
 void LoadUI()
 {
-	//image = new UI_Image(Vec2(-0.5, -0.5), Vec2(1, 1), ThorUI::LoadTexture("photo.bmp"));
-	//ThorUI::AddItem(image);
-	button = new UI_Button(Vec2(0.0f, 0.0f), Vec2(2, 2));
+	image = new UI_Image(Vec2(-0.5, -0.5), Vec2(1, 1), ThorUI::LoadTexture("photo.bmp"));
+	ThorUI::AddItem(image);
+	button = new UI_Button(Vec2(0.2f, 0.2f), Vec2(2, 2));
 	ThorUI::AddItem(button);
 
 }

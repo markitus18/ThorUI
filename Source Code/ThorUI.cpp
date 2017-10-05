@@ -4,6 +4,7 @@
 #include "Vec2.h"
 #include "Color.h"
 #include "glew-2.1.0\include\GL\glew.h"
+
 #include <string>
 #include "UI_Item.h"
 
@@ -11,6 +12,7 @@ namespace ThorUI
 {
 	Key_State* keyboard = nullptr;
 	Key_State* mouse_buttons = nullptr;
+	bool* mouse_button_event = nullptr;
 	std::vector<UI_Item*> items;
 	Vec2 mouse_pos = Vec2(-1000, -1000);
 	Vec2 screen_size;
@@ -27,10 +29,14 @@ namespace ThorUI
 		mouse_buttons = new Key_State[3];
 		for (int i = 0; i < 3; ++i)
 			mouse_buttons[i] = KEY_IDLE;
-		
+		mouse_button_event = new bool[3];
+		memset(mouse_button_event, 0, 3);
+
 		int w, h;
 		SDL_GetWindowSize(window, &w, &h);
 		screen_size.Set(w, h);
+
+		SDL_SetHint(SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");
 	}
 
 	void StartFrame()
@@ -100,11 +106,15 @@ namespace ThorUI
 
 		for (int i = 0; i < 3; ++i)
 		{
-			if (mouse_buttons[i] == KEY_DOWN)
-				mouse_buttons[i] = KEY_REPEAT;
-			if (mouse_buttons[i] == KEY_UP)
-				mouse_buttons[i] = KEY_IDLE;
+			if (mouse_button_event[i] == false)
+			{
+				if (mouse_buttons[i] == KEY_DOWN)
+					mouse_buttons[i] = KEY_REPEAT;
+				if (mouse_buttons[i] == KEY_UP)
+					mouse_buttons[i] = KEY_IDLE;
+			}
 		}
+		memset(mouse_button_event, 0, 3);
 	}
 
 	Key_State GetMouseState(int id)
@@ -125,6 +135,7 @@ namespace ThorUI
 	int LoadTexture(char* path)
 	{
 		SDL_Surface* surf = SDL_LoadBMP(path);
+
 		if (surf == nullptr)
 		{
 			LOG("Error loading texture: %s", SDL_GetError());
@@ -158,11 +169,13 @@ namespace ThorUI
 			case(SDL_MOUSEBUTTONUP):
 			{
 				mouse_buttons[event.button.button - 1] = KEY_UP;
+				mouse_button_event[event.button.button - 1] = true;
 				break;
 			}
 			case(SDL_MOUSEBUTTONDOWN):
 			{
 				mouse_buttons[event.button.button - 1] = KEY_DOWN;
+				mouse_button_event[event.button.button - 1] = true;
 				break;
 			}
 			case(SDL_WINDOWEVENT):
@@ -187,14 +200,15 @@ namespace ThorUI
 						//If we gain focus and mouse is inside the window, it was just clicked.
 						//SDL doesnt detect that click, it is faked here
 						//TODO: detect which button was pressed to gain focus
-						if (mouse_out == false)
-						{
-							SDL_Event ev;
-							ev.type = SDL_MOUSEBUTTONDOWN;
-							ev.button.button = SDL_BUTTON_LEFT;
-							SDL_PushEvent(&ev);
-						}
+						//if (mouse_out == false)
+						//{
+						//	SDL_Event ev;
+						//	ev.type = SDL_MOUSEBUTTONDOWN;
+						//	ev.button.button = SDL_BUTTON_LEFT;
+						//	SDL_PushEvent(&ev);
+						//}
 						LOG("Focus gain");
+						break;
 					}
 				}
 			}
@@ -257,7 +271,7 @@ namespace ThorUI
 					(*it)->OnItemEvent(Mouse_Enter);
 				if (last_event == Mouse_Down && IsMouseIdle(SDL_BUTTON_LEFT))
 					(*it)->OnItemEvent(Mouse_Up);
-				if ((last_event == Mouse_Enter || last_event == Mouse_Up) && IsMouseDown(SDL_BUTTON_LEFT))
+				if ((last_event == Mouse_Enter || last_event == Mouse_Up) && GetMouseState(SDL_BUTTON_LEFT)==KEY_DOWN)
 					(*it)->OnItemEvent(Mouse_Down);
 			}
 			else //Mouse is not hovering item
