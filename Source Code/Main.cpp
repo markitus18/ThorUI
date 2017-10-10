@@ -19,7 +19,7 @@
 
 SDL_Window* gWindow = nullptr;
 SDL_Surface* gScreenSurface = nullptr;
-SDL_Surface* gHelloWorld = nullptr;
+SDL_Surface* imageSurf = nullptr;
 SDL_GLContext gContext;
 
 UI_Image* image;
@@ -100,14 +100,14 @@ bool init()
 	return success;
 }
 
-bool load()
+bool loadTexture()
 {
 	//Loading success flag
 	bool success = true;
 
 	//Load splash image
-	gHelloWorld = SDL_LoadBMP("photo.bmp");
-	if (gHelloWorld == NULL)
+	imageSurf = SDL_LoadBMP("photo.bmp");
+	if (imageSurf == NULL)
 	{
 		const char* error = SDL_GetError();
 		printf("Unable to load image %s! SDL Error: %s\n", "02_getting_an_image_on_the_screen/hello_world.bmp", SDL_GetError());
@@ -120,8 +120,8 @@ bool load()
 void close()
 {
 	//Deallocate surface
-	SDL_FreeSurface(gHelloWorld);
-	gHelloWorld = NULL;
+	SDL_FreeSurface(imageSurf);
+	imageSurf = NULL;
 
 	//Destroy window
 	SDL_DestroyWindow(gWindow);
@@ -133,7 +133,7 @@ void close()
 
 void LoadUI()
 {
-	image = new UI_Image(Vec2(-0.5, -0.5), Vec2(1, 1), ThorUI::LoadTexture("photo.bmp"));
+	image = new UI_Image(Vec2(0.0, 0.0), Vec2(0.498, 0.75), ThorUI::LoadTexture("photo.bmp"));
 	ThorUI::AddItem(image);
 	button = new UI_Button(Vec2(0.3f, 0.3f), Vec2(0.5, 0.5));
 	ThorUI::AddItem(button);
@@ -149,53 +149,45 @@ int main(int argc, char** args)
 	}
 	else
 	{
-		//Load media
-		if (!load())
+		static SDL_Event ev;
+
+		bool quit = false;
+		if (SDL_InitSubSystem(SDL_INIT_EVENTS) < 0)
 		{
-			printf("Failed to load media!\n");
+			printf("SDL_EVENTS could not initialize! SDL_Error: %s\n", SDL_GetError());
 		}
-		else
+
+		SDL_StartTextInput();
+		ThorUI::Init(gWindow);
+		LoadUI();
+
+		while (quit == false)
 		{
-			static SDL_Event ev;
+			glClear(GL_COLOR_BUFFER_BIT);
 
-			bool quit = false;
-			if (SDL_InitSubSystem(SDL_INIT_EVENTS) < 0)
+			while (SDL_PollEvent(&ev) != 0)
 			{
-				printf("SDL_EVENTS could not initialize! SDL_Error: %s\n", SDL_GetError());
-			}
-
-			SDL_StartTextInput();
-			ThorUI::Init(gWindow);
-			LoadUI();
-
-			while (quit == false)
-			{
-				glClear(GL_COLOR_BUFFER_BIT);
-
-				while (SDL_PollEvent(&ev) != 0)
+				ThorUI::GetEvent(ev);
+				if (ev.type == SDL_QUIT)
 				{
-					ThorUI::GetEvent(ev);
-					if (ev.type == SDL_QUIT)
-					{
-						quit = true;
-					}
+					quit = true;
 				}
-
-				ThorUI::StartFrame();
-				ThorUI::Draw();
-				
-				if (ThorUI::GetKeyState(SDL_SCANCODE_A) == KEY_DOWN)
-					image->SetColor(Color::Red());
-				else if (ThorUI::GetKeyState(SDL_SCANCODE_D) == KEY_DOWN)
-					image->SetColor(Color::Blue());
-				else if (ThorUI::GetKeyState(SDL_SCANCODE_S) == KEY_DOWN)
-					image->SetColor(Color::White());
-
-				SDL_GL_SwapWindow(gWindow);
-				ThorUI::UpdateKeyboardState();
-
-				ThorUI::breakpoint = false;
 			}
+
+			ThorUI::StartFrame();
+			ThorUI::Draw();
+				
+			if (ThorUI::GetKeyState(SDL_SCANCODE_A) == KEY_DOWN)
+				image->SetColor(Color::Red());
+			else if (ThorUI::GetKeyState(SDL_SCANCODE_D) == KEY_DOWN)
+				image->SetColor(Color::Blue());
+			else if (ThorUI::GetKeyState(SDL_SCANCODE_S) == KEY_DOWN)
+				image->SetColor(Color::White());
+
+			SDL_GL_SwapWindow(gWindow);
+			ThorUI::UpdateKeyboardState();
+
+			ThorUI::breakpoint = false;
 		}
 	}
 
