@@ -25,6 +25,7 @@
     <ClCompile Include="Source Code\UI_Image.cpp" />
     <ClCompile Include="Source Code\UI_Button.cpp" />
     <ClCompile Include="Source Code\UI_Item.cpp" />
+    <ClCompile Include="Source Code\UI_Text.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\UI_Button.h" />
@@ -33,6 +34,7 @@
     <ClInclude Include="Source Code\ThorUI.h" />
     <ClInclude Include="Source Code\UI_Image.h" />
     <ClInclude Include="Source Code\UI_Item.h" />
+    <ClInclude Include="Source Code\UI_Text.h" />
     <ClInclude Include="Source Code\Vec2.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

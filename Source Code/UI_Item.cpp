@@ -1,11 +1,11 @@
 #include "UI_Item.h"
 
-void UI_Item::SetPos(int x, int y)
+void UI_Item::SetPos(float x, float y)
 {
 	pos.Set(x, y);
 }
 
-void UI_Item::SetSize(int w, int h)
+void UI_Item::SetSize(float w, float h)
 {
 	size.Set(w, h);
 }

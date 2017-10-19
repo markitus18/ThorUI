@@ -9,6 +9,7 @@ struct Color;
 class UI_Item;
 struct _TTF_Font;
 struct SDL_Window;
+struct SDL_Surface;
 
 enum Key_State
 {
@@ -18,10 +19,10 @@ enum Key_State
 	KEY_UP
 };
 
+typedef unsigned int uint;
+
 namespace ThorUI
 {
-	typedef unsigned int uint;
-
 	extern Key_State* keyboard;
 	extern Key_State* mouse_buttons;
 	extern bool* mouse_button_event;

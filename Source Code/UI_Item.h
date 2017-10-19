@@ -18,11 +18,11 @@ class UI_Item
 {
 public:
 	UI_Item() {};
-	UI_Item(int x, int y) : pos(x, y) {};
+	UI_Item(float x, float y) : pos(x, y) {};
 	UI_Item(Vec2 pos, Vec2 size) : pos(pos), size(size) {};
 
-	void SetPos(int x, int y);
-	void SetSize(int w, int h);
+	void SetPos(float x, float y);
+	void SetSize(float w, float h);
 
 	virtual void Draw() {}; //TODO: draw here, or in ThorUI?
 	virtual void OnItemEvent(Item_Event event) { last_event = event; };

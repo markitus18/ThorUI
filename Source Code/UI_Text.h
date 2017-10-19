@@ -6,7 +6,7 @@
 
 #include <string>
 
-typedef uint;
+typedef unsigned int uint;
 
 class UI_Text : public UI_Item
 {
@@ -16,14 +16,23 @@ public:
 
 	void SetText(const char* text);
 	void SetColor(const Color& color);
+	void SetFont(uint font_id);
 
 	const char* GetText() const;
 	Color GetColor() const;
 
+	void Draw();
+
+private:
+	void LoadTexture();
+
 private:
 	std::string text;
 	Color color;
-	uint texture_id;
+	uint texture_id = 0;
+	uint font_id = 0;
+
+	bool texture_created = false;
 
 };
 

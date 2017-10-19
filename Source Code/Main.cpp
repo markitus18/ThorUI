@@ -16,6 +16,7 @@
 #include "ThorUI.h"
 #include "UI_Image.h"
 #include "UI_Button.h"
+#include "UI_Text.h"
 
 SDL_Window* gWindow = nullptr;
 SDL_Surface* gScreenSurface = nullptr;
@@ -24,6 +25,7 @@ SDL_GLContext gContext;
 
 UI_Image* image;
 UI_Button* button;
+UI_Text* text;
 
 bool initGL()
 {
@@ -133,11 +135,18 @@ void close()
 
 void LoadUI()
 {
-	image = new UI_Image(Vec2(0.0, 0.0), Vec2(0.498, 0.75), ThorUI::LoadTexture("photo.bmp"));
-	ThorUI::AddItem(image);
-	button = new UI_Button(Vec2(0.3f, 0.3f), Vec2(0.5, 0.5));
-	ThorUI::AddItem(button);
+	//image = new UI_Image(Vec2(0.0, 0.0), Vec2(0.498, 0.75), ThorUI::LoadTexture("photo.bmp"));
+	//ThorUI::AddItem(image);
+	//button = new UI_Button(Vec2(0.3f, 0.3f), Vec2(0.5, 0.5));
+	//ThorUI::AddItem(button);
 
+	uint font = ThorUI::LoadFont("Times_New_Roman_Normal.ttf", 16);
+	text = new UI_Text();
+	text->SetText("Hello World!");
+	text->SetPos(0.2f, 0.2f);
+	text->SetSize(0.85f, 0.19f);
+	text->SetFont(font);
+	ThorUI::AddItem(text);
 }
 
 int main(int argc, char** args)

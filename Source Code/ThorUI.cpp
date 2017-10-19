@@ -11,7 +11,7 @@
 #include "Color.h"
 #include "UI_Item.h"
 
-
+#pragma comment (lib, "SDL2_ttf-2.0.14/libx86/SDL2_ttf.lib")
 
 namespace ThorUI
 {
@@ -46,7 +46,10 @@ namespace ThorUI
 
 		SDL_SetHint(SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");
 
-		TTF_Init();
+		if (TTF_Init() != 0)
+		{
+			LOG("Could not initialize SDL_TTF: %s", TTF_GetError());
+		}
 	}
 
 	void StartFrame()
@@ -166,7 +169,7 @@ namespace ThorUI
 
 	uint LoadFont(const char* path, uint size)
 	{
-		_TTF_Font* font = TTF_OpenFont(path, size);
+		TTF_Font* font = TTF_OpenFont(path, 12);
 		if (font == nullptr) return 0;
 
 		fonts.push_back(font);
@@ -177,13 +180,23 @@ namespace ThorUI
 	{
 		if (font > fonts.size()) return 0; //Immediate return on invalid font
 
-		SDL_Surface* surf = TTF_RenderUTF8_Blended(fonts[font - 1], text, color.ToSDL());
+		SDL_Surface* surf = TTF_RenderText_Blended(fonts[font - 1], text, color.ToSDL());
+		int w, h;
+		w = 128;
+		h = 16;
+
+		SDL_Surface* intermediarey = SDL_CreateRGBSurface(0, w, h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+		SDL_BlitSurface(surf, 0, intermediarey, 0);
+		
 		if (surf == nullptr)
 		{
 			LOG("Error loading text texture: %s", TTF_GetError());
 			return 0;
 		}
-		uint texture = GenTextureFromSurf(surf);
+
+		SDL_SaveBMP(surf, "blended.bmp");
+
+		uint texture = GenTextureFromSurf(intermediarey);
 		SDL_FreeSurface(surf);
 
 		return texture;
@@ -201,12 +214,13 @@ namespace ThorUI
 	{
 		uint texture = GenTexture();
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surf->w, surf->h, 0, GL_BGR, GL_UNSIGNED_BYTE, surf->pixels);
+		glTexImage2D(GL_TEXTURE_2D, 0, 4, surf->w, surf->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surf->pixels);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 
+		return texture;
 	}
 
 	void GetEvent(SDL_Event event)
@@ -266,18 +280,18 @@ namespace ThorUI
 		glBindTexture(GL_TEXTURE_2D, texture_id);
 		glEnable(GL_TEXTURE_2D);
 
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//	glEnable(GL_BLEND);
+	//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		glBegin(GL_QUADS);
-		glColor4fv(color.ptr());
+		//glColor4fv(color.ptr());
 		glTexCoord2f(0.0, 1.0);	glVertex2f(pos.x, pos.y);
 		glTexCoord2f(1.0, 1.0);	glVertex2f(pos.x + size.x, pos.y);
 		glTexCoord2f(1.0, 0.0);	glVertex2f(pos.x + size.x, pos.y + size.y);
 		glTexCoord2f(0.0, 0.0);	glVertex2f(pos.x, pos.y + size.y);
 		glEnd();
-		glColor4fv(Color::White().ptr());
-		glDisable(GL_BLEND);
+	//	glColor4fv(Color::White().ptr());
+	//	glDisable(GL_BLEND);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_TEXTURE_2D);
 	}

@@ -1,6 +1,8 @@
 #ifndef __COLOR_H__
 #define __COLOR_H__
 
+#include "SDL2-2.0.6\include\SDL_pixels.h"
+
 struct Color
 {
 	float r = 1.0f, g = 1.0f, b = 1.0f, a = 1.0f;
@@ -8,7 +10,7 @@ struct Color
 	Color() {};
 	Color(float r, float g, float b, float a) : r(r), g(g), b(b), a(a) {};
 	float* ptr() { return (float*)this; };
-	SDL_Color ToSDL() { SDL_Color ret; ret.r = r; ret.g = g; ret.b = b; ret.a = a; return ret; };
+	SDL_Color ToSDL() { SDL_Color ret; ret.r = r*255; ret.g = g*255; ret.b = b*255; ret.a = a*255; return ret; };
 
 	static Color White()	{ return Color(1.0f, 1.0f, 1.0f, 1.0f); };
 	static Color Red()		{ return Color(1.0f, 0.05f, 0.2f, 1.0f); };
