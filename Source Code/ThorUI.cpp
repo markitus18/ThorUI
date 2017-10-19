@@ -1,12 +1,17 @@
 #include "ThorUI.h"
+
 #include "SDL2-2.0.6\include\SDL.h"
+#include "glew-2.1.0\include\GL\glew.h"
+#include "SDL2_ttf-2.0.14\include\SDL_ttf.h"
+
+#include <string>
+
 #include "Log.h"
 #include "Vec2.h"
 #include "Color.h"
-#include "glew-2.1.0\include\GL\glew.h"
-
-#include <string>
 #include "UI_Item.h"
+
+
 
 namespace ThorUI
 {
@@ -14,6 +19,9 @@ namespace ThorUI
 	Key_State* mouse_buttons = nullptr;
 	bool* mouse_button_event = nullptr;
 	std::vector<UI_Item*> items;
+	std::vector<_TTF_Font*> fonts;
+	//std::vector<uint> font_instances;
+
 	Vec2 mouse_pos = Vec2(-1000, -1000);
 	Vec2 screen_size;
 	bool mouse_out = false;
@@ -37,6 +45,8 @@ namespace ThorUI
 		screen_size.Set(w, h);
 
 		SDL_SetHint(SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");
+
+		TTF_Init();
 	}
 
 	void StartFrame()
@@ -132,7 +142,7 @@ namespace ThorUI
 		return (mouse_buttons[id - 1] == KEY_UP || mouse_buttons[id - 1] == KEY_IDLE);
 	}
 
-	int LoadTexture(char* path)
+	uint LoadTexture(char* path)
 	{
 		SDL_Surface* surf = SDL_LoadBMP(path);
 
@@ -143,23 +153,60 @@ namespace ThorUI
 		//TODO: Assuming it is GL_BGR, skipping checks by now
 
 		//Generating texture buffer
-		GLuint texture = 0;
-		glGenTextures(1, &texture);
-		glBindTexture(GL_TEXTURE_2D, texture);
-
-		//Filling buffer data
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surf->w, surf->h, 0, GL_BGR, GL_UNSIGNED_BYTE, surf->pixels);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
+		uint texture = GenTextureFromSurf(surf);
 		SDL_FreeSurface(surf);
 
 		return texture;
 	}
 
-	void ThorUI::FreeTexture(int texture_id)
+	void FreeTexture(int texture_id)
 	{
 		glDeleteTextures(1, (GLuint*)&texture_id);
+	}
+
+	uint LoadFont(const char* path, uint size)
+	{
+		_TTF_Font* font = TTF_OpenFont(path, size);
+		if (font == nullptr) return 0;
+
+		fonts.push_back(font);
+		return fonts.size();
+	}
+
+	uint LoadTextTexture(const char* text, uint font, Color color)
+	{
+		if (font > fonts.size()) return 0; //Immediate return on invalid font
+
+		SDL_Surface* surf = TTF_RenderUTF8_Blended(fonts[font - 1], text, color.ToSDL());
+		if (surf == nullptr)
+		{
+			LOG("Error loading text texture: %s", TTF_GetError());
+			return 0;
+		}
+		uint texture = GenTextureFromSurf(surf);
+		SDL_FreeSurface(surf);
+
+		return texture;
+	}
+
+	uint GenTexture()
+	{
+		GLuint texture = 0;
+		glGenTextures(1, &texture);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		return texture;
+	}
+
+	uint GenTextureFromSurf(const SDL_Surface* surf)
+	{
+		uint texture = GenTexture();
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surf->w, surf->h, 0, GL_BGR, GL_UNSIGNED_BYTE, surf->pixels);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+
 	}
 
 	void GetEvent(SDL_Event event)

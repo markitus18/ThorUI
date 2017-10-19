@@ -1,5 +1,5 @@
-#ifndef __UIIMAGE_H__
-#define __UIIMAGE_H__
+#ifndef __UI_IMAGE_H__
+#define __UI_IMAGE_H__
 
 #include "UI_Item.h"
 #include "Color.h" //TODO: fwd declaration and Color* ?
@@ -20,5 +20,5 @@ public:
 	Color color; 
 };
 
-#endif // !__UIIMAGE_H__
+#endif // !__UI_IMAGE_H__
 

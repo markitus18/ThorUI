@@ -8,6 +8,7 @@ struct Color
 	Color() {};
 	Color(float r, float g, float b, float a) : r(r), g(g), b(b), a(a) {};
 	float* ptr() { return (float*)this; };
+	SDL_Color ToSDL() { SDL_Color ret; ret.r = r; ret.g = g; ret.b = b; ret.a = a; return ret; };
 
 	static Color White()	{ return Color(1.0f, 1.0f, 1.0f, 1.0f); };
 	static Color Red()		{ return Color(1.0f, 0.05f, 0.2f, 1.0f); };
