@@ -135,12 +135,12 @@ void close()
 
 void LoadUI()
 {
-	//image = new UI_Image(Vec2(0.0, 0.0), Vec2(0.498, 0.75), ThorUI::LoadTexture("photo.bmp"));
-	//ThorUI::AddItem(image);
+	image = new UI_Image(Vec2(0.0, 0.0), Vec2(0.498, 0.75), ThorUI::LoadTexture("photo.bmp"));
+	ThorUI::AddItem(image);
 	//button = new UI_Button(Vec2(0.3f, 0.3f), Vec2(0.5, 0.5));
 	//ThorUI::AddItem(button);
 
-	uint font = ThorUI::LoadFont("Times_New_Roman_Normal.ttf", 16);
+	uint font = ThorUI::LoadFont("Times_New_Roman_Normal.ttf", 128);
 	text = new UI_Text();
 	text->SetText("Hello World!");
 	text->SetPos(0.2f, 0.2f);

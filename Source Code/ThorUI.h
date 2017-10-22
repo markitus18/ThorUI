@@ -69,7 +69,7 @@ namespace ThorUI
 		//* newly generated texture is binded, needs to be unbinded later
 	uint GenTexture();
 		//* Generates an OpenGL texture buffer from an SDL_Surface
-	uint GenTextureFromSurf(const SDL_Surface* surf);
+	uint GenTextureFromSurf(SDL_Surface* surf);
 	//-------------------------------------------------
 
 	void GetEvent(SDL_Event event);

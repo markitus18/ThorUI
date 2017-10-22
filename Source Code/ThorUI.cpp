@@ -169,7 +169,7 @@ namespace ThorUI
 
 	uint LoadFont(const char* path, uint size)
 	{
-		TTF_Font* font = TTF_OpenFont(path, 12);
+		TTF_Font* font = TTF_OpenFont(path, size);
 		if (font == nullptr) return 0;
 
 		fonts.push_back(font);
@@ -181,22 +181,16 @@ namespace ThorUI
 		if (font > fonts.size()) return 0; //Immediate return on invalid font
 
 		SDL_Surface* surf = TTF_RenderText_Blended(fonts[font - 1], text, color.ToSDL());
-		int w, h;
-		w = 128;
-		h = 16;
 
-		SDL_Surface* intermediarey = SDL_CreateRGBSurface(0, w, h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-		SDL_BlitSurface(surf, 0, intermediarey, 0);
-		
 		if (surf == nullptr)
 		{
 			LOG("Error loading text texture: %s", TTF_GetError());
 			return 0;
 		}
 
-		SDL_SaveBMP(surf, "blended.bmp");
+		//SDL_SaveBMP(surf, "blended.bmp");
 
-		uint texture = GenTextureFromSurf(intermediarey);
+		uint texture = GenTextureFromSurf(surf);
 		SDL_FreeSurface(surf);
 
 		return texture;
@@ -210,13 +204,31 @@ namespace ThorUI
 		return texture;
 	}
 
-	uint GenTextureFromSurf(const SDL_Surface* surf)
+	uint GenTextureFromSurf(SDL_Surface* surf)
 	{
+		SDL_Rect image_area;
+		//uint32_t saved_flags;
+		//uint8_t saved_alpha;
+		SDL_Surface* gl_surf = nullptr;
+
+		gl_surf = SDL_CreateRGBSurface(SDL_SWSURFACE, surf->w, surf->h, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
+
+		//TOOD: save surface format to restore it later
+
+		SDL_SetSurfaceAlphaMod(surf, SDL_ALPHA_OPAQUE);
+		image_area = { 0, 0, surf->w, surf->h };
+		SDL_BlitSurface(surf, &image_area, gl_surf, &image_area);
+
+		//TODO: restore surface
+
 		uint texture = GenTexture();
 
-		glTexImage2D(GL_TEXTURE_2D, 0, 4, surf->w, surf->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surf->pixels);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surf->w, surf->h, 0,
+					GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, gl_surf->pixels);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		//TODO: modify surface to power of 2 surf and generate mipmap
+		//glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -280,8 +292,8 @@ namespace ThorUI
 		glBindTexture(GL_TEXTURE_2D, texture_id);
 		glEnable(GL_TEXTURE_2D);
 
-	//	glEnable(GL_BLEND);
-	//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		glBegin(GL_QUADS);
 		//glColor4fv(color.ptr());
@@ -291,7 +303,7 @@ namespace ThorUI
 		glTexCoord2f(0.0, 0.0);	glVertex2f(pos.x, pos.y + size.y);
 		glEnd();
 	//	glColor4fv(Color::White().ptr());
-	//	glDisable(GL_BLEND);
+		glDisable(GL_BLEND);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_TEXTURE_2D);
 	}
