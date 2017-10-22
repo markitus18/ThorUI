@@ -188,8 +188,6 @@ namespace ThorUI
 			return 0;
 		}
 
-		//SDL_SaveBMP(surf, "blended.bmp");
-
 		uint texture = GenTextureFromSurf(surf);
 		SDL_FreeSurface(surf);
 

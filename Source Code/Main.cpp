@@ -142,8 +142,8 @@ void LoadUI()
 
 	uint font = ThorUI::LoadFont("Times_New_Roman_Normal.ttf", 128);
 	text = new UI_Text();
-	text->SetText("Hello World!");
-	text->SetPos(0.2f, 0.2f);
+	text->SetText("Tres Tristos Lligres...");
+	text->SetPos(0.05f, 0.8f);
 	text->SetSize(0.85f, 0.19f);
 	text->SetFont(font);
 	ThorUI::AddItem(text);
