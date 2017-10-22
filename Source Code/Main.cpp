@@ -135,7 +135,7 @@ void close()
 
 void LoadUI()
 {
-	image = new UI_Image(Vec2(0.0, 0.0), Vec2(0.498, 0.75), ThorUI::LoadTexture("photo.bmp"));
+	image = new UI_Image(Vec2(0.0, 0.0), Vec2(249, 375), ThorUI::LoadTexture("photo.bmp"));
 	ThorUI::AddItem(image);
 	//button = new UI_Button(Vec2(0.3f, 0.3f), Vec2(0.5, 0.5));
 	//ThorUI::AddItem(button);
@@ -143,8 +143,8 @@ void LoadUI()
 	uint font = ThorUI::LoadFont("Times_New_Roman_Normal.ttf", 128);
 	text = new UI_Text();
 	text->SetText("Tres Tristos Lligres...");
-	text->SetPos(0.05f, 0.8f);
-	text->SetSize(0.85f, 0.19f);
+	text->SetPos(20, 400);
+	text->SetSize(340, 76);
 	text->SetFont(font);
 	ThorUI::AddItem(text);
 }

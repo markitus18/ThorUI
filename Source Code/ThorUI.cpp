@@ -29,7 +29,6 @@ namespace ThorUI
 
 	void Init(SDL_Window* window)
 	{
-		gluOrtho2D(0.0f, 1.0f, 0.0f, 1.0f);
 
 		keyboard = new Key_State[SDL_NUM_SCANCODES];
 		for (int i = 0; i < SDL_NUM_SCANCODES; ++i)
@@ -43,7 +42,9 @@ namespace ThorUI
 		int w, h;
 		SDL_GetWindowSize(window, &w, &h);
 		screen_size.Set(w, h);
+		gluOrtho2D(0.0f, screen_size.x, 0.0f, screen_size.y);
 
+		//Sets the mouse to trigger "OnMouseDown" event when gaining focus
 		SDL_SetHint(SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");
 
 		if (TTF_Init() != 0)
@@ -152,14 +153,13 @@ namespace ThorUI
 		if (surf == nullptr)
 		{
 			LOG("Error loading texture: %s", SDL_GetError());
+			return 0;
 		}
-		//TODO: Assuming it is GL_BGR, skipping checks by now
 
 		//Generating texture buffer
 		uint texture = GenTextureFromSurf(surf);
-		SDL_FreeSurface(surf);
-
 		return texture;
+		SDL_FreeSurface(surf);
 	}
 
 	void FreeTexture(int texture_id)
