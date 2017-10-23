@@ -121,7 +121,7 @@ void close()
 
 void LoadUI()
 {
-	image = new UI_Image(Vec2(0.0, 0.0), Vec2(249, 375), ThorUI::LoadTexture("photo.bmp"));
+	image = new UI_Image(Vec2(0.0, 0.0), Vec2(-1, -1), ThorUI::LoadTexture("photo.bmp"));
 	ThorUI::AddItem(image);
 	//button = new UI_Button(Vec2(0.3f, 0.3f), Vec2(0.5, 0.5));
 	//ThorUI::AddItem(button);
@@ -183,9 +183,9 @@ int main(int argc, char** args)
 				text->SetFont(font_1);
 
 			if (ThorUI::GetKeyState(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-				text->SetPos(text->GetPos().x, text->GetPos().y - 0.05f);
+				text->SetPos(text->GetPos().x, text->GetPos().y - 1.0f);
 			if (ThorUI::GetKeyState(SDL_SCANCODE_UP) == KEY_REPEAT)
-				text->SetPos(text->GetPos().x, text->GetPos().y + 0.05f);
+				text->SetPos(text->GetPos().x, text->GetPos().y + 1.0f);
 
 			SDL_GL_SwapWindow(gWindow);
 			ThorUI::UpdateKeyboardState();

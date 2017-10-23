@@ -5,6 +5,7 @@
 #include "SDL2_ttf-2.0.14\include\SDL_ttf.h"
 
 #include <string>
+#include <map>
 
 #include "Log.h"
 #include "Vec2.h"
@@ -21,7 +22,7 @@ namespace ThorUI
 	std::vector<UI_Item*> items;
 
 	std::vector<_TTF_Font*> fonts;
-	std::vector<Texture> textures;
+	std::map<uint, Texture> textures;
 	//std::vector<uint> font_instances;
 
 	Vec2 mouse_pos = Vec2(-1000, -1000);
@@ -148,17 +149,13 @@ namespace ThorUI
 		return (mouse_buttons[id - 1] == KEY_UP || mouse_buttons[id - 1] == KEY_IDLE);
 	}
 
-	uint LoadTexture(char* path)
+	uint LoadTexture(const char* path)
 	{
 		//Looking if the texture is already loaded
-		for (std::vector<Texture>::const_iterator it = textures.begin(); it != textures.end(); ++it)
-		{
-			if ((*it).path == path)
-				return (*it).id;
-		}
+		if (Texture* tex = FindTexture(path))
+			return tex->id;
 
 		SDL_Surface* surf = SDL_LoadBMP(path);
-
 		if (surf == nullptr)
 		{
 			LOG("Error loading texture: %s", SDL_GetError());
@@ -171,15 +168,43 @@ namespace ThorUI
 		texture.original_size.Set(surf->w, surf->h);
 		texture.path = path;
 
-		textures.push_back(texture);
+		textures[texture.id] = texture;
 		SDL_FreeSurface(surf);
 
 		return texture.id;
 	}
 
-	void FreeTexture(int texture_id)
+	Texture* FindTexture(const char* path)
+	{
+		for (std::map<uint, Texture>::iterator it = textures.begin(); it != textures.end(); ++it)
+		{
+			if ((*it).second.path == path)
+				return &(*it).second;
+		}
+		return nullptr;
+	}
+
+	Texture* GetTexture(uint texture_id)
+	{
+		if (textures.find(texture_id) != textures.end())
+			return &textures[texture_id];
+	}
+
+	void FreeTexture(uint texture_id)
 	{
 		glDeleteTextures(1, (GLuint*)&texture_id);
+	}
+
+	void OnSetTexture(uint texture_id)
+	{
+		if (textures.find(texture_id) != textures.end())
+			textures[texture_id].instances++;
+	}
+
+	void OnLeaveTexture(uint texture_id)
+	{
+		if (textures.find(texture_id) != textures.end())
+			textures[texture_id].instances--;
 	}
 
 	uint LoadFont(const char* path, uint size)
@@ -191,7 +216,7 @@ namespace ThorUI
 		return fonts.size();
 	}
 
-	uint LoadTextTexture(const char* text, uint font, Color color, Vec2& texture_size)
+	uint GenTextTexture(const char* text, uint font, Color color, Vec2& texture_size)
 	{
 		if (font > fonts.size()) return 0; //Immediate return on invalid font
 

@@ -54,7 +54,7 @@ bool UI_Text::LoadTexture()
 	if (font_id != 0 && text != "")
 	{
 		Vec2 texture_size;
-		texture_id = ThorUI::LoadTextTexture(text.c_str(), font_id, color, texture_size);
+		texture_id = ThorUI::GenTextTexture(text.c_str(), font_id, color, texture_size);
 		if (texture_id == 0) return false;
 
 		texture_created = true;

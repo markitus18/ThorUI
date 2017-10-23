@@ -2,6 +2,8 @@
 #define __THORUI_H__
 
 #include <vector>
+#include <map>
+
 #include "Vec2.h"
 #include <string>
 
@@ -39,12 +41,10 @@ namespace ThorUI
 
 	extern Vec2 screen_size;
 	extern bool breakpoint;
-	extern std::vector<UI_Item*> items;
 
-	extern std::vector<_TTF_Font*> fonts; //TODO: mesure the time loading a texture
-	//extern std::vector<uint> font_instances;
-	
-	extern std::vector<Texture> textures;
+	extern std::vector<UI_Item*> items;
+	extern std::vector<_TTF_Font*> fonts; //TODO: mesure the time loading a texture	
+	extern std::map<uint, Texture> textures; //TODO: sort textures by ID or by path?
 
 	extern Vec2 mouse_pos;
 	extern bool mouse_out;
@@ -68,8 +68,24 @@ namespace ThorUI
 	//-------------------------------------------------
 
 	//Texture and text handling -----------------------
-	uint LoadTexture(char* path);
-	void FreeTexture(int texture_id);
+	uint LoadTexture(const char* path);
+
+		//* Find a loaded texture by it's path
+		//* Returns nullptr if not successful
+	Texture* FindTexture(const char* path);
+
+		//* Get a loaded texture by it's id
+		//* Returns nullptr if not successful
+	Texture* GetTexture(uint texture_id);
+
+		//* Release a texture from memory
+	void FreeTexture(uint texture_id);
+
+		//* Adds a texture instance
+	void OnSetTexture(uint texture_id);
+
+		//* Removes a texture instance
+	void OnLeaveTexture(uint texture_id);
 
 		//* returns a font index, used in LoadTextTexture
 		//* returns 0 on failure
@@ -78,7 +94,7 @@ namespace ThorUI
 		//* returns loaded OpenGL texture
 		//* returns 0 on failure
 		//* font given by return LoadFont(..)
-	uint LoadTextTexture(const char* text, uint font, Color color, Vec2& texture_size);
+	uint GenTextTexture(const char* text, uint font, Color color, Vec2& texture_size);
 
 		//* returns an empty generated OpenGL texture buffer
 		//* newly generated texture is binded, needs to be unbinded later
