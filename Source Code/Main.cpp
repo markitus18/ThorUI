@@ -27,6 +27,9 @@ UI_Image* image;
 UI_Button* button;
 UI_Text* text;
 
+uint font_1;
+uint font_2;
+
 bool initGL()
 {
 	bool success = true;
@@ -102,23 +105,6 @@ bool init()
 	return success;
 }
 
-bool loadTexture()
-{
-	//Loading success flag
-	bool success = true;
-
-	//Load splash image
-	imageSurf = SDL_LoadBMP("photo.bmp");
-	if (imageSurf == NULL)
-	{
-		const char* error = SDL_GetError();
-		printf("Unable to load image %s! SDL Error: %s\n", "02_getting_an_image_on_the_screen/hello_world.bmp", SDL_GetError());
-		success = false;
-	}
-
-	return success;
-}
-
 void close()
 {
 	//Deallocate surface
@@ -140,12 +126,10 @@ void LoadUI()
 	//button = new UI_Button(Vec2(0.3f, 0.3f), Vec2(0.5, 0.5));
 	//ThorUI::AddItem(button);
 
-	uint font = ThorUI::LoadFont("Times_New_Roman_Normal.ttf", 128);
-	text = new UI_Text();
-	text->SetText("Tres Tristos Lligres...");
-	text->SetPos(20, 400);
-	text->SetSize(340, 76);
-	text->SetFont(font);
+	font_1 = ThorUI::LoadFont("Times_New_Roman_Normal.ttf", 128);
+	font_2 = ThorUI::LoadFont("arial.ttf", 128);
+	text = new UI_Text(Vec2(20, 300), "Tres Tristos Lligres...");
+	text->SetFont(font_1);
 	ThorUI::AddItem(text);
 }
 
@@ -192,6 +176,16 @@ int main(int argc, char** args)
 				image->SetColor(Color::Blue());
 			else if (ThorUI::GetKeyState(SDL_SCANCODE_S) == KEY_DOWN)
 				image->SetColor(Color::White());
+
+			if (ThorUI::GetKeyState(SDL_SCANCODE_F) == KEY_DOWN)
+				text->SetFont(font_2);
+			if (ThorUI::GetKeyState(SDL_SCANCODE_G) == KEY_DOWN)
+				text->SetFont(font_1);
+
+			if (ThorUI::GetKeyState(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+				text->SetPos(text->GetPos().x, text->GetPos().y - 0.05f);
+			if (ThorUI::GetKeyState(SDL_SCANCODE_UP) == KEY_REPEAT)
+				text->SetPos(text->GetPos().x, text->GetPos().y + 0.05f);
 
 			SDL_GL_SwapWindow(gWindow);
 			ThorUI::UpdateKeyboardState();

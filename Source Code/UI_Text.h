@@ -12,6 +12,8 @@ class UI_Text : public UI_Item
 {
 public:
 	UI_Text();
+	UI_Text(Vec2 pos, const char* text);
+	UI_Text(Vec2 pos, Vec2 size, const char* text);
 	~UI_Text() {};
 
 	void SetText(const char* text);
@@ -24,7 +26,7 @@ public:
 	void Draw();
 
 private:
-	void LoadTexture();
+	bool LoadTexture();
 
 private:
 	std::string text;

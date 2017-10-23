@@ -3,7 +3,8 @@
 
 UI_Image::UI_Image(Vec2 pos, Vec2 size, int texture_id) : UI_Item(pos, size), texture_id(texture_id)
 {
-
+	if (texture_id != 0)
+		ThorUI::
 }
 
 void UI_Image::Draw()
