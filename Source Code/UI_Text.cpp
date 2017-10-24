@@ -17,10 +17,19 @@ UI_Text::UI_Text(Vec2 pos, Vec2 size, const char* text) :  UI_Item(pos, size), c
 
 }
 
+UI_Text::~UI_Text()
+{
+	if (font_id != 0)
+		ThorUI::OnLeaveFont(font_id);
+}
+
 void UI_Text::SetText(const char* text)
 {
-	this->text = text;
-	LoadTexture();
+	if (this->text != text)
+	{
+		this->text = text;
+		LoadTexture();
+	}
 }
 
 void UI_Text::SetColor(const Color& color)
@@ -30,7 +39,14 @@ void UI_Text::SetColor(const Color& color)
 
 void UI_Text::SetFont(uint font_id)
 {
+	if (this->font_id == font_id)
+		return;
+
+	if (this->font_id != 0)
+		ThorUI::OnLeaveFont(this->font_id);
+
 	this->font_id = font_id;
+	ThorUI::OnSetFont(font_id);
 	LoadTexture();
 }
 
@@ -46,15 +62,18 @@ Color UI_Text::GetColor() const
 
 void UI_Text::Draw()
 {
-	ThorUI::DrawImage(pos, size, texture_id, color);
+	ThorUI::DrawImage(pos, size, texture_id, Color::Red());
 }
 
 bool UI_Text::LoadTexture()
 {
 	if (font_id != 0 && text != "")
 	{
+		if (texture_id != 0)
+			ThorUI::OnLeaveTexture(texture_id);
+
 		Vec2 texture_size;
-		texture_id = ThorUI::GenTextTexture(text.c_str(), font_id, color, texture_size);
+		texture_id = ThorUI::GenTextTexture(text.c_str(), font_id, texture_size);
 		if (texture_id == 0) return false;
 
 		texture_created = true;

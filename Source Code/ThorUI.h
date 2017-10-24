@@ -35,16 +35,24 @@ namespace ThorUI
 		std::string path;
 	};
 
+	struct Font
+	{
+		Font(_TTF_Font* font, const char* path, uint size): size(size), font(font), path(path){}
+		_TTF_Font* font = nullptr;
+		uint size = 0;
+		uint instances = 0;
+		std::string path;
+	};
+
 	extern Key_State* keyboard;
 	extern Key_State* mouse_buttons;
 	extern bool* mouse_button_event;
 
 	extern Vec2 screen_size;
-	extern bool breakpoint;
 
 	extern std::vector<UI_Item*> items;
-	extern std::vector<_TTF_Font*> fonts; //TODO: mesure the time loading a texture	
 	extern std::map<uint, Texture> textures; //TODO: sort textures by ID or by path?
+	extern std::vector<Font> fonts;
 
 	extern Vec2 mouse_pos;
 	extern bool mouse_out;
@@ -70,9 +78,9 @@ namespace ThorUI
 	//Texture and text handling -----------------------
 	uint LoadTexture(const char* path);
 
-		//* Find a loaded texture by it's path
-		//* Returns nullptr if not successful
-	Texture* FindTexture(const char* path);
+		//* Find a loaded texture index by it's path
+		//* Returns 0 if not successful
+	uint FindTexture(const char* path);
 
 		//* Get a loaded texture by it's id
 		//* Returns nullptr if not successful
@@ -91,10 +99,20 @@ namespace ThorUI
 		//* returns 0 on failure
 	uint LoadFont(const char* path, uint size);
 
+		//* returns a font pointer based on path and size
+		//* returns nullptr on failure
+	uint FindFont(const char* path, uint size);
+
+		//* Adds a font instance
+	void OnSetFont(uint font_id);
+
+		//* Removes a font instance
+	void OnLeaveFont(uint font_id);
+
 		//* returns loaded OpenGL texture
+		//* color will be added as a tint on the texture when drawing
 		//* returns 0 on failure
-		//* font given by return LoadFont(..)
-	uint GenTextTexture(const char* text, uint font, Color color, Vec2& texture_size);
+	uint GenTextTexture(const char* text, uint font, Vec2& texture_size);
 
 		//* returns an empty generated OpenGL texture buffer
 		//* newly generated texture is binded, needs to be unbinded later

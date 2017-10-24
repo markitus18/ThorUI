@@ -189,8 +189,6 @@ int main(int argc, char** args)
 
 			SDL_GL_SwapWindow(gWindow);
 			ThorUI::UpdateKeyboardState();
-
-			ThorUI::breakpoint = false;
 		}
 	}
 

@@ -14,7 +14,7 @@ public:
 	UI_Text();
 	UI_Text(Vec2 pos, const char* text);
 	UI_Text(Vec2 pos, Vec2 size, const char* text);
-	~UI_Text() {};
+	~UI_Text();
 
 	void SetText(const char* text);
 	void SetColor(const Color& color);

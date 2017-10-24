@@ -19,16 +19,14 @@ namespace ThorUI
 	Key_State* keyboard = nullptr;
 	Key_State* mouse_buttons = nullptr;
 	bool* mouse_button_event = nullptr;
-	std::vector<UI_Item*> items;
-
-	std::vector<_TTF_Font*> fonts;
-	std::map<uint, Texture> textures;
-	//std::vector<uint> font_instances;
-
 	Vec2 mouse_pos = Vec2(-1000, -1000);
+
+	std::vector<UI_Item*> items;
+	std::map<uint, Texture> textures;
+	std::vector<Font> fonts;
+
 	Vec2 screen_size;
 	bool mouse_out = false;
-	bool breakpoint = false;
 
 	void Init(SDL_Window* window)
 	{
@@ -152,8 +150,8 @@ namespace ThorUI
 	uint LoadTexture(const char* path)
 	{
 		//Looking if the texture is already loaded
-		if (Texture* tex = FindTexture(path))
-			return tex->id;
+		if (uint tex_id = FindTexture(path))
+			return tex_id;
 
 		SDL_Surface* surf = SDL_LoadBMP(path);
 		if (surf == nullptr)
@@ -174,14 +172,14 @@ namespace ThorUI
 		return texture.id;
 	}
 
-	Texture* FindTexture(const char* path)
+	uint FindTexture(const char* path)
 	{
 		for (std::map<uint, Texture>::iterator it = textures.begin(); it != textures.end(); ++it)
 		{
 			if ((*it).second.path == path)
-				return &(*it).second;
+				return (*it).first;
 		}
-		return nullptr;
+		return 0;
 	}
 
 	Texture* GetTexture(uint texture_id)
@@ -209,18 +207,42 @@ namespace ThorUI
 
 	uint LoadFont(const char* path, uint size)
 	{
+		if (uint font_id = FindFont(path, size))
+			return font_id;
+
 		TTF_Font* font = TTF_OpenFont(path, size);
 		if (font == nullptr) return 0;
 
-		fonts.push_back(font);
+		fonts.push_back(Font(font, path, size));
 		return fonts.size();
 	}
 
-	uint GenTextTexture(const char* text, uint font, Color color, Vec2& texture_size)
+	uint FindFont(const char* path, uint size)
+	{
+		int i = 0;
+		for (std::vector<Font>::iterator it = fonts.begin(); it != fonts.end(); ++it, ++i)
+			if ((*it).path == path && (*it).size == size)
+				return i + 1;
+		return 0;
+	}
+
+	void OnSetFont(uint font_id)
+	{
+		if (font_id <= fonts.size())
+			fonts[font_id - 1].instances++;
+	}
+
+	void OnLeaveFont(uint font_id)
+	{
+		if (font_id <= fonts.size())
+			fonts[font_id - 1].instances--;
+	}
+
+	uint GenTextTexture(const char* text, uint font, Vec2& texture_size)
 	{
 		if (font > fonts.size()) return 0; //Immediate return on invalid font
 
-		SDL_Surface* surf = TTF_RenderText_Blended(fonts[font - 1], text, color.ToSDL());
+		SDL_Surface* surf = TTF_RenderText_Blended(fonts[font - 1].font, text, Color::White().ToSDL());
 		texture_size.Set(surf->w, surf->h);
 		if (surf == nullptr)
 		{

@@ -10,7 +10,9 @@ struct Color
 	Color() {};
 	Color(float r, float g, float b, float a) : r(r), g(g), b(b), a(a) {};
 	float* ptr() { return (float*)this; };
-	SDL_Color ToSDL() { SDL_Color ret; ret.r = r*255; ret.g = g*255; ret.b = b*255; ret.a = a*255; return ret; };
+	SDL_Color ToSDL() { SDL_Color ret; ret.r = r*255; ret.g = g*255; ret.b = b*255; ret.a = a*255; return ret; }
+	bool operator==(const Color& other) { return (r == other.r && g == other.g && b == other.b && a == other.a); }
+	bool operator!=(const Color& other) { return !(r == other.r && g == other.g && b == other.b && a == other.a); }
 
 	static Color White()	{ return Color(1.0f, 1.0f, 1.0f, 1.0f); };
 	static Color Red()		{ return Color(1.0f, 0.05f, 0.2f, 1.0f); };
