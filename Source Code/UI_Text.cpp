@@ -39,7 +39,7 @@ void UI_Text::SetColor(const Color& color)
 
 void UI_Text::SetFont(uint font_id)
 {
-	if (this->font_id == font_id)
+	if (font_id == 0 || this->font_id == font_id)
 		return;
 
 	if (this->font_id != 0)
@@ -62,7 +62,7 @@ Color UI_Text::GetColor() const
 
 void UI_Text::Draw()
 {
-	ThorUI::DrawImage(pos, size, texture_id, Color::Red());
+	ThorUI::DrawImage(pos, size, texture_id, color);
 }
 
 bool UI_Text::LoadTexture()
@@ -75,8 +75,6 @@ bool UI_Text::LoadTexture()
 		Vec2 texture_size;
 		texture_id = ThorUI::GenTextTexture(text.c_str(), font_id, texture_size);
 		if (texture_id == 0) return false;
-
-		texture_created = true;
 
 		//Adjusting text size to texture created
 		if (size.x == -1 && size.y == -1)

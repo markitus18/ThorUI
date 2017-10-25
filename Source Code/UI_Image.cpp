@@ -18,7 +18,10 @@ void UI_Image::SetColor(Color color)
 
 void UI_Image::SetTexture(uint texture_id)
 {
-	if (texture_id == 0) return;
+	if (texture_id == 0 || this->texture_id == texture_id) return;
+
+	if (this->texture_id != 0)
+		ThorUI::OnLeaveTexture(this->texture_id);
 
 	this->texture_id = texture_id;
 	ThorUI::OnSetTexture(texture_id);

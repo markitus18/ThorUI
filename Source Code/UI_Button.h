@@ -20,15 +20,15 @@ struct Button_Apparence
 class UI_Button : public UI_Item
 {
 public:
-	UI_Button() { current_color = color[0] = Color::White(); color[1] = Color::Blue(); color[2] = Color::Red();};
-	UI_Button(Vec2 size, Vec2 pos) : UI_Item(size, pos) { current_color = color[0] = Color::Teal(); color[1] = Color::Olive(); color[2] = Color::Cyan(); };
+	UI_Button() { color = color_data[0] = Color::White(); color_data[1] = Color::Blue(); color_data[2] = Color::Red();};
+	UI_Button(Vec2 size, Vec2 pos) : UI_Item(size, pos) { color = color_data[0] = Color::Teal(); color_data[1] = Color::Olive(); color_data[2] = Color::Cyan(); };
 
 	void Draw();
 	void OnItemEvent(Item_Event event);
 
 private:
-	Color current_color;
-	Color color[3];
+	Color color;
+	Color color_data[3];
 };
 
 #endif // !__UI_BUTTON_H__

@@ -33,9 +33,6 @@ private:
 	Color color;
 	uint texture_id = 0;
 	uint font_id = 0;
-
-	bool texture_created = false;
-
 };
 
 #endif // !UI_TEXT_H

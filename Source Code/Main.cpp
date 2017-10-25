@@ -126,8 +126,8 @@ void LoadUI()
 	//button = new UI_Button(Vec2(0.3f, 0.3f), Vec2(0.5, 0.5));
 	//ThorUI::AddItem(button);
 
-	font_1 = ThorUI::LoadFont("Times_New_Roman_Normal.ttf", 128);
-	font_2 = ThorUI::LoadFont("arial.ttf", 128);
+	font_1 = ThorUI::LoadFont("Times_New_Roman_Normal.ttf", 64);
+	font_2 = ThorUI::LoadFont("arial.ttf", 64);
 	text = new UI_Text(Vec2(20, 300), "Tres Tristos Lligres...");
 	text->SetFont(font_1);
 	ThorUI::AddItem(text);
