@@ -121,15 +121,16 @@ void close()
 
 void LoadUI()
 {
-	image = new UI_Image(Vec2(0.0, 0.0), Vec2(-1, -1), ThorUI::LoadTexture("photo.bmp"));
+	image = new UI_Image(Vec2(0.0, 0.0), Vec2(249, 375), ThorUI::LoadTexture("photo.bmp"));
 	ThorUI::AddItem(image);
 	//button = new UI_Button(Vec2(0.3f, 0.3f), Vec2(0.5, 0.5));
 	//ThorUI::AddItem(button);
 
 	font_1 = ThorUI::LoadFont("Times_New_Roman_Normal.ttf", 64);
 	font_2 = ThorUI::LoadFont("arial.ttf", 64);
-	text = new UI_Text(Vec2(20, 300), "Tres Tristos Lligres...");
+	text = new UI_Text(Vec2(70, 200), "Tres Tristos Lligres...");
 	text->SetFont(font_1);
+	text->SetParent(image);
 	ThorUI::AddItem(text);
 }
 
@@ -183,9 +184,13 @@ int main(int argc, char** args)
 				text->SetFont(font_1);
 
 			if (ThorUI::GetKeyState(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-				text->SetPos(text->GetPos().x, text->GetPos().y - 1.0f);
+				image->SetPos(image->GetPos() + Vec2(0.0, -1.0));
 			if (ThorUI::GetKeyState(SDL_SCANCODE_UP) == KEY_REPEAT)
-				text->SetPos(text->GetPos().x, text->GetPos().y + 1.0f);
+				image->SetPos(image->GetPos() + Vec2(0.0, 1.0f));
+			if (ThorUI::GetKeyState(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+				image->SetPos(image->GetPos() + Vec2(-1.0, 0.0));
+			if (ThorUI::GetKeyState(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+				image->SetPos(image->GetPos() + Vec2(1.0, 0.0));
 
 			SDL_GL_SwapWindow(gWindow);
 			ThorUI::UpdateKeyboardState();

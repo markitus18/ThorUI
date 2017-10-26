@@ -2,6 +2,7 @@
 #define __UI_ITEM_H__
 
 #include "Vec2.h"
+#include <vector>
 
 enum Item_Event
 {
@@ -22,7 +23,12 @@ public:
 	UI_Item(Vec2 pos, Vec2 size) : pos(pos), size(size) {};
 
 	void SetPos(float x, float y);
+	void SetPos(Vec2 pos);
 	void SetSize(float w, float h);
+	void SetParent(UI_Item* parent);
+	void RemoveChild(UI_Item* child);
+
+	void UpdateGlobalPos();
 
 	virtual void Draw() {}; //TODO: draw here, or in ThorUI?
 	virtual void OnItemEvent(Item_Event event) { last_event = event; };
@@ -33,8 +39,11 @@ public:
 
 protected:
 	Vec2 pos;
+	Vec2 global_pos;
 	Vec2 size;
 	Item_Event last_event = Mouse_Exit;
+	UI_Item* parent = nullptr;
+	std::vector<UI_Item*> children;
 };
 
 #endif

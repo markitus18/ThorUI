@@ -9,12 +9,12 @@ UI_Text::UI_Text() : color(Color::White())
 
 UI_Text::UI_Text(Vec2 pos, const char* text) : UI_Item(pos, Vec2(-1, -1)), color(Color::White()), text(text)
 {
-
+	UpdateGlobalPos();
 }
 
 UI_Text::UI_Text(Vec2 pos, Vec2 size, const char* text) :  UI_Item(pos, size), color(Color::White()), text(text)
 {
-
+	UpdateGlobalPos();
 }
 
 UI_Text::~UI_Text()
@@ -62,7 +62,7 @@ Color UI_Text::GetColor() const
 
 void UI_Text::Draw()
 {
-	ThorUI::DrawImage(pos, size, texture_id, color);
+	ThorUI::DrawImage(global_pos, size, texture_id, color);
 }
 
 bool UI_Text::LoadTexture()

@@ -8,12 +8,13 @@
 #include <string>
 
 typedef union SDL_Event;
-struct Vec2;
-struct Color;
-class UI_Item;
 struct _TTF_Font;
 struct SDL_Window;
 struct SDL_Surface;
+
+struct Vec2;
+struct Color;
+class UI_Item;
 
 enum Key_State
 {
@@ -47,15 +48,14 @@ namespace ThorUI
 	extern Key_State* keyboard;
 	extern Key_State* mouse_buttons;
 	extern bool* mouse_button_event;
+	extern Vec2 mouse_pos;
+	extern bool mouse_out;
 
 	extern Vec2 screen_size;
 
 	extern std::vector<UI_Item*> items;
 	extern std::map<uint, Texture> textures; //TODO: sort textures by ID or by path?
 	extern std::vector<Font> fonts;
-
-	extern Vec2 mouse_pos;
-	extern bool mouse_out;
 
 	void Init(SDL_Window* window);
 	void StartFrame();
