@@ -13,6 +13,12 @@
     <Filter Include="Utilities">
       <UniqueIdentifier>{215b5ca9-2388-4425-b9b9-4aaed59f3786}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Editor">
+      <UniqueIdentifier>{429c6265-88eb-4f5a-92e6-f432b0c6eae6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External Libraries\ImGui">
+      <UniqueIdentifier>{c60f0c1e-ab9f-49a2-8693-7c7a19411079}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\UI_Item.cpp">
@@ -31,6 +37,21 @@
     </ClCompile>
     <ClCompile Include="Source Code\UI_Text.cpp">
       <Filter>UI Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\Editor.cpp">
+      <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\External Libraries\ImGui\imgui.cpp">
+      <Filter>External Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\External Libraries\ImGui\imgui_demo.cpp">
+      <Filter>External Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\External Libraries\ImGui\imgui_draw.cpp">
+      <Filter>External Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\External Libraries\ImGui\imgui_impl_sdl_gl3.cpp">
+      <Filter>External Libraries\ImGui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -55,6 +76,30 @@
     </ClInclude>
     <ClInclude Include="Source Code\UI_Text.h">
       <Filter>UI Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Editor.h">
+      <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\External Libraries\ImGui\imconfig.h">
+      <Filter>External Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\External Libraries\ImGui\imgui.h">
+      <Filter>External Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\External Libraries\ImGui\imgui_impl_sdl_gl3.h">
+      <Filter>External Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\External Libraries\ImGui\imgui_internal.h">
+      <Filter>External Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\External Libraries\ImGui\stb_rect_pack.h">
+      <Filter>External Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\External Libraries\ImGui\stb_textedit.h">
+      <Filter>External Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\External Libraries\ImGui\stb_truetype.h">
+      <Filter>External Libraries\ImGui</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

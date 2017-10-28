@@ -17,6 +17,7 @@
 #include "UI_Image.h"
 #include "UI_Button.h"
 #include "UI_Text.h"
+#include "Editor.h"
 
 SDL_Window* gWindow = nullptr;
 SDL_Surface* gScreenSurface = nullptr;
@@ -26,6 +27,8 @@ SDL_GLContext gContext;
 UI_Image* image;
 UI_Button* button;
 UI_Text* text;
+
+UI_Editor* editor;
 
 uint font_1;
 uint font_2;
@@ -69,6 +72,14 @@ bool initGL()
 		printf("Error initializing OpenGL! %s\n", gluErrorString(error));
 		success = false;
 	}
+	GLint GlewInitResult = glewInit();
+	if (GLEW_OK != GlewInitResult)
+	{
+		printf("Error initializing Glew! %s\n", glewGetErrorString(GlewInitResult));
+		success = false;
+	}
+
+	editor = new UI_Editor();
 
 	return success;
 }
@@ -153,6 +164,7 @@ int main(int argc, char** args)
 
 		SDL_StartTextInput();
 		ThorUI::Init(gWindow);
+		editor->Init(gWindow);
 		LoadUI();
 
 		while (quit == false)
@@ -170,7 +182,8 @@ int main(int argc, char** args)
 
 			ThorUI::StartFrame();
 			ThorUI::Draw();
-				
+			editor->Draw();
+
 			if (ThorUI::GetKeyState(SDL_SCANCODE_A) == KEY_DOWN)
 				image->SetColor(Color::Red());
 			else if (ThorUI::GetKeyState(SDL_SCANCODE_D) == KEY_DOWN)
