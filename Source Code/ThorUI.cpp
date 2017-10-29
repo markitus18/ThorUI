@@ -21,6 +21,7 @@ namespace ThorUI
 	bool* mouse_button_event = nullptr;
 	Vec2 mouse_pos = Vec2(-1000, -1000);
 
+	UI_Item* window_item = nullptr;
 	std::vector<UI_Item*> items;
 	std::map<uint, Texture> textures;
 	std::vector<Font> fonts;
@@ -52,6 +53,9 @@ namespace ThorUI
 		{
 			LOG("Could not initialize SDL_TTF: %s", TTF_GetError());
 		}
+
+		window_item = new UI_Item(Vec2(0, 0), screen_size);
+		window_item->SetName("Window");
 	}
 
 	void StartFrame()
@@ -376,6 +380,10 @@ namespace ThorUI
 	void AddItem(UI_Item* item)
 	{
 		items.push_back(item);
+		if (item->GetParent() == nullptr)
+		{
+			item->SetParent(window_item);
+		}
 	}
 
 	void UpdateItems()

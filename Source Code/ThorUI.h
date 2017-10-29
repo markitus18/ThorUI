@@ -53,6 +53,7 @@ namespace ThorUI
 
 	extern Vec2 screen_size;
 
+	extern UI_Item* window_item;
 	extern std::vector<UI_Item*> items;
 	extern std::map<uint, Texture> textures; //TODO: sort textures by ID or by path?
 	extern std::vector<Font> fonts;

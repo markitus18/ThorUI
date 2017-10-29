@@ -4,17 +4,20 @@
 
 UI_Text::UI_Text() : color(Color::White())
 {
-
+	name = "Text";
+	type = Text;
 }
 
 UI_Text::UI_Text(Vec2 pos, const char* text) : UI_Item(pos, Vec2(-1, -1)), color(Color::White()), text(text)
 {
-	UpdateGlobalPos();
+	name = "Text";
+	type = Text;
 }
 
 UI_Text::UI_Text(Vec2 pos, Vec2 size, const char* text) :  UI_Item(pos, size), color(Color::White()), text(text)
 {
-	UpdateGlobalPos();
+	name = "Text";
+	type = Text;
 }
 
 UI_Text::~UI_Text()

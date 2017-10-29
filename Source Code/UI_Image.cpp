@@ -3,12 +3,21 @@
 
 UI_Image::UI_Image(Vec2 pos, Vec2 size, int texture_id) : UI_Item(pos, size)
 {
+	name = "Image";
+	type = Image;
 	SetTexture(texture_id);
 }
 
 void UI_Image::Draw()
 {
-	ThorUI::DrawImage(global_pos, size, texture_id, color);
+	if (texture_id != 0)
+	{
+		ThorUI::DrawImage(global_pos, size, texture_id, color);
+	}
+	else
+	{
+		ThorUI::DrawQuad(global_pos, size, Color::Fuchsia(), false, 2.0f);
+	}
 }
 
 void UI_Image::SetColor(Color color)
@@ -35,4 +44,9 @@ void UI_Image::SetTexture(uint texture_id)
 			size.Set(tex->original_size.x, tex->original_size.y);
 		}
 	}
+}
+
+uint UI_Image::GetTexID() const
+{
+	return texture_id;
 }

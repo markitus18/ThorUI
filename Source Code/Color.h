@@ -36,6 +36,7 @@ struct Color
 	static Color DarkBlue() { return Color(0.0f, 0.0f, 0.50f, 1.0f); }
 	static Color Grey()		{ return Color(0.50f, 0.50f, 0.50f, 1.0f); }
 	static Color Black()	{ return Color(0.0f, 0.0f, 0.0f, 1.0f); }
+	static Color Fuchsia()	{ return Color(1.0f, 0.0f, 1.0f, 1.0f); }
 
 
 

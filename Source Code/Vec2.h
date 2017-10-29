@@ -12,6 +12,16 @@ struct Vec2
 
 	//Operators
 	Vec2 operator+(const Vec2& other) { return Vec2(x + other.x, y + other.y); }
+	Vec2 operator+=(const Vec2& other) { return *this = Vec2(x + other.x, y + other.y); }
+
+	Vec2 operator-(const Vec2& other) { return Vec2(x - other.x, y - other.y); }
+	Vec2 operator-=(const Vec2& other) { return *this = Vec2(x - other.x, y - other.y); }
+
+	Vec2 operator*(const Vec2& other) { return Vec2(x * other.x, y * other.y); }
+	Vec2 operator*=(const Vec2& other) { return *this = Vec2(x * other.x, y * other.y); }
+
+	Vec2 operator/(const float& other) { return Vec2(x / other, y / other); }
+	Vec2 operator/=(const float& other) { return *this = Vec2(x / other, y / other); }
 
 	//Variables
 	float x = 0, y = 0;

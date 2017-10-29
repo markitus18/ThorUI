@@ -165,7 +165,7 @@ int main(int argc, char** args)
 		SDL_StartTextInput();
 		ThorUI::Init(gWindow);
 		editor->Init(gWindow);
-		LoadUI();
+		//LoadUI();
 
 		while (quit == false)
 		{

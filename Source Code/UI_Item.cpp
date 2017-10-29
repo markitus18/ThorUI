@@ -17,6 +17,11 @@ void UI_Item::SetSize(float w, float h)
 	size = Vec2(w, h);
 }
 
+void UI_Item::SetName(const char* name)
+{
+	this->name = name;
+}
+
 void UI_Item::SetParent(UI_Item* parent)
 {
 	if (this->parent != nullptr) this->parent->RemoveChild(this);
@@ -62,4 +67,29 @@ Vec2 UI_Item::GetSize() const
 Item_Event UI_Item::GetLastEvent() const
 {
 	return last_event;
+}
+
+UI_Item* UI_Item::GetParent() const
+{
+	return parent;
+}
+
+const char* UI_Item::GetName() const
+{
+	return name.c_str();
+}
+
+uint UI_Item::GetChildCount() const
+{
+	return children.size();
+}
+
+const std::vector<UI_Item*> UI_Item::GetChildren() const
+{
+	return children;
+}
+
+Item_Type UI_Item::GetType() const
+{
+	return type;
 }

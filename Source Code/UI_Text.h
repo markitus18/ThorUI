@@ -6,8 +6,6 @@
 
 #include <string>
 
-typedef unsigned int uint;
-
 class UI_Text : public UI_Item
 {
 public:
