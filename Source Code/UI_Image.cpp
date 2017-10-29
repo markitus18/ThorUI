@@ -16,7 +16,7 @@ void UI_Image::Draw()
 	}
 	else
 	{
-		ThorUI::DrawQuad(global_pos, size, Color::Fuchsia(), false, 2.0f);
+		ThorUI::DrawQuad(global_pos, size, color, true);
 	}
 }
 

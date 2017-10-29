@@ -49,10 +49,10 @@ void UI_Editor::Draw()
 			}
 			if (ImGui::MenuItem("Image"))
 			{
-				Vec2 image_size = default_img_size_ratio * window_size;
+				Vec2 image_size(100, 100);
 				Vec2 image_pos = window_size / 2 - image_size / 2;
 				
-				UI_Image* image = new UI_Image(image_pos, image_size, ThorUI::LoadTexture(created ? "maul.bmp" : "photo.bmp"));
+				UI_Image* image = new UI_Image(image_pos, image_size, 0);
 				if (created) image->SetName("image2");
 				ThorUI::AddItem(image);
 				created = true;
@@ -69,6 +69,11 @@ void UI_Editor::Draw()
 		DrawInspector();
 	}
 	ImGui::Render();
+}
+
+void UI_Editor::ProcessEvent(SDL_Event* event)
+{
+	ImGui_ImplSdlGL3_ProcessEvent(event);
 }
 
 bool UI_Editor::CleanUp()
@@ -129,12 +134,19 @@ void UI_Editor::DrawItemData(UI_Item* item)
 	{
 		ImGui::Text(item->GetName());
 		ImGui::Separator();
-		ImGui::SameLine();
+
 		Vec2 pos = item->GetPos();
-		if (ImGui::DragFloat2("Position: ", &pos))
+		if (ImGui::DragFloat2("Position", &pos))
 		{
 			item->SetPos(pos);
 		}
+
+		Vec2 size = item->GetSize();
+		if (ImGui::DragFloat2("Size", &size))
+		{
+			item->SetSize(size);
+		}
+
 		if (item->GetType() == Image)
 		{
 			UI_Image* img = (UI_Image*)item;

@@ -7283,6 +7283,10 @@ bool ImGui::DragFloatN(const char* label, float* v, int components, float v_spee
     bool value_changed = false;
     BeginGroup();
     PushID(label);
+	TextUnformatted(label, FindRenderedTextEnd(label));
+	SameLine(0, 100 - CalcTextSize(label).x);
+
+
     PushMultiItemsWidths(components);
     for (int i = 0; i < components; i++)
     {
@@ -7292,9 +7296,9 @@ bool ImGui::DragFloatN(const char* label, float* v, int components, float v_spee
         PopID();
         PopItemWidth();
     }
-    PopID();
+   PopID();
 
-    TextUnformatted(label, FindRenderedTextEnd(label));
+   // TextUnformatted(label, FindRenderedTextEnd(label));
     EndGroup();
 
     return value_changed;

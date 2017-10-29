@@ -17,6 +17,11 @@ void UI_Item::SetSize(float w, float h)
 	size = Vec2(w, h);
 }
 
+void UI_Item::SetSize(Vec2 size)
+{
+	this->size = size;
+}
+
 void UI_Item::SetName(const char* name)
 {
 	this->name = name;

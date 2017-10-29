@@ -298,25 +298,25 @@ namespace ThorUI
 		return texture;
 	}
 
-	void GetEvent(SDL_Event event)
+	void GetEvent(SDL_Event* event)
 	{
-		switch (event.type)
+		switch (event->type)
 		{
 			case(SDL_MOUSEBUTTONUP):
 			{
-				mouse_buttons[event.button.button - 1] = KEY_UP;
-				mouse_button_event[event.button.button - 1] = true;
+				mouse_buttons[event->button.button - 1] = KEY_UP;
+				mouse_button_event[event->button.button - 1] = true;
 				break;
 			}
 			case(SDL_MOUSEBUTTONDOWN):
 			{
-				mouse_buttons[event.button.button - 1] = KEY_DOWN;
-				mouse_button_event[event.button.button - 1] = true;
+				mouse_buttons[event->button.button - 1] = KEY_DOWN;
+				mouse_button_event[event->button.button - 1] = true;
 				break;
 			}
 			case(SDL_WINDOWEVENT):
 			{
-				switch (event.window.event)
+				switch (event->window.event)
 				{
 					case(SDL_WINDOWEVENT_LEAVE):
 					{

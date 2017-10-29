@@ -125,7 +125,7 @@ namespace ThorUI
 	uint GenTextureFromSurf(SDL_Surface* surf);
 	//-------------------------------------------------
 
-	void GetEvent(SDL_Event event);
+	void GetEvent(SDL_Event* event);
 	
 	//Draw Utilities ----------------------------------
 	void DrawQuad(Vec2 pos, Vec2 size, Color color, bool filled = true, float lineWidth = 1.0f);

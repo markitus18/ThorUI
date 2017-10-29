@@ -6,6 +6,7 @@
 
 struct SDL_Window;
 class UI_Item;
+typedef union SDL_Event;
 
 class UI_Editor
 {
@@ -15,6 +16,7 @@ public:
 
 	bool Init(SDL_Window* window);
 	void Draw();
+	void ProcessEvent(SDL_Event* event);
 	bool CleanUp();
 
 private:
