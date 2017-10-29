@@ -10,6 +10,8 @@ struct Vec2
 
 	void Set(float x, float y) { this->x = x; this->y = y; }
 
+	float* operator&() { return (float*)this; }
+
 	//Operators
 	Vec2 operator+(const Vec2& other) { return Vec2(x + other.x, y + other.y); }
 	Vec2 operator+=(const Vec2& other) { return *this = Vec2(x + other.x, y + other.y); }

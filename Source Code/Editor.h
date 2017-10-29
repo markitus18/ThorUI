@@ -2,6 +2,7 @@
 #define __EDITOR_H__
 
 #include "Vec2.h"
+#include <string>
 
 struct SDL_Window;
 class UI_Item;
@@ -23,6 +24,9 @@ private:
 	void DrawInspector();
 	void DrawItemData(UI_Item* item);
 	
+	std::string OpenFileDialog() const;
+	std::string OpenFileDialog2() const;
+
 public:
 	bool created = false;
 private:

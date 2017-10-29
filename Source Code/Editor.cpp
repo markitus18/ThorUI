@@ -5,6 +5,9 @@
 #include "ThorUI.h"
 #include "UI_Image.h"
 #include "SDL2-2.0.6\include\SDL.h"
+#include <Windows.h>
+#include <ShObjIdl.h>
+#include <comdef.h>
 
 UI_Editor::UI_Editor()
 {
@@ -126,7 +129,12 @@ void UI_Editor::DrawItemData(UI_Item* item)
 	{
 		ImGui::Text(item->GetName());
 		ImGui::Separator();
-
+		ImGui::SameLine();
+		Vec2 pos = item->GetPos();
+		if (ImGui::DragFloat2("Position: ", &pos))
+		{
+			item->SetPos(pos);
+		}
 		if (item->GetType() == Image)
 		{
 			UI_Image* img = (UI_Image*)item;
@@ -144,7 +152,85 @@ void UI_Editor::DrawItemData(UI_Item* item)
 				}
 
 				ImGui::Image((ImTextureID)img->GetTexID(), ImVec2(size.x, size.y));
+				if (ImGui::BeginMenu("Change Texture: "))
+				{
+					std::map<uint, ThorUI::Texture>::iterator it;
+					for (it = ThorUI::textures.begin(); it != ThorUI::textures.end(); ++it)
+					{
+						if (ImGui::MenuItem((*it).second.path.c_str()))
+						{
+							img->SetTexture((*it).second.id);
+						}
+					}
+					if (ImGui::MenuItem("Load New Texture..."))
+					{
+						std::string fileName = OpenFileDialog2();
+						if (fileName != "")
+						{
+							img->SetTexture(ThorUI::LoadTexture(fileName.c_str()));
+						}
+					}
+					ImGui::EndMenu();
+				}
 			}
 		}
 	}
+}
+
+std::string UI_Editor::OpenFileDialog() const
+{
+	char fileName[1024];
+	ZeroMemory(&fileName, sizeof(fileName));
+
+	OPENFILENAME oFileName;
+	ZeroMemory(&oFileName, sizeof(oFileName));
+	oFileName.lStructSize = sizeof(oFileName);
+	oFileName.lpstrFile = fileName;
+	oFileName.nMaxFile = 1024;
+	oFileName.Flags = OFN_DONTADDTORECENT | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+	oFileName.lpstrTitle = "Select file to import";
+
+	return GetOpenFileName(&oFileName) != 0 ? std::string(fileName) : std::string("");
+}
+
+std::string UI_Editor::OpenFileDialog2() const
+{
+	std::string result = "";
+	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
+		COINIT_DISABLE_OLE1DDE);
+	if (SUCCEEDED(hr))
+	{
+		IFileOpenDialog *pFileOpen;
+
+		// Create the FileOpenDialog object.
+		hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
+			IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+
+		if (SUCCEEDED(hr))
+		{
+			hr = pFileOpen->Show(NULL);
+
+			// Get the file name from the dialog box.
+			if (SUCCEEDED(hr))
+			{
+				IShellItem *pItem;
+				hr = pFileOpen->GetResult(&pItem);
+				if (SUCCEEDED(hr))
+				{
+					wchar_t* pszFilePath;
+					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+
+					// Display the file name to the user.
+					if (SUCCEEDED(hr))
+					{
+						result = _bstr_t(pszFilePath);
+					}
+					pItem->Release();
+				}
+			}
+			pFileOpen->Release();
+		}
+		CoUninitialize();
+	}
+	return result;
 }

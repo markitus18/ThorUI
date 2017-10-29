@@ -180,7 +180,7 @@ namespace ThorUI
 	{
 		for (std::map<uint, Texture>::iterator it = textures.begin(); it != textures.end(); ++it)
 		{
-			if ((*it).second.path == path)
+			if ((*it).second.path.compare(path) == 0)
 				return (*it).first;
 		}
 		return 0;
