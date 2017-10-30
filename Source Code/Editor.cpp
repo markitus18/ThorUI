@@ -103,7 +103,8 @@ void UI_Editor::DrawHierarchyNode(UI_Item* item)
 	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
 	if (item->GetChildCount() == 0)
 		flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
-
+	if (item == selected)
+		flags |= ImGuiTreeNodeFlags_Selected;
 	bool node_open = ImGui::TreeNodeEx(item, flags, item->GetName());
 	if (ImGui::IsItemHoveredRect() && ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_DOWN)
 	{
@@ -195,12 +196,18 @@ void UI_Editor::DisplayTexture(ThorUI::Texture* tex)
 {
 	ImVec2 window_size = ImGui::GetWindowSize();
 	float padding = ImGui::GetStyle().WindowPadding.x;
-	Vec2 size = tex->original_size / 5;
+	float max_h = 200;
+	Vec2 size = tex->original_size;
 
 	if (size.x > (window_size.x - padding * 2))
 	{
 		size.y /= (size.x / (window_size.x - padding * 2));
 		size.x /= (size.x / (window_size.x - padding * 2));
+	}
+	if (size.y > max_h)
+	{
+		size.x /= (size.y / max_h);
+		size.y /= (size.y / max_h);
 	}
 	ImGui::Image((ImTextureID)tex->id, ImVec2(size.x, size.y));
 	ImGui::Text("Original size: %i, %i", (int)tex->original_size.x, (int)tex->original_size.y);
@@ -238,8 +245,7 @@ std::string UI_Editor::OpenFileDialog() const
 					{
 						result = _bstr_t(pszFilePath);
 						char* base_path = SDL_GetBasePath();
-						std::string relative_path = FileSystem::GetRelativePath(base_path, result.c_str());
-						return relative_path;
+						result = FileSystem::GetRelativePath(base_path, result.c_str());
 					}
 					pItem->Release();
 				}

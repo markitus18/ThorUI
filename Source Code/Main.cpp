@@ -165,7 +165,7 @@ int main(int argc, char** args)
 		SDL_StartTextInput();
 		ThorUI::Init(gWindow);
 		editor->Init(gWindow);
-		LoadUI();
+		//LoadUI();
 
 		while (quit == false)
 		{
@@ -185,32 +185,10 @@ int main(int argc, char** args)
 			ThorUI::Draw();
 			editor->Draw();
 
-			if (ThorUI::GetKeyState(SDL_SCANCODE_A) == KEY_DOWN)
-				image->SetColor(Color::Red());
-			else if (ThorUI::GetKeyState(SDL_SCANCODE_D) == KEY_DOWN)
-				image->SetColor(Color::Blue());
-			else if (ThorUI::GetKeyState(SDL_SCANCODE_S) == KEY_DOWN)
-				image->SetColor(Color::White());
-
-			if (ThorUI::GetKeyState(SDL_SCANCODE_F) == KEY_DOWN)
-				text->SetFont(font_2);
-			if (ThorUI::GetKeyState(SDL_SCANCODE_G) == KEY_DOWN)
-				text->SetFont(font_1);
-
-			if (ThorUI::GetKeyState(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-				image->SetPos(image->GetPos() + Vec2(0.0, -1.0));
-			if (ThorUI::GetKeyState(SDL_SCANCODE_UP) == KEY_REPEAT)
-				image->SetPos(image->GetPos() + Vec2(0.0, 1.0f));
-			if (ThorUI::GetKeyState(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-				image->SetPos(image->GetPos() + Vec2(-1.0, 0.0));
-			if (ThorUI::GetKeyState(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-				image->SetPos(image->GetPos() + Vec2(1.0, 0.0));
-
 			SDL_GL_SwapWindow(gWindow);
 			ThorUI::UpdateKeyboardState();
 		}
 	}
-
 	//SDL_StopTextInput();
 	close();
 	return 0;

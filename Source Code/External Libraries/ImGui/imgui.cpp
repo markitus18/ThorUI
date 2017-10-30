@@ -6649,6 +6649,32 @@ static bool DataTypeApplyOpFromText(const char* buf, const char* initial_value_b
     // We don't support '-' op because it would conflict with inputing negative value.
     // Instead you can use +-100 to subtract from an existing value
     char op = buf[0];
+	
+	//ThorUI Modification -- Searching for all operators
+	int op_count = 0;
+	char* ops = new char[0];
+	int* ops_pos = new int[0];
+
+	for (int i = 0; i < strlen(buf); ++i)
+	{
+		if (buf[i] == '+' || buf[i] == '*' || buf[i] == '/' || buf[i] == '-')
+		{
+			op_count++;
+			char* new_ops = new char[op_count];
+			int* new_ops_pos = new int[op_count];
+			memcpy(new_ops, ops, op_count-1);
+			memcpy(new_ops_pos, ops_pos, sizeof(int) * (op_count-1));
+			
+			delete[] ops;
+			ops = new_ops;
+			delete[] ops_pos;
+			ops_pos = new_ops_pos;
+
+			ops[op_count - 1] = buf[i];
+			ops_pos[op_count - 1] = i;
+		}
+	}
+
     if (op == '+' || op == '*' || op == '/')
     {
         buf++;
@@ -6718,6 +6744,8 @@ bool ImGui::InputScalarAsWidgetReplacement(const ImRect& aabb, const char* label
 
     char buf[32];
     DataTypeFormatString(data_type, data_ptr, decimal_precision, buf, IM_ARRAYSIZE(buf));
+	printf("Data: %s", (char*)data_ptr);
+	printf("Data: %s", (char*)data_ptr);
     bool text_value_changed = InputTextEx(label, buf, IM_ARRAYSIZE(buf), aabb.GetSize(), ImGuiInputTextFlags_CharsDecimal | ImGuiInputTextFlags_AutoSelectAll);
     if (g.ScalarAsInputTextId == 0)     // First frame we started displaying the InputText widget
     {
