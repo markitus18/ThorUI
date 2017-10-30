@@ -1,13 +1,17 @@
 #include "Editor.h"
+
 #include "ImGui\imgui.h"
 #include "ImGui\imgui_impl_sdl_gl3.h"
 #include "glew-2.1.0\include\GL\glew.h"
-#include "ThorUI.h"
-#include "UI_Image.h"
 #include "SDL2-2.0.6\include\SDL.h"
+
 #include <Windows.h>
 #include <ShObjIdl.h>
 #include <comdef.h>
+
+#include "ThorUI.h"
+#include "UI_Image.h"
+#include "FileSystem.h"
 
 UI_Editor::UI_Editor()
 {
@@ -25,6 +29,10 @@ bool UI_Editor::Init(SDL_Window* window)
 	int w, h;
 	SDL_GetWindowSize(window, &w, &h);
 	window_size.Set(w, h);
+
+	ImGuiIO io = ImGui::GetIO();
+	io.Fonts->AddFontDefault();
+	//TODO: load own font
 
 	if (ImGui_ImplSdlGL3_Init(window) == true)
 	{
@@ -150,62 +158,55 @@ void UI_Editor::DrawItemData(UI_Item* item)
 		if (item->GetType() == Image)
 		{
 			UI_Image* img = (UI_Image*)item;
-
+			ImGui::Separator();
+			ImGui::PushFont(bold_font);
+			ImGui::Text("Source Image");
+			ImGui::PopFont();
 			if (img->GetTexID() != 0)
 			{
-				ImVec2 window_size = ImGui::GetWindowSize();
-				float padding = ImGui::GetStyle().WindowPadding.x;
-				Vec2 size = ThorUI::GetTexture(img->GetTexID())->original_size / 5;
-
-				if (size.x > (window_size.x - padding * 2))
-				{
-					size.y /= (size.x / (window_size.x - padding * 2));
-					size.x /= (size.x / (window_size.x - padding * 2));
-				}
-
-				ImGui::Image((ImTextureID)img->GetTexID(), ImVec2(size.x, size.y));
-				if (ImGui::BeginMenu("Change Texture: "))
-				{
-					std::map<uint, ThorUI::Texture>::iterator it;
-					for (it = ThorUI::textures.begin(); it != ThorUI::textures.end(); ++it)
-					{
-						if (ImGui::MenuItem((*it).second.path.c_str()))
-						{
-							img->SetTexture((*it).second.id);
-						}
-					}
-					if (ImGui::MenuItem("Load New Texture..."))
-					{
-						std::string fileName = OpenFileDialog2();
-						if (fileName != "")
-						{
-							img->SetTexture(ThorUI::LoadTexture(fileName.c_str()));
-						}
-					}
-					ImGui::EndMenu();
-				}
+				DisplayTexture(ThorUI::GetTexture(img->GetTexID()));
 			}
+			if (ImGui::BeginMenu("Set Texture: "))
+			{
+				std::map<uint, ThorUI::Texture>::iterator it;
+				for (it = ThorUI::textures.begin(); it != ThorUI::textures.end(); ++it)
+				{
+					if (ImGui::MenuItem((*it).second.path.c_str()))
+					{
+						img->SetTexture((*it).second.id);
+					}
+				}
+				if (ImGui::MenuItem("Load New Texture..."))
+				{
+					std::string fileName = OpenFileDialog();
+					if (fileName != "")
+					{
+						img->SetTexture(ThorUI::LoadTexture(fileName.c_str()));
+					}
+				}
+				ImGui::EndMenu();
+			}
+			ImGui::ColorEdit3("Color", img->color.ptr());
 		}
 	}
 }
 
-std::string UI_Editor::OpenFileDialog() const
+void UI_Editor::DisplayTexture(ThorUI::Texture* tex)
 {
-	char fileName[1024];
-	ZeroMemory(&fileName, sizeof(fileName));
+	ImVec2 window_size = ImGui::GetWindowSize();
+	float padding = ImGui::GetStyle().WindowPadding.x;
+	Vec2 size = tex->original_size / 5;
 
-	OPENFILENAME oFileName;
-	ZeroMemory(&oFileName, sizeof(oFileName));
-	oFileName.lStructSize = sizeof(oFileName);
-	oFileName.lpstrFile = fileName;
-	oFileName.nMaxFile = 1024;
-	oFileName.Flags = OFN_DONTADDTORECENT | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
-	oFileName.lpstrTitle = "Select file to import";
-
-	return GetOpenFileName(&oFileName) != 0 ? std::string(fileName) : std::string("");
+	if (size.x > (window_size.x - padding * 2))
+	{
+		size.y /= (size.x / (window_size.x - padding * 2));
+		size.x /= (size.x / (window_size.x - padding * 2));
+	}
+	ImGui::Image((ImTextureID)tex->id, ImVec2(size.x, size.y));
+	ImGui::Text("Original size: %i, %i", (int)tex->original_size.x, (int)tex->original_size.y);
 }
 
-std::string UI_Editor::OpenFileDialog2() const
+std::string UI_Editor::OpenFileDialog() const
 {
 	std::string result = "";
 	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
@@ -236,6 +237,9 @@ std::string UI_Editor::OpenFileDialog2() const
 					if (SUCCEEDED(hr))
 					{
 						result = _bstr_t(pszFilePath);
+						char* base_path = SDL_GetBasePath();
+						std::string relative_path = FileSystem::GetRelativePath(base_path, result.c_str());
+						return relative_path;
 					}
 					pItem->Release();
 				}

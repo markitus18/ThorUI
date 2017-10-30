@@ -7,6 +7,12 @@
 struct SDL_Window;
 class UI_Item;
 typedef union SDL_Event;
+struct ImFont;
+
+namespace ThorUI
+{
+	struct Texture;
+}
 
 class UI_Editor
 {
@@ -26,16 +32,18 @@ private:
 	void DrawInspector();
 	void DrawItemData(UI_Item* item);
 	
+	void DisplayTexture(ThorUI::Texture* tex);
+
 	std::string OpenFileDialog() const;
-	std::string OpenFileDialog2() const;
 
 public:
 	bool created = false;
 private:
-	SDL_Window* window;
+	SDL_Window* window = nullptr;
 	Vec2 window_size;
 	Vec2 default_img_size_ratio = Vec2(0.3, 0.3f);
-	UI_Item* selected;
+	UI_Item* selected = nullptr;
+	ImFont* bold_font = nullptr;
 };
 
 #endif //__EDITOR_H__

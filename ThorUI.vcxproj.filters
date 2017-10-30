@@ -53,6 +53,9 @@
     <ClCompile Include="Source Code\External Libraries\ImGui\imgui_impl_sdl_gl3.cpp">
       <Filter>External Libraries\ImGui</Filter>
     </ClCompile>
+    <ClCompile Include="Source Code\FileSystem.cpp">
+      <Filter>Editor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\UI_Item.h">
@@ -100,6 +103,9 @@
     </ClInclude>
     <ClInclude Include="Source Code\External Libraries\ImGui\stb_truetype.h">
       <Filter>External Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\FileSystem.h">
+      <Filter>Editor</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

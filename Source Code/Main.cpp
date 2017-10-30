@@ -98,7 +98,7 @@ bool init()
 	else
 	{
 		//Create window
-		gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1400, 1000, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+		gWindow = SDL_CreateWindow("ThorUI", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1400, 1000, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 		if (gWindow == NULL)
 		{
 			printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -165,7 +165,7 @@ int main(int argc, char** args)
 		SDL_StartTextInput();
 		ThorUI::Init(gWindow);
 		editor->Init(gWindow);
-		//LoadUI();
+		LoadUI();
 
 		while (quit == false)
 		{
