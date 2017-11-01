@@ -34,6 +34,8 @@ bool UI_Editor::Init(SDL_Window* window)
 	io.Fonts->AddFontDefault();
 	//TODO: load own font
 
+	ThorUI::Init(window);
+
 	if (ImGui_ImplSdlGL3_Init(window) == true)
 	{
 		return true;
@@ -46,6 +48,7 @@ bool UI_Editor::Init(SDL_Window* window)
 
 void UI_Editor::Draw()
 {
+	ThorUI::Draw();
 	ImGui_ImplSdlGL3_NewFrame(window);
 	if (ImGui::BeginMainMenuBar())
 	{

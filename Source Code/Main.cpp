@@ -163,7 +163,7 @@ int main(int argc, char** args)
 		}
 
 		SDL_StartTextInput();
-		ThorUI::Init(gWindow);
+		//ThorUI::Init(gWindow);
 		editor->Init(gWindow);
 		//LoadUI();
 
@@ -181,8 +181,8 @@ int main(int argc, char** args)
 				}
 			}
 
-			ThorUI::StartFrame();
-			ThorUI::Draw();
+			//ThorUI::StartFrame();
+			//ThorUI::Draw();
 			editor->Draw();
 
 			SDL_GL_SwapWindow(gWindow);
