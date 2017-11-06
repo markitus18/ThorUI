@@ -16,12 +16,14 @@ public:
 	void SetColor(Color color);
 	void SetTexture(uint texture_id);
 
+	//Getters
+	Color GetColor() const;
 	uint GetTexID() const;
+
+public:
 
 private:
 	uint texture_id = 0;
-
-public:
 	Color color; 
 };
 

@@ -53,6 +53,10 @@ namespace ThorUI
 		{
 			LOG("Could not initialize SDL_TTF: %s", TTF_GetError());
 		}
+		else
+		{
+			LoadFont("Times_New_Roman_Normal.ttf", 36);
+		}
 
 		window_item = new UI_Item(Vec2(0, 0), screen_size);
 		window_item->SetName("Window");
@@ -242,11 +246,12 @@ namespace ThorUI
 			fonts[font_id - 1].instances--;
 	}
 
-	uint GenTextTexture(const char* text, uint font, Vec2& texture_size)
+	uint GenTextTexture(const char* text, uint font, Vec2& texture_size, Vec2 boundaries_size)
 	{
 		if (font > fonts.size()) return 0; //Immediate return on invalid font
 
-		SDL_Surface* surf = TTF_RenderText_Blended(fonts[font - 1].font, text, Color::White().ToSDL());
+
+		SDL_Surface* surf = TTF_RenderText_Blended_Wrapped(fonts[font - 1].font, text, Color::White().ToSDL(), boundaries_size.x);
 		texture_size.Set(surf->w, surf->h);
 		if (surf == nullptr)
 		{

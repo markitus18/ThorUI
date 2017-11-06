@@ -113,7 +113,7 @@ namespace ThorUI
 		//* returns loaded OpenGL texture
 		//* color will be added as a tint on the texture when drawing
 		//* returns 0 on failure
-	uint GenTextTexture(const char* text, uint font, Vec2& texture_size);
+	uint GenTextTexture(const char* text, uint font, Vec2& texture_size, Vec2 boundaries_size);
 
 		//* returns an empty generated OpenGL texture buffer
 		//* newly generated texture is binded, needs to be unbinded later
