@@ -55,6 +55,23 @@ void UI_Editor::Draw()
 	ImGui_ImplSdlGL3_NewFrame(window);
 	if (ImGui::BeginMainMenuBar())
 	{
+		if (ImGui::BeginMenu("File"))
+		{
+			if (ImGui::MenuItem("Save"))
+			{
+				ThorUI::SaveScene("scene_save.thor");
+			}
+			if (ImGui::MenuItem("Load"))
+			{
+				ThorUI::LoadScene("scene_save.thor");
+			}
+			if (ImGui::MenuItem("New Scene"))
+			{
+				ThorUI::ClearScene();
+			}
+
+			ImGui::EndMenu();
+		}
 		if (ImGui::BeginMenu("Create"))
 		{
 			if (ImGui::MenuItem("Button", "", false, false))
@@ -175,11 +192,13 @@ void UI_Editor::DrawItemData(UI_Item* item)
 			{
 				UI_Image* img = (UI_Image*)item;
 				DrawInspectorImage((UI_Image*)item);
+				break;
 			}
 			case(Text):
 			{
 				UI_Text* txt = (UI_Text*)item;
 				DrawInspectorText((UI_Text*)item);
+				break;
 			}
 
 		}

@@ -19,11 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source Code\Config.cpp" />
     <ClCompile Include="Source Code\Editor.cpp" />
     <ClCompile Include="Source Code\External Libraries\ImGui\imgui.cpp" />
     <ClCompile Include="Source Code\External Libraries\ImGui\imgui_demo.cpp" />
     <ClCompile Include="Source Code\External Libraries\ImGui\imgui_draw.cpp" />
     <ClCompile Include="Source Code\External Libraries\ImGui\imgui_impl_sdl_gl3.cpp" />
+    <ClCompile Include="Source Code\External Libraries\parson\parson.c" />
     <ClCompile Include="Source Code\FileSystem.cpp" />
     <ClCompile Include="Source Code\Log.cpp" />
     <ClCompile Include="Source Code\Main.cpp" />
@@ -34,6 +36,7 @@
     <ClCompile Include="Source Code\UI_Text.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source Code\Config.h" />
     <ClInclude Include="Source Code\Editor.h" />
     <ClInclude Include="Source Code\External Libraries\ImGui\imconfig.h" />
     <ClInclude Include="Source Code\External Libraries\ImGui\imgui.h" />
@@ -42,6 +45,7 @@
     <ClInclude Include="Source Code\External Libraries\ImGui\stb_rect_pack.h" />
     <ClInclude Include="Source Code\External Libraries\ImGui\stb_textedit.h" />
     <ClInclude Include="Source Code\External Libraries\ImGui\stb_truetype.h" />
+    <ClInclude Include="Source Code\External Libraries\parson\parson.h" />
     <ClInclude Include="Source Code\FileSystem.h" />
     <ClInclude Include="Source Code\UI_Button.h" />
     <ClInclude Include="Source Code\Color.h" />

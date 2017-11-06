@@ -1,5 +1,6 @@
 #include "UI_Image.h"
 #include "ThorUI.h"
+#include "Config.h"
 
 UI_Image::UI_Image(Vec2 pos, Vec2 size, int texture_id) : UI_Item(pos, size)
 {
@@ -18,6 +19,28 @@ void UI_Image::Draw()
 	{
 		ThorUI::DrawQuad(global_pos, size, color, true);
 	}
+}
+
+void UI_Image::Save(Config& config)
+{
+	UI_Item::Save(config);
+
+	ThorUI::Texture* tex = ThorUI::GetTexture(texture_id);
+	config.SetString("Texture", tex != nullptr ? tex->path.c_str() : "");
+	config.SetArray("Color").AddColor(color);
+}
+
+void UI_Image::Load(Config& config)
+{
+	color = config.GetArray("Color").GetColor(0);
+	std::string tex_path =  config.GetString("Texture");
+	if (tex_path != "")
+	{
+		int tex_id = ThorUI::LoadTexture(tex_path.c_str());
+		if (tex_id != 0)
+			SetTexture(texture_id);
+	}
+
 }
 
 void UI_Image::SetColor(Color color)

@@ -1,4 +1,5 @@
 #include "UI_Item.h"
+#include "Config.h"
 
 void UI_Item::SetPos(float x, float y)
 {
@@ -57,6 +58,19 @@ void UI_Item::UpdateGlobalPos()
 	{
 		(*it)->UpdateGlobalPos();
 	}
+}
+
+void UI_Item::Save(Config& config)
+{
+	config.SetString("Name", name.c_str());
+	config.SetNumber("Type", (int)type);
+	config.SetArray("Position").AddVec2(pos);
+	config.SetArray("Size").AddVec2(size);
+}
+
+void UI_Item::Load(Config& config)
+{
+
 }
 
 Vec2 UI_Item::GetPos() const

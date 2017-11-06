@@ -56,6 +56,12 @@
     <ClCompile Include="Source Code\FileSystem.cpp">
       <Filter>Editor</Filter>
     </ClCompile>
+    <ClCompile Include="Source Code\Config.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\External Libraries\parson\parson.c">
+      <Filter>External Libraries</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\UI_Item.h">
@@ -106,6 +112,12 @@
     </ClInclude>
     <ClInclude Include="Source Code\FileSystem.h">
       <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Config.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\External Libraries\parson\parson.h">
+      <Filter>External Libraries</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

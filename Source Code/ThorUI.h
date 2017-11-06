@@ -136,6 +136,13 @@ namespace ThorUI
 	void AddItem(UI_Item* item);
 	void UpdateItems();
 	//-------------------------------------------------
+
+	//Secen management --------------------------------
+	void SaveScene(const char* path);
+	void LoadScene(const char* path);
+	void ClearScene();
+	//-------------------------------------------------
+
 };
 
 #endif

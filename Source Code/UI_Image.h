@@ -4,6 +4,8 @@
 #include "UI_Item.h"
 #include "Color.h" //TODO: fwd declaration and Color* ?
 
+class Config;
+
 class UI_Image : public UI_Item
 {
 public:
@@ -12,6 +14,9 @@ public:
 
 	void Draw();
 	
+	void Save(Config& config);
+	void Load(Config& config);
+
 	//Setters
 	void SetColor(Color color);
 	void SetTexture(uint texture_id);
@@ -19,6 +24,7 @@ public:
 	//Getters
 	Color GetColor() const;
 	uint GetTexID() const;
+
 
 public:
 

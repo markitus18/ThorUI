@@ -16,6 +16,7 @@ struct Button_Apparence
 	bool change_attribute[4];
 };
 
+class Config;
 
 class UI_Button : public UI_Item
 {
@@ -25,6 +26,9 @@ public:
 
 	void Draw();
 	void OnItemEvent(Item_Event event);
+
+	//void Save(Config& config);
+	//void Load(Config& config);
 
 private:
 	Color color;

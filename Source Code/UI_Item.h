@@ -22,6 +22,7 @@ enum Item_Event
 
 struct SDL_Texture;
 typedef unsigned int uint;
+class Config;
 
 class UI_Item
 {
@@ -43,6 +44,9 @@ public:
 
 	virtual void Draw() {}; //TODO: draw here, or in ThorUI?
 	virtual void OnItemEvent(Item_Event event) { last_event = event; };
+
+	virtual void Save(Config& config);
+	virtual void Load(Config& config);
 
 	Vec2 GetPos() const;
 	Vec2 GetSize() const;

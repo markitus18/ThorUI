@@ -11,6 +11,11 @@
 #include "Vec2.h"
 #include "Color.h"
 #include "UI_Item.h"
+#include "UI_Image.h"
+#include "UI_Button.h"
+#include "UI_Text.h"
+
+#include "Config.h"
 
 #pragma comment (lib, "SDL2_ttf-2.0.14/libx86/SDL2_ttf.lib")
 
@@ -94,14 +99,14 @@ namespace ThorUI
 				keyboard[i] = (keyboard[i] == KEY_DOWN || keyboard[i] == KEY_REPEAT) ? KEY_REPEAT : KEY_DOWN;
 				//DebugKeyboardState(i, keyboard[i]);
 			}
-			else if(keyboard[i] != KEY_IDLE)
-			{	
-					keyboard[i] = (keyboard[i] == KEY_REPEAT || keyboard[i] == KEY_DOWN) ? KEY_UP : KEY_IDLE;
-					//DebugKeyboardState(i, keyboard[i]);
+			else if (keyboard[i] != KEY_IDLE)
+			{
+				keyboard[i] = (keyboard[i] == KEY_REPEAT || keyboard[i] == KEY_DOWN) ? KEY_UP : KEY_IDLE;
+				//DebugKeyboardState(i, keyboard[i]);
 			}
 		}
 	}
-	
+
 	//Just for debugging purposes: shows key state change output
 	void DebugKeyboardState(int key, Key_State state)
 	{
@@ -124,7 +129,7 @@ namespace ThorUI
 		{
 			int x, y;
 			SDL_GetMouseState(&x, &y);
-			mouse_pos.Set(x/screen_size.x, (1 - y/screen_size.y)); //Setting mouse to [0, 1]. Y must be inverted (SDL 0y is top)
+			mouse_pos.Set(x / screen_size.x, (1 - y / screen_size.y)); //Setting mouse to [0, 1]. Y must be inverted (SDL 0y is top)
 		}
 
 		for (int i = 0; i < 3; ++i)
@@ -292,7 +297,7 @@ namespace ThorUI
 		uint texture = GenTexture();
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surf->w, surf->h, 0,
-					GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, gl_surf->pixels);
+			GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, gl_surf->pixels);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		//TODO: modify surface to power of 2 surf and generate mipmap
@@ -307,37 +312,37 @@ namespace ThorUI
 	{
 		switch (event->type)
 		{
-			case(SDL_MOUSEBUTTONUP):
+		case(SDL_MOUSEBUTTONUP):
+		{
+			mouse_buttons[event->button.button - 1] = KEY_UP;
+			mouse_button_event[event->button.button - 1] = true;
+			break;
+		}
+		case(SDL_MOUSEBUTTONDOWN):
+		{
+			mouse_buttons[event->button.button - 1] = KEY_DOWN;
+			mouse_button_event[event->button.button - 1] = true;
+			break;
+		}
+		case(SDL_WINDOWEVENT):
+		{
+			switch (event->window.event)
 			{
-				mouse_buttons[event->button.button - 1] = KEY_UP;
-				mouse_button_event[event->button.button - 1] = true;
+			case(SDL_WINDOWEVENT_LEAVE):
+			{
+				LOG("Mouse leaving window");
+				mouse_pos.Set(-1000, -1000);
+				mouse_out = true;
 				break;
 			}
-			case(SDL_MOUSEBUTTONDOWN):
+			case(SDL_WINDOWEVENT_ENTER):
 			{
-				mouse_buttons[event->button.button - 1] = KEY_DOWN;
-				mouse_button_event[event->button.button - 1] = true;
+				LOG("Mouse enter");
+				mouse_out = false;
 				break;
 			}
-			case(SDL_WINDOWEVENT):
-			{
-				switch (event->window.event)
-				{
-					case(SDL_WINDOWEVENT_LEAVE):
-					{
-						LOG("Mouse leaving window");
-						mouse_pos.Set(-1000, -1000);
-						mouse_out = true;
-						break;
-					}
-					case(SDL_WINDOWEVENT_ENTER):
-					{
-						LOG("Mouse enter");
-						mouse_out = false;
-						break;
-					}
-				}
 			}
+		}
 		}
 	}
 
@@ -403,7 +408,7 @@ namespace ThorUI
 					(*it)->OnItemEvent(Mouse_Enter);
 				if (last_event == Mouse_Down && IsMouseIdle(SDL_BUTTON_LEFT))
 					(*it)->OnItemEvent(Mouse_Up);
-				if ((last_event == Mouse_Enter || last_event == Mouse_Up) && GetMouseState(SDL_BUTTON_LEFT)==KEY_DOWN)
+				if ((last_event == Mouse_Enter || last_event == Mouse_Up) && GetMouseState(SDL_BUTTON_LEFT) == KEY_DOWN)
 					(*it)->OnItemEvent(Mouse_Down);
 			}
 			else //Mouse is not hovering item
@@ -412,6 +417,83 @@ namespace ThorUI
 					(*it)->OnItemEvent(Mouse_Exit);
 			}
 		}
+	}
+
+	void SaveScene(const char* path)
+	{
+		SDL_RWops *rw = SDL_RWFromFile(path, "w");
+		if (rw != nullptr)
+		{
+			Config file;
+			Config_Array arr = file.SetArray("Items");
+
+			for (uint i = 0; i < items.size(); ++i)
+			{
+				items[i]->Save(arr.AddNode());
+
+			}
+
+			char* buff = nullptr;
+			uint size = file.Serialize(&buff);
+
+			if (SDL_RWwrite(rw, buff, 1, size) != size)
+			{
+				LOG("[Warning] Could not fully save scene");
+			}
+			SDL_RWclose(rw);
 		}
 	}
+
+	void LoadScene(const char* path)
+	{
+		SDL_RWops* rw = SDL_RWFromFile(path, "r");
+		if (rw != nullptr)
+		{
+			uint size = SDL_RWsize(rw);
+			char* buf = new char[size];
+
+			if (SDL_RWread(rw, buf, 1, size) == size)
+			{
+				ClearScene();
+				Config file(buf);
+				Config_Array arr = file.GetArray("Items");
+				for (uint i = 0; i < arr.GetSize(); ++i)
+				{
+					Config node = arr.GetNode(i);
+					Item_Type type = (Item_Type)(int)node.GetNumber("Type");
+					UI_Item* item = nullptr;
+
+					switch (type)
+					{
+						case(Image):
+						{
+							item = new UI_Image();
+							break;
+						}
+						case(Button):
+						{
+							item = new UI_Text();
+							break;
+						}
+						case(Text):
+						{
+							item = new UI_Button();
+							break;
+						}
+					}
+					item->Load(node);
+					AddItem(item);
+				}
+			}
+
+		}
+	}
+
+	void ClearScene()
+	{
+		while (window_item->GetChildCount() > 0)
+			window_item->RemoveChild(window_item->GetChildren()[0]);
+		items.clear();
+	}
+}
 
