@@ -70,7 +70,10 @@ void UI_Item::Save(Config& config)
 
 void UI_Item::Load(Config& config)
 {
-
+	name = config.GetString("Name", "Undefined");
+	pos = config.GetArray("Position").GetVec2(0);
+	size = config.GetArray("Size").GetVec2(0);
+	UpdateGlobalPos();
 }
 
 Vec2 UI_Item::GetPos() const

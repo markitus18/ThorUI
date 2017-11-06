@@ -485,7 +485,7 @@ namespace ThorUI
 					AddItem(item);
 				}
 			}
-
+			SDL_RWclose(rw);
 		}
 	}
 

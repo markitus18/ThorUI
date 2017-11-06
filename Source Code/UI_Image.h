@@ -9,7 +9,7 @@ class Config;
 class UI_Image : public UI_Item
 {
 public:
-	UI_Image() { name = "Image"; };
+	UI_Image() { name = "Image"; type = Image; };
 	UI_Image(Vec2 pos, Vec2 size, int texture_id = 0);
 
 	void Draw();

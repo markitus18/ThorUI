@@ -32,13 +32,14 @@ void UI_Image::Save(Config& config)
 
 void UI_Image::Load(Config& config)
 {
+	UI_Item::Load(config);
 	color = config.GetArray("Color").GetColor(0);
 	std::string tex_path =  config.GetString("Texture");
 	if (tex_path != "")
 	{
 		int tex_id = ThorUI::LoadTexture(tex_path.c_str());
 		if (tex_id != 0)
-			SetTexture(texture_id);
+			SetTexture(tex_id);
 	}
 
 }

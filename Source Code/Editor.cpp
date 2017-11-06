@@ -64,10 +64,12 @@ void UI_Editor::Draw()
 			if (ImGui::MenuItem("Load"))
 			{
 				ThorUI::LoadScene("scene_save.thor");
+				selected = nullptr;
 			}
 			if (ImGui::MenuItem("New Scene"))
 			{
 				ThorUI::ClearScene();
+				selected = nullptr;
 			}
 
 			ImGui::EndMenu();
