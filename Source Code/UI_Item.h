@@ -33,7 +33,7 @@ public:
 	void SetPos(float x, float y);
 	void SetPos(Vec2 pos);
 	void SetSize(float w, float h);
-	void SetSize(Vec2 size);
+	virtual void SetSize(Vec2 size);
 	void SetName(const char* name);
 
 	void SetParent(UI_Item* parent);

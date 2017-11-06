@@ -11,6 +11,9 @@
 
 #include "ThorUI.h"
 #include "UI_Image.h"
+#include "UI_Button.h"
+#include "UI_Text.h"
+
 #include "FileSystem.h"
 
 UI_Editor::UI_Editor()
@@ -61,13 +64,14 @@ void UI_Editor::Draw()
 				Vec2 image_pos = window_size / 2 - image_size / 2;
 				
 				UI_Image* image = new UI_Image(image_pos, image_size, 0);
-				if (created) image->SetName("image2");
 				ThorUI::AddItem(image);
-				created = true;
 			}
-			if (ImGui::MenuItem("Text", "", false, false))
+			if (ImGui::MenuItem("Text"))
 			{
-
+				UI_Text* text = new UI_Text(Vec2(0, 0), Vec2(0, 0), "New Text");
+				Vec2 text_pos = window_size / 2 - Vec2(text->GetSize().x / 2, text->GetSize().y / 2);
+				text->SetPos(text_pos);
+				ThorUI::AddItem(text);
 			}
 			ImGui::EndMenu();
 		}
@@ -93,7 +97,7 @@ void UI_Editor::DrawHierarchy()
 {
 	if (ImGui::Begin("Hierarchy"))
 	{
-		DrawHierarchyNode(ThorUI::window_item);
+		DrawHierarchyChilds(ThorUI::window_item);
 		ImGui::End();
 	}
 }
@@ -115,13 +119,18 @@ void UI_Editor::DrawHierarchyNode(UI_Item* item)
 	{
 		if (item->GetChildCount() > 0)
 		{
-			const std::vector<UI_Item*> children = item->GetChildren();
-			for (std::vector<UI_Item*>::const_iterator it = children.begin(); it != children.end(); ++it)
-			{
-				DrawHierarchyNode(*it);
-			}
+			DrawHierarchyChilds(item);
 			ImGui::TreePop();
 		}
+	}
+}
+
+void UI_Editor::DrawHierarchyChilds(UI_Item* item)
+{
+	const std::vector<UI_Item*> children = item->GetChildren();
+	for (std::vector<UI_Item*>::const_iterator it = children.begin(); it != children.end(); ++it)
+	{
+		DrawHierarchyNode(*it);
 	}
 }
 
@@ -155,41 +164,79 @@ void UI_Editor::DrawItemData(UI_Item* item)
 		{
 			item->SetSize(size);
 		}
+		ImGui::Separator();
 
-		if (item->GetType() == Image)
+		switch (item->GetType())
 		{
-			UI_Image* img = (UI_Image*)item;
-			ImGui::Separator();
-			ImGui::PushFont(bold_font);
-			ImGui::Text("Source Image");
-			ImGui::PopFont();
-			if (img->GetTexID() != 0)
+			case(Image):
 			{
-				DisplayTexture(ThorUI::GetTexture(img->GetTexID()));
+				UI_Image* img = (UI_Image*)item;
+				DrawInspectorImage((UI_Image*)item);
 			}
-			if (ImGui::BeginMenu("Set Texture: "))
+			case(Text):
 			{
-				std::map<uint, ThorUI::Texture>::iterator it;
-				for (it = ThorUI::textures.begin(); it != ThorUI::textures.end(); ++it)
-				{
-					if (ImGui::MenuItem((*it).second.path.c_str()))
-					{
-						img->SetTexture((*it).second.id);
-					}
-				}
-				if (ImGui::MenuItem("Load New Texture..."))
-				{
-					std::string fileName = OpenFileDialog();
-					if (fileName != "")
-					{
-						img->SetTexture(ThorUI::LoadTexture(fileName.c_str()));
-					}
-				}
-				ImGui::EndMenu();
+				UI_Text* txt = (UI_Text*)item;
+				DrawInspectorText((UI_Text*)item);
 			}
-			ImGui::ColorEdit3("Color", img->color.ptr());
+
 		}
 	}
+}
+
+void UI_Editor::DrawInspectorImage(UI_Image* img)
+{
+	ImGui::Text("Source Image");
+	if (img->GetTexID() != 0)
+	{
+		DisplayTexture(ThorUI::GetTexture(img->GetTexID()));
+	}
+	if (ImGui::BeginMenu("Set Texture: "))
+	{
+		std::map<uint, ThorUI::Texture>::iterator it;
+		for (it = ThorUI::textures.begin(); it != ThorUI::textures.end(); ++it)
+		{
+			if (ImGui::MenuItem((*it).second.path.c_str()))
+			{
+				img->SetTexture((*it).second.id);
+			}
+		}
+		if (ImGui::MenuItem("Load New Texture..."))
+		{
+			std::string fileName = OpenFileDialog();
+			if (fileName != "")
+			{
+				img->SetTexture(ThorUI::LoadTexture(fileName.c_str()));
+			}
+		}
+		ImGui::EndMenu();
+	}
+	Color color = img->GetColor();
+	if (ImGui::ColorEdit3("Color", color.ptr()))
+	{
+		img->SetColor(color);
+	}
+}
+
+void UI_Editor::DrawInspectorText(UI_Text* text)
+{
+	char orig_text[50];
+	strcpy_s(orig_text, 50, text->GetText());
+
+	if (ImGui::InputText("Text", orig_text, 50))
+	{
+		text->SetText(orig_text);
+	}
+
+	Color color = text->GetColor();
+	if (ImGui::ColorEdit3("Color", color.ptr()))
+	{
+		text->SetColor(color);
+	}
+}
+
+void UI_Editor::DrawInspectorButton(UI_Button* button)
+{
+
 }
 
 void UI_Editor::DisplayTexture(ThorUI::Texture* tex)

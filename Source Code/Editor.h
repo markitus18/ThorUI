@@ -8,6 +8,9 @@ struct SDL_Window;
 class UI_Item;
 typedef union SDL_Event;
 struct ImFont;
+class UI_Image;
+class UI_Button;
+class UI_Text;
 
 namespace ThorUI
 {
@@ -28,16 +31,20 @@ public:
 private:
 	void DrawHierarchy();
 	void DrawHierarchyNode(UI_Item* item);
+	void DrawHierarchyChilds(UI_Item* item);
 
 	void DrawInspector();
 	void DrawItemData(UI_Item* item);
-	
+	void DrawInspectorImage(UI_Image* img);
+	void DrawInspectorText(UI_Text* text);
+	void DrawInspectorButton(UI_Button* button);
+
 	void DisplayTexture(ThorUI::Texture* tex);
 
 	std::string OpenFileDialog() const;
 
 public:
-	bool created = false;
+
 private:
 	SDL_Window* window = nullptr;
 	Vec2 window_size;

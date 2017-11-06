@@ -660,6 +660,7 @@ static inline void      DataTypeFormatString(ImGuiDataType data_type, void* data
 static inline void      DataTypeFormatString(ImGuiDataType data_type, void* data_ptr, int decimal_precision, char* buf, int buf_size);
 static void             DataTypeApplyOp(ImGuiDataType data_type, int op, void* value1, const void* value2);
 static bool             DataTypeApplyOpFromText(const char* buf, const char* initial_value_buf, ImGuiDataType data_type, void* data_ptr, const char* scalar_format);
+static bool				DataTypeApplyOpFromText_ThorUI(const char* buf, const char* initial_value_buf, ImGuiDataType data_type, void* data_ptr, const char* scalar_format);
 
 namespace ImGui
 {
@@ -6649,32 +6650,6 @@ static bool DataTypeApplyOpFromText(const char* buf, const char* initial_value_b
     // We don't support '-' op because it would conflict with inputing negative value.
     // Instead you can use +-100 to subtract from an existing value
     char op = buf[0];
-	
-	//ThorUI Modification -- Searching for all operators
-	int op_count = 0;
-	char* ops = new char[0];
-	int* ops_pos = new int[0];
-
-	for (int i = 0; i < strlen(buf); ++i)
-	{
-		if (buf[i] == '+' || buf[i] == '*' || buf[i] == '/' || buf[i] == '-')
-		{
-			op_count++;
-			char* new_ops = new char[op_count];
-			int* new_ops_pos = new int[op_count];
-			memcpy(new_ops, ops, op_count-1);
-			memcpy(new_ops_pos, ops_pos, sizeof(int) * (op_count-1));
-			
-			delete[] ops;
-			ops = new_ops;
-			delete[] ops_pos;
-			ops_pos = new_ops_pos;
-
-			ops[op_count - 1] = buf[i];
-			ops_pos[op_count - 1] = i;
-		}
-	}
-
     if (op == '+' || op == '*' || op == '/')
     {
         buf++;
@@ -6727,6 +6702,100 @@ static bool DataTypeApplyOpFromText(const char* buf, const char* initial_value_b
     }
 
     return false;
+}
+
+static bool	DataTypeApplyOpFromText_ThorUI(const char* buf, const char* initial_value_buf, ImGuiDataType data_type, void* data_ptr, const char* scalar_format)
+{
+	while (ImCharIsSpace(*buf))
+		buf++;
+
+	// We don't support '-' op because it would conflict with inputing negative value.
+	// Instead you can use +-100 to subtract from an existing value
+	char op = buf[0];
+
+	//ThorUI Modification -- Searching for all operators
+	int op_count = 0;
+	char* ops = new char[0];
+	int* ops_pos = new int[0];
+
+	for (int i = 0; i < strlen(buf); ++i)
+	{
+		if (buf[i] == '+' || buf[i] == '*' || buf[i] == '/' || buf[i] == '-')
+		{
+			op_count++;
+			char* new_ops = new char[op_count];
+			int* new_ops_pos = new int[op_count];
+			memcpy(new_ops, ops, op_count - 1);
+			memcpy(new_ops_pos, ops_pos, sizeof(int) * (op_count - 1));
+
+			delete[] ops;
+			ops = new_ops;
+			delete[] ops_pos;
+			ops_pos = new_ops_pos;
+
+			ops[op_count - 1] = buf[i];
+			ops_pos[op_count - 1] = i;
+		}
+	}
+
+	//Splitting string into parts
+	for (int i = 0; i < op_count; i++)
+	{
+
+	}
+
+	if (op == '+' || op == '*' || op == '/')
+	{
+		buf++;
+		while (ImCharIsSpace(*buf))
+			buf++;
+	}
+	else
+	{
+		op = 0;
+	}
+	if (!buf[0])
+		return false;
+
+	if (data_type == ImGuiDataType_Int)
+	{
+		if (!scalar_format)
+			scalar_format = "%d";
+		int* v = (int*)data_ptr;
+		const int old_v = *v;
+		int arg0i = *v;
+		if (op && sscanf(initial_value_buf, scalar_format, &arg0i) < 1)
+			return false;
+
+		// Store operand in a float so we can use fractional value for multipliers (*1.1), but constant always parsed as integer so we can fit big integers (e.g. 2000000003) past float precision
+		float arg1f = 0.0f;
+		if (op == '+') { if (sscanf(buf, "%f", &arg1f) == 1) *v = (int)(arg0i + arg1f); }                 // Add (use "+-" to subtract)
+		else if (op == '*') { if (sscanf(buf, "%f", &arg1f) == 1) *v = (int)(arg0i * arg1f); }                 // Multiply
+		else if (op == '/') { if (sscanf(buf, "%f", &arg1f) == 1 && arg1f != 0.0f) *v = (int)(arg0i / arg1f); }// Divide
+		else { if (sscanf(buf, scalar_format, &arg0i) == 1) *v = arg0i; }                       // Assign constant (read as integer so big values are not lossy)
+		return (old_v != *v);
+	}
+	else if (data_type == ImGuiDataType_Float)
+	{
+		// For floats we have to ignore format with precision (e.g. "%.2f") because sscanf doesn't take them in
+		scalar_format = "%f";
+		float* v = (float*)data_ptr;
+		const float old_v = *v;
+		float arg0f = *v;
+		if (op && sscanf(initial_value_buf, scalar_format, &arg0f) < 1)
+			return false;
+
+		float arg1f = 0.0f;
+		if (sscanf(buf, scalar_format, &arg1f) < 1)
+			return false;
+		if (op == '+') { *v = arg0f + arg1f; }                    // Add (use "+-" to subtract)
+		else if (op == '*') { *v = arg0f * arg1f; }                    // Multiply
+		else if (op == '/') { if (arg1f != 0.0f) *v = arg0f / arg1f; } // Divide
+		else { *v = arg1f; }                            // Assign constant
+		return (old_v != *v);
+	}
+
+	return false;
 }
 
 // Create text input in place of a slider (when CTRL+Clicking on slider)

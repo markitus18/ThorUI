@@ -46,6 +46,11 @@ void UI_Image::SetTexture(uint texture_id)
 	}
 }
 
+Color UI_Image::GetColor() const
+{
+	return color;
+}
+
 uint UI_Image::GetTexID() const
 {
 	return texture_id;

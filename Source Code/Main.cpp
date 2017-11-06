@@ -139,7 +139,7 @@ void LoadUI()
 
 	font_1 = ThorUI::LoadFont("Times_New_Roman_Normal.ttf", 64);
 	font_2 = ThorUI::LoadFont("arial.ttf", 64);
-	text = new UI_Text(Vec2(70, 200), "Tres Tristos Lligres...");
+	text = new UI_Text(Vec2(70, 200), Vec2(0, 0), "Tres Tristos Lligres...");
 	text->SetFont(font_1);
 	text->SetParent(image);
 	ThorUI::AddItem(text);
