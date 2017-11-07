@@ -1,6 +1,7 @@
 #include "UI_Text.h"
 #include "SDL2_ttf-2.0.14\include\SDL_ttf.h"
 #include "ThorUI.h"
+#include "Config.h"
 
 UI_Text::UI_Text() : color(Color::White())
 {
@@ -69,6 +70,39 @@ Color UI_Text::GetColor() const
 void UI_Text::Draw()
 {
 	ThorUI::DrawImage(global_pos, texture_size, texture_id, color);
+}
+
+void UI_Text::Save(Config& config)
+{
+	UI_Item::Save(config);
+
+	config.SetString("Text", text.c_str());
+
+	ThorUI::Font* font = &ThorUI::fonts[font_id - 1];
+	if (font != nullptr)
+	{
+		config.SetString("Font", font->path.c_str());
+		config.SetNumber("Font Size", font->size);
+	}
+
+	config.SetArray("Color").AddColor(color);
+}
+
+void UI_Text::Load(Config& config)
+{
+	UI_Item::Load(config);
+
+	text = config.GetString("Text", "Undefined");
+
+	std::string font = config.GetString("Font");
+	int font_size = config.GetNumber("Font Size");
+	if (font != "")
+	{
+		font_id = ThorUI::LoadFont(font.c_str(), font_size);
+	}
+
+	color = config.GetArray("Color").GetColor(0);
+	LoadTexture();
 }
 
 bool UI_Text::LoadTexture()

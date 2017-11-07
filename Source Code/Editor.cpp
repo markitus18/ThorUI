@@ -74,6 +74,16 @@ void UI_Editor::Draw()
 
 			ImGui::EndMenu();
 		}
+
+		if (ImGui::BeginMenu("Edit"))
+		{
+			if (ImGui::MenuItem("Canvas"))
+			{
+				canvas_win = true;
+			}
+			ImGui::EndMenu();
+		}
+
 		if (ImGui::BeginMenu("Create"))
 		{
 			if (ImGui::MenuItem("Button", "", false, false))
@@ -98,6 +108,20 @@ void UI_Editor::Draw()
 			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
+
+		if (canvas_win && ImGui::Begin("Canvas_Popup", &canvas_win))
+		{
+			Vec2 size = ThorUI::window_item->GetSize();
+			if (ImGui::InputFloat("Size X: ", &size.x))
+			{
+				ThorUI::window_item->SetSize(size);
+			}
+			if (ImGui::InputFloat("Size Y: ", &size.y))
+			{
+				ThorUI::window_item->SetSize(size);
+			}
+			ImGui::End();
+		}
 
 		DrawHierarchy();
 		DrawInspector();
@@ -214,7 +238,7 @@ void UI_Editor::DrawInspectorImage(UI_Image* img)
 	{
 		DisplayTexture(ThorUI::GetTexture(img->GetTexID()));
 	}
-	if (ImGui::BeginMenu("Set Texture: "))
+	if (ImGui::BeginMenu_ThorUI("Set Texture: "))
 	{
 		std::map<uint, ThorUI::Texture>::iterator it;
 		for (it = ThorUI::textures.begin(); it != ThorUI::textures.end(); ++it)

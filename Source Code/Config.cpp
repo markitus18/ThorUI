@@ -223,10 +223,10 @@ Vec2 Config_Array::GetVec2(uint index, Vec2 default) const
 
 Color Config_Array::GetColor(uint index, Color default) const
 {
-	index *= 3;
+	index *= 4;
 	if (index + 3 < size)
 	{
-		return Color(GetNumber(index, default.r), GetNumber(index, default.g), GetNumber(index, default.b), GetNumber(index, default.a));
+		return Color(GetNumber(index, default.r), GetNumber(index+1, default.g), GetNumber(index+2, default.b), GetNumber(index+3, default.a));
 	}
 	else
 	{

@@ -41,7 +41,6 @@ void UI_Image::Load(Config& config)
 		if (tex_id != 0)
 			SetTexture(tex_id);
 	}
-
 }
 
 void UI_Image::SetColor(Color color)

@@ -23,6 +23,9 @@ public:
 
 	void Draw();
 
+	void Save(Config& config);
+	void Load(Config& config);
+
 private:
 	bool LoadTexture();
 

@@ -51,6 +51,8 @@ private:
 	Vec2 default_img_size_ratio = Vec2(0.3, 0.3f);
 	UI_Item* selected = nullptr;
 	ImFont* bold_font = nullptr;
+
+	bool canvas_win = false;
 };
 
 #endif //__EDITOR_H__

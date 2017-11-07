@@ -36,7 +36,6 @@ namespace ThorUI
 
 	void Init(SDL_Window* window)
 	{
-
 		keyboard = new Key_State[SDL_NUM_SCANCODES];
 		for (int i = 0; i < SDL_NUM_SCANCODES; ++i)
 			keyboard[i] = KEY_IDLE;
@@ -76,6 +75,7 @@ namespace ThorUI
 
 	void Draw()
 	{
+		DrawQuad(window_item->GetPos(), window_item->GetSize(), Color::White(), false, 2.0f);
 		std::vector<UI_Item*>::iterator it;
 		for (it = items.begin(); it != items.end(); ++it)
 		{
@@ -472,12 +472,12 @@ namespace ThorUI
 						}
 						case(Button):
 						{
-							item = new UI_Text();
+							item = new UI_Button();
 							break;
 						}
 						case(Text):
 						{
-							item = new UI_Button();
+							item = new UI_Text();
 							break;
 						}
 					}
