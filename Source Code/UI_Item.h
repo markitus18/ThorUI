@@ -36,6 +36,7 @@ public:
 	void SetSize(float w, float h);
 	virtual void SetSize(Vec2 size);
 	void SetName(const char* name);
+	void SetPivot(Vec2 pivot);
 
 	void SetParent(UI_Item* parent);
 	void RemoveChild(UI_Item* child);
@@ -50,6 +51,8 @@ public:
 
 	Vec2 GetPos() const;
 	Vec2 GetSize() const;
+	Vec2 GetPivot() const;
+
 	Item_Event GetLastEvent() const;
 	UI_Item* GetParent() const;
 	const char* GetName() const;
@@ -64,6 +67,7 @@ protected:
 	Vec2 pos;
 	Vec2 global_pos;
 	Vec2 size;
+	Vec2 pivot = Vec2(0.5, 0.5);
 
 	Item_Event last_event = Mouse_Exit;
 

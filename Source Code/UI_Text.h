@@ -20,6 +20,7 @@ public:
 
 	const char* GetText() const;
 	Color GetColor() const;
+	Vec2 GetTexSize() const;
 
 	void Draw();
 

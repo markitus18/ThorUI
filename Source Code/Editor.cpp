@@ -86,16 +86,21 @@ void UI_Editor::Draw()
 
 		if (ImGui::BeginMenu("Create"))
 		{
-			if (ImGui::MenuItem("Button", "", false, false))
+			if (ImGui::MenuItem("Button"))
 			{
+				UI_Button* button = new UI_Button(window_size / 2, Vec2(150, 60));
+				ThorUI::AddItem(button);
 
+				UI_Text* text = new UI_Text(Vec2(0, 0), Vec2(0, 0), "Button");
+				text->SetParent(button);
+				ThorUI::AddItem(text);
 			}
 			if (ImGui::MenuItem("Image"))
 			{
 				Vec2 image_size(100, 100);
-				Vec2 image_pos = window_size / 2 - image_size / 2;
+				Vec2 image_pos = window_size / 2;
 				
-				UI_Image* image = new UI_Image(image_pos, image_size, 0);
+				UI_Image* image = new UI_Image(image_pos, image_size);
 				ThorUI::AddItem(image);
 			}
 			if (ImGui::MenuItem("Text"))
@@ -196,7 +201,11 @@ void UI_Editor::DrawItemData(UI_Item* item)
 {
 	if (item != nullptr)
 	{
-		ImGui::Text(item->GetName());
+		char name[50];
+		strcpy_s(name, 50, item->GetName());
+		ImGuiInputTextFlags name_input_flags = ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue;
+		if (ImGui::InputText("###", name, 50, name_input_flags))
+			item->SetName(name);
 		ImGui::Separator();
 
 		Vec2 pos = item->GetPos();
@@ -210,6 +219,13 @@ void UI_Editor::DrawItemData(UI_Item* item)
 		{
 			item->SetSize(size);
 		}
+
+		Vec2 pivot = item->GetPivot();
+		if (ImGui::DragFloat2("Pivot", &pivot, 0.03f))
+		{
+			item->SetPivot(pivot);
+		}
+
 		ImGui::Separator();
 
 		switch (item->GetType())

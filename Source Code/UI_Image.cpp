@@ -13,11 +13,11 @@ void UI_Image::Draw()
 {
 	if (texture_id != 0)
 	{
-		ThorUI::DrawImage(global_pos, size, texture_id, color);
+		ThorUI::DrawImage(global_pos - (size * pivot), size, texture_id, color);
 	}
 	else
 	{
-		ThorUI::DrawQuad(global_pos, size, color, true);
+		ThorUI::DrawQuad(global_pos - (size * pivot), size, color, true);
 	}
 }
 

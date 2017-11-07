@@ -204,6 +204,10 @@ namespace ThorUI
 	void FreeTexture(uint texture_id)
 	{
 		glDeleteTextures(1, (GLuint*)&texture_id);
+		if (textures.find(texture_id) != textures.end())
+		{
+			textures.erase(texture_id);
+		}
 	}
 
 	void OnSetTexture(uint texture_id)

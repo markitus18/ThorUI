@@ -21,8 +21,8 @@ class Config;
 class UI_Button : public UI_Item
 {
 public:
-	UI_Button() { color = color_data[0] = Color::White(); color_data[1] = Color::Blue(); color_data[2] = Color::Red(); 	name = "Text"; 	type = Button;};
-	UI_Button(Vec2 size, Vec2 pos) : UI_Item(size, pos) { color = color_data[0] = Color::Teal(); color_data[1] = Color::Olive(); color_data[2] = Color::Cyan(); };
+	UI_Button();
+	UI_Button(Vec2 size, Vec2 pos);
 
 	void Draw();
 	void OnItemEvent(Item_Event event);

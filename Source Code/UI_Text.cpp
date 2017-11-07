@@ -67,9 +67,14 @@ Color UI_Text::GetColor() const
 	return color;
 }
 
+Vec2 UI_Text::GetTexSize() const
+{
+	return texture_size;
+}
+
 void UI_Text::Draw()
 {
-	ThorUI::DrawImage(global_pos, texture_size, texture_id, color);
+	ThorUI::DrawImage(global_pos - (texture_size * pivot), texture_size, texture_id, color);
 }
 
 void UI_Text::Save(Config& config)
@@ -110,7 +115,7 @@ bool UI_Text::LoadTexture()
 	if (font_id != 0 && text != "")
 	{
 		if (texture_id != 0)
-			ThorUI::OnLeaveTexture(texture_id);
+			ThorUI::FreeTexture(texture_id);
 
 		texture_id = ThorUI::GenTextTexture(text.c_str(), font_id, texture_size, size);
 		if (texture_id == 0) return false;

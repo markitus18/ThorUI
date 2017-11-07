@@ -28,13 +28,22 @@ void UI_Item::SetName(const char* name)
 	this->name = name;
 }
 
+void UI_Item::SetPivot(Vec2 pivot)
+{
+	Vec2 prev_pos = pos - (size * this->pivot);
+	this->pivot = pivot;
+
+	Vec2 new_pos = prev_pos + (size * this->pivot);
+	SetPos(new_pos);
+}
+
 void UI_Item::SetParent(UI_Item* parent)
 {
 	if (this->parent != nullptr) this->parent->RemoveChild(this);
 
 	this->parent = parent;
 	parent->children.push_back(this);
-
+	UpdateGlobalPos();
 }
 
 void UI_Item::RemoveChild(UI_Item* child)
@@ -84,6 +93,11 @@ Vec2 UI_Item::GetPos() const
 Vec2 UI_Item::GetSize() const
 {
 	return size;
+}
+
+Vec2 UI_Item::GetPivot() const
+{
+	return pivot;
 }
 
 Item_Event UI_Item::GetLastEvent() const
