@@ -495,5 +495,12 @@ namespace ThorUI
 			window_item->RemoveChild(window_item->GetChildren()[0]);
 		items.clear();
 	}
+
+	void SetCanvasSize(Vec2 size)
+	{
+		window_item->SetSize(size);
+		Vec2 pos = (screen_size - size) / 2;
+		window_item->SetPos(pos);
+	}
 }
 

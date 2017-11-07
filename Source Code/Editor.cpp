@@ -114,11 +114,11 @@ void UI_Editor::Draw()
 			Vec2 size = ThorUI::window_item->GetSize();
 			if (ImGui::InputFloat("Size X: ", &size.x))
 			{
-				ThorUI::window_item->SetSize(size);
+				ThorUI::SetCanvasSize(size);
 			}
 			if (ImGui::InputFloat("Size Y: ", &size.y))
 			{
-				ThorUI::window_item->SetSize(size);
+				ThorUI::SetCanvasSize(size);
 			}
 			ImGui::End();
 		}

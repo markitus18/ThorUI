@@ -141,6 +141,7 @@ namespace ThorUI
 	void SaveScene(const char* path);
 	void LoadScene(const char* path);
 	void ClearScene();
+	void SetCanvasSize(Vec2 size);
 	//-------------------------------------------------
 
 };
