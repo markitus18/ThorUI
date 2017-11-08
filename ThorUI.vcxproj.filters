@@ -19,6 +19,9 @@
     <Filter Include="External Libraries\ImGui">
       <UniqueIdentifier>{c60f0c1e-ab9f-49a2-8693-7c7a19411079}</UniqueIdentifier>
     </Filter>
+    <Filter Include="External Libraries\ImGui\Dock">
+      <UniqueIdentifier>{01c0fc2e-e6b7-47dc-b21e-72eae191eaa8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\UI_Item.cpp">
@@ -61,6 +64,9 @@
     </ClCompile>
     <ClCompile Include="Source Code\External Libraries\parson\parson.c">
       <Filter>External Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_dock.cpp">
+      <Filter>External Libraries\ImGui\Dock</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -118,6 +124,9 @@
     </ClInclude>
     <ClInclude Include="Source Code\External Libraries\parson\parson.h">
       <Filter>External Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\External Libraries\ImGui\Dock\imgui_dock.h">
+      <Filter>External Libraries\ImGui\Dock</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

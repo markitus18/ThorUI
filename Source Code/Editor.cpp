@@ -15,6 +15,7 @@
 #include "UI_Text.h"
 
 #include "FileSystem.h"
+#include "ImGui\Dock\imgui_dock.h"
 
 UI_Editor::UI_Editor()
 {
@@ -53,6 +54,18 @@ void UI_Editor::Draw()
 {
 	ThorUI::Draw();
 	ImGui_ImplSdlGL3_NewFrame(window);
+
+	if (ImGui::BeginDock("Dock Test"))
+	{
+		if (ImGui::BeginDock("Dock Test2"))
+		{
+			ImGui::EndDock();
+
+		}
+		ImGui::EndDock();
+	}
+	
+	/*
 	if (ImGui::BeginMainMenuBar())
 	{
 		if (ImGui::BeginMenu("File"))
@@ -131,6 +144,7 @@ void UI_Editor::Draw()
 		DrawHierarchy();
 		DrawInspector();
 	}
+	*/
 	ImGui::Render();
 }
 
