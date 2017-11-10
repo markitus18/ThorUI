@@ -19,9 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="imgui_dock.cpp" />
     <ClCompile Include="Source Code\Config.cpp" />
+    <ClCompile Include="Source Code\Dock.cpp" />
     <ClCompile Include="Source Code\Editor.cpp" />
+    <ClCompile Include="Source Code\External Libraries\ImGui\Dock\imgui_dock.cpp" />
     <ClCompile Include="Source Code\External Libraries\ImGui\imgui.cpp" />
     <ClCompile Include="Source Code\External Libraries\ImGui\imgui_demo.cpp" />
     <ClCompile Include="Source Code\External Libraries\ImGui\imgui_draw.cpp" />
@@ -38,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\Config.h" />
+    <ClInclude Include="Source Code\Dock.h" />
     <ClInclude Include="Source Code\Editor.h" />
     <ClInclude Include="Source Code\External Libraries\ImGui\Dock\imgui_dock.h" />
     <ClInclude Include="Source Code\External Libraries\ImGui\imconfig.h" />

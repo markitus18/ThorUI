@@ -3,6 +3,7 @@
 
 #include "Vec2.h"
 #include <string>
+#include <vector>
 
 struct SDL_Window;
 class UI_Item;
@@ -11,6 +12,7 @@ struct ImFont;
 class UI_Image;
 class UI_Button;
 class UI_Text;
+class Dock;
 
 namespace ThorUI
 {
@@ -53,6 +55,8 @@ private:
 	ImFont* bold_font = nullptr;
 
 	bool canvas_win = false;
+
+	std::vector<Dock*> docks;
 };
 
 #endif //__EDITOR_H__

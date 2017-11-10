@@ -15,6 +15,11 @@
 #include "UI_Text.h"
 
 #include "FileSystem.h"
+#include "ImGui\Dock\imgui_dock.h"
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include "ImGui\imgui_internal.h"
+#include "Log.h"
+#include "Dock.h"
 
 UI_Editor::UI_Editor()
 {
@@ -38,6 +43,20 @@ bool UI_Editor::Init(SDL_Window* window)
 	//TODO: load own font
 
 	ThorUI::Init(window);
+	Dock* dock = new Dock("0 Dock");
+	dock->SetActive(true);
+	docks.push_back(dock);
+
+	for (uint i = 0; i < 5; ++i)
+	{
+		char name[50];
+		sprintf_s(name, "%i Dock", i+1);
+		Dock* next = new Dock(name);
+		dock->AddChild(next);
+		docks.push_back(next);
+		int k = 1;
+	}
+
 
 	if (ImGui_ImplSdlGL3_Init(window) == true)
 	{
@@ -53,6 +72,17 @@ void UI_Editor::Draw()
 {
 	ThorUI::Draw();
 	ImGui_ImplSdlGL3_NewFrame(window);
+
+	/*
+	if (ImGui::BeginDock("Dock First"))
+	{
+		ImGui::EndDock();
+	}*/
+
+	for (uint i = 0; i < docks.size(); ++i)
+	{
+		if (docks[i]->root) docks[i]->Draw();
+	}
 
 	if (ImGui::BeginMainMenuBar())
 	{
@@ -148,11 +178,15 @@ bool UI_Editor::CleanUp()
 
 void UI_Editor::DrawHierarchy()
 {
-	if (ImGui::Begin("Hierarchy"))
+	if (!ImGui::Begin("Hierarchy"))
 	{
-		DrawHierarchyChilds(ThorUI::window_item);
 		ImGui::End();
+		return;
 	}
+
+	DrawHierarchyChilds(ThorUI::window_item);
+
+	ImGui::End();
 }
 
 void UI_Editor::DrawHierarchyNode(UI_Item* item)
