@@ -73,12 +73,6 @@ void UI_Editor::Draw()
 	ThorUI::Draw();
 	ImGui_ImplSdlGL3_NewFrame(window);
 
-	/*
-	if (ImGui::BeginDock("Dock First"))
-	{
-		ImGui::EndDock();
-	}*/
-
 	for (uint i = 0; i < docks.size(); ++i)
 	{
 		if (docks[i]->root) docks[i]->Draw();

@@ -37,6 +37,8 @@ private:
 
 	Vec2 size;
 
+	float separator_position = 200.0f;
+
 	bool open = true;
 	bool active = false;
 	uint child_index = 0;

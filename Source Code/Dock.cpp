@@ -35,16 +35,32 @@ void Dock::Draw()
 	bool child_drawn = false;
 	if (ImGui::BeginChild("Child"))
 	{
+		ImVec2 win_size = ImGui::GetWindowSize();
+		ImGui::BeginChild("Second", ImVec2(separator_position, 0), true);
+		ImGui::EndChild();
+		
+		ImGui::SameLine();
+		ImVec2 c_pos = ImGui::GetCursorPos();
+		c_pos.x -= 5;
+		ImGui::SetCursorPos(c_pos);
+		ImGui::Button("b", ImVec2(5, win_size.y));
+
+		ImGui::SameLine(0, 15);
+		//ImGui::SetCursorPos(c_pos);
+
+		ImGui::BeginChild("Third", ImVec2(win_size.x - separator_position - ImGui::GetStyle().WindowPadding.x, 0), true);
+		ImGui::EndChild();
+
 		for (uint i = 0; i < childs.size() && !child_drawn; ++i)
 		{
 			if (childs[i]->active == true)
 			{
 				child_drawn = true;
-				childs[i]->DrawData();
+			//	childs[i]->DrawData();
 			}
 		}
 
-		if (!child_drawn) DrawData();
+		//if (!child_drawn) DrawData();
 		ImGui::EndChild();
 	}
 	ImGui::End();
