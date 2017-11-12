@@ -38,6 +38,8 @@ private:
 	Vec2 size;
 
 	float separator_position = 200.0f;
+	bool button_pressed = false;
+	float init_separator_position = 0.0f;
 
 	bool open = true;
 	bool active = false;

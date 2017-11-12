@@ -4,6 +4,7 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "ImGui\imgui_internal.h"
 
+#include "Log.h"
 //using namespace ImGui;
 
 Dock::Dock(const char* name, Vec2 size): size(size), name(name)
@@ -36,31 +37,58 @@ void Dock::Draw()
 	if (ImGui::BeginChild("Child"))
 	{
 		ImVec2 win_size = ImGui::GetWindowSize();
+
 		ImGui::BeginChild("Second", ImVec2(separator_position, 0), true);
+		{
+			for (uint i = 0; i < childs.size() && !child_drawn; ++i)
+			{
+				if (childs[i]->active == true)
+				{
+					child_drawn = true;
+					childs[i]->DrawData();
+				}
+			}
+
+			if (!child_drawn) DrawData();
+		}
 		ImGui::EndChild();
 		
 		ImGui::SameLine();
-		ImVec2 c_pos = ImGui::GetCursorPos();
-		c_pos.x -= 5;
-		ImGui::SetCursorPos(c_pos);
+		ImGui::SameLine(0, 2);
+
 		ImGui::Button("b", ImVec2(5, win_size.y));
 
-		ImGui::SameLine(0, 15);
-		//ImGui::SetCursorPos(c_pos);
-
-		ImGui::BeginChild("Third", ImVec2(win_size.x - separator_position - ImGui::GetStyle().WindowPadding.x, 0), true);
-		ImGui::EndChild();
-
-		for (uint i = 0; i < childs.size() && !child_drawn; ++i)
+		if (ImGui::IsItemHovered() && ImGui::IsMouseDown(0))
 		{
-			if (childs[i]->active == true)
+			if (button_pressed == false)
 			{
-				child_drawn = true;
-			//	childs[i]->DrawData();
+				button_pressed = true;
+				init_separator_position = separator_position;
 			}
 		}
+		else if (button_pressed == true && !ImGui::IsMouseDown(0))
+		{
+			button_pressed = false;
+		}
 
-		//if (!child_drawn) DrawData();
+
+
+		ImGui::SameLine(0, 2);
+		//ImGui::SetCursorPos(c_pos);
+		ImVec2 cursor_pos = ImGui::GetCursorPos();
+		float padding = ImGui::GetStyle().WindowPadding.x;
+		float size = win_size.x - cursor_pos.x;
+		ImGui::BeginChild("Third", ImVec2(size, 0), true);
+		ImGui::Text("Third Child");
+		ImGui::EndChild();
+
+		if (button_pressed == true)
+		{
+			ImVec2 delta = ImGui::GetMouseDragDelta(0);
+			separator_position = init_separator_position + delta.x;
+			LOG("Delta: x - %f, y - %f", delta.x, delta.y);
+		}
+
 		ImGui::EndChild();
 	}
 	ImGui::End();
