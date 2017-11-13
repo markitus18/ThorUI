@@ -25,8 +25,8 @@ public:
 
 private:
 	void DrawTabPanels();
-	void DrawSingleTab(Dock* dock);
-
+	void DrawSingleTab(Dock* dock, uint index);
+	bool DoesTabFit(Dock* dock);
 public:
 	std::string name = "dock";
 	bool root = true;

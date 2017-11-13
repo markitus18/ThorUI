@@ -29,9 +29,9 @@ void Dock::Draw()
 	ImGui::SetNextWindowSize(ImVec2(size.x, size.y));
 	if (ImGui::Begin(name.c_str(), &open, flags))
 	{
-		DrawTabPanels();
+
 	}
-	ImGui::Separator();
+	//ImGui::Separator();
 
 	bool child_drawn = false;
 	if (ImGui::BeginChild("Child"))
@@ -40,6 +40,9 @@ void Dock::Draw()
 
 		ImGui::BeginChild("Second", ImVec2(separator_position, 0), true);
 		{
+			DrawTabPanels();
+			ImGui::Separator();
+
 			for (uint i = 0; i < childs.size() && !child_drawn; ++i)
 			{
 				if (childs[i]->active == true)
@@ -86,7 +89,6 @@ void Dock::Draw()
 		{
 			ImVec2 delta = ImGui::GetMouseDragDelta(0);
 			separator_position = init_separator_position + delta.x;
-			LOG("Delta: x - %f, y - %f", delta.x, delta.y);
 		}
 
 		ImGui::EndChild();
@@ -106,16 +108,24 @@ void Dock::DrawData()
 
 void Dock::DrawTabPanels()
 {
-	DrawSingleTab(this);
+	DrawSingleTab(this, 0);
 	for (int i = 0; i < childs.size(); i++)
 	{
-		DrawSingleTab(childs[i]);
+		DrawSingleTab(childs[i], i+1);
 	}
 }
 
-void Dock::DrawSingleTab(Dock* dock)
+void Dock::DrawSingleTab(Dock* dock, uint index)
 {
 	ImGui::SameLine(0, 15);
+
+	if (!DoesTabFit(dock))
+	{
+		ImGui::NewLine();
+		ImGui::NewLine();
+		ImGui::SameLine(0, 15);
+		int k = 1;
+	}
 
 	float line_height = ImGui::GetTextLineHeightWithSpacing();
 	ImVec2 size(ImGui::CalcTextSize(dock->name.c_str(), dock->name.c_str() + dock->name.length()).x, line_height);
@@ -155,6 +165,13 @@ void Dock::DrawSingleTab(Dock* dock)
 	draw_list->PathFillConvex(hovered ? color_hovered : (dock->active ? color_active : color));
 	draw_list->AddText(pos, ImGui::GetColorU32(ImGuiCol_Text), dock->name.c_str(), nullptr);
 	draw_list->PathClear();
+}
+
+bool Dock::DoesTabFit(Dock* dock)
+{
+	ImVec2 cursor_pos = ImGui::GetCursorPos();
+	ImVec2 size(ImGui::CalcTextSize(dock->name.c_str(), dock->name.c_str() + dock->name.length()).x, 0);
+	return (cursor_pos.x + size.x + 15 < ImGui::GetWindowSize().x);
 }
 
 void Dock::AddChild(Dock* dock)
