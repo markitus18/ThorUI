@@ -5,7 +5,7 @@
 #include "ImGui\imgui_internal.h"
 
 #include "Log.h"
-//using namespace ImGui;
+#include "DockData.h"
 
 Dock::Dock(const char* name, Vec2 size): size(size), name(name)
 {
@@ -19,121 +19,107 @@ Dock::~Dock()
 
 void Dock::Draw()
 {
-	if (!open) return;
-
-	ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
-		ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoScrollbar |
-		ImGuiWindowFlags_NoScrollWithMouse |
-		ImGuiWindowFlags_NoBringToFrontOnFocus;
+	ImGuiWindowFlags flags =	ImGuiWindowFlags_NoTitleBar			| ImGuiWindowFlags_NoCollapse |
+								ImGuiWindowFlags_NoSavedSettings	| ImGuiWindowFlags_NoScrollbar |
+								ImGuiWindowFlags_NoScrollWithMouse	| ImGuiWindowFlags_NoBringToFrontOnFocus;
 
 	ImGui::SetNextWindowSize(ImVec2(size.x, size.y));
 	if (ImGui::Begin(name.c_str(), &open, flags))
 	{
-		DrawTabPanels();
-	}
-	ImGui::Separator();
-
-	bool child_drawn = false;
-	if (ImGui::BeginChild("Child"))
-	{
-		ImVec2 win_size = ImGui::GetWindowSize();
-
-		ImGui::BeginChild("Second", ImVec2(separator_position, 0), true);
+		switch (separation)
 		{
-			for (uint i = 0; i < childs.size() && !child_drawn; ++i)
+			case(NONE):
 			{
-				if (childs[i]->active == true)
+				if (!data_children.empty())
 				{
-					child_drawn = true;
-					childs[i]->DrawData();
+					DrawTabPanels();
 				}
+				break;
 			}
-
-			if (!child_drawn) DrawData();
-		}
-		ImGui::EndChild();
-		
-		ImGui::SameLine();
-		ImGui::SameLine(0, 2);
-
-		ImGui::Button("b", ImVec2(5, win_size.y));
-
-		if (ImGui::IsItemHovered() && ImGui::IsMouseDown(0))
-		{
-			if (button_pressed == false)
+			case(VERTICAL): {}
+			case(HORIZONTAL):
 			{
-				button_pressed = true;
-				init_separator_position = separator_position;
+				DrawAsChild(separation, separator.position);
+
+				if (separation == VERTICAL) ImGui::SameLine(0, 2);
+				
+				DrawSeparator();
+
+				if (separation == VERTICAL) ImGui::SameLine(0, 2);
+
+				ImVec2 cursor_pos = ImGui::GetCursorPos();
+				float padding = (separation == VERTICAL ? ImGui::GetStyle().WindowPadding.x : ImGui::GetStyle().WindowPadding.y);
+				float child_size = (separation == VERTICAL ? size.x - cursor_pos.x - padding : size.y - cursor_pos.y - padding);
+
+				DrawAsChild(separation, child_size);
+
+
+				break;
 			}
 		}
-		else if (button_pressed == true && !ImGui::IsMouseDown(0))
-		{
-			button_pressed = false;
-		}
-
-
-
-		ImGui::SameLine(0, 2);
-		//ImGui::SetCursorPos(c_pos);
-		ImVec2 cursor_pos = ImGui::GetCursorPos();
-		float padding = ImGui::GetStyle().WindowPadding.x;
-		float size = win_size.x - cursor_pos.x;
-		ImGui::BeginChild("Third", ImVec2(size, 0), true);
-		ImGui::Text("Third Child");
-		ImGui::EndChild();
-
-		if (button_pressed == true)
-		{
-			ImVec2 delta = ImGui::GetMouseDragDelta(0);
-			separator_position = init_separator_position + delta.x;
-			LOG("Delta: x - %f, y - %f", delta.x, delta.y);
-		}
-
-		ImGui::EndChild();
 	}
 	ImGui::End();
 }
 
-void Dock::DrawData()
+void Dock::DrawAsChild(Separation_Type sep_type, float size)
 {
-	ImGui::Text("Drawing Child: %s", name.c_str());
+	ImGui::PushID(std::rand());
+	ImGui::BeginChild("###", ( separation == VERTICAL ? ImVec2(size, 0) : ImVec2(0, size)), true);
+		ImGui::Text("Child");
+	ImGui::EndChild();
+	ImGui::PopID();
 
-	if (ImGui::Button("Close panel"))
+}
+
+void Dock::DrawSeparator()
+{
+	ImVec2 button_size = (separation == VERTICAL ?	ImVec2(5, size.y - ImGui::GetStyle().WindowPadding.y * 2) :
+														ImVec2(size.x - ImGui::GetStyle().WindowPadding.x * 2, 5));
+	ImGui::Button("b", button_size);
+
+	if (ImGui::IsItemHovered() && ImGui::IsMouseDown(0))
 	{
-		Close();
+		if (separator.pressed == false)
+		{
+			separator.pressed = true;
+			separator.init_position = separator.position;
+		}
+	}
+	else if (separator.pressed == true && !ImGui::IsMouseDown(0))
+	{
+		separator.pressed = false;
+	}
+	if (separator.pressed == true)
+	{
+		ImVec2 delta = ImGui::GetMouseDragDelta(0);
+		separator.position = separator.init_position + (separation == VERTICAL ? delta.x : delta.y);
 	}
 }
 
 void Dock::DrawTabPanels()
 {
-	DrawSingleTab(this);
-	for (int i = 0; i < childs.size(); i++)
+	for (int i = 0; i < data_children.size(); i++)
 	{
-		DrawSingleTab(childs[i]);
+		DrawSingleTab(data_children[i]);
 	}
 }
 
-void Dock::DrawSingleTab(Dock* dock)
+void Dock::DrawSingleTab(DockData* data)
 {
 	ImGui::SameLine(0, 15);
 
 	float line_height = ImGui::GetTextLineHeightWithSpacing();
-	ImVec2 size(ImGui::CalcTextSize(dock->name.c_str(), dock->name.c_str() + dock->name.length()).x, line_height);
-	if (ImGui::InvisibleButton(dock->name.c_str(), size))
+	ImVec2 size(ImGui::CalcTextSize(data->name.c_str(), data->name.c_str() + data->name.length()).x, line_height);
+	if (ImGui::InvisibleButton(data->name.c_str(), size))
 	{
-		this->SetActive(false);
-		for (uint i = 0; i < this->childs.size(); ++i)
-		{
-			childs[i]->SetActive(false);
-		}
-		dock->SetActive(true);
+		SetDataActive(data);
 	}
 
 	bool hovered = ImGui::IsItemHovered();
 
 	if (hovered && ImGui::IsMouseClicked(2))
 	{
-		dock->Close();
+		RemoveChildData(data);
 	}
 
 	ImU32 color = ImGui::GetColorU32(ImGuiCol_FrameBg);
@@ -152,38 +138,35 @@ void Dock::DrawSingleTab(Dock* dock)
 		pos + ImVec2(size.x + 10, size.y),
 		pos + ImVec2(size.x + 15, size.y),
 		10);
-	draw_list->PathFillConvex(hovered ? color_hovered : (dock->active ? color_active : color));
-	draw_list->AddText(pos, ImGui::GetColorU32(ImGuiCol_Text), dock->name.c_str(), nullptr);
+	draw_list->PathFillConvex(hovered ? color_hovered : (data->IsActive() ? color_active : color));
+	draw_list->AddText(pos, ImGui::GetColorU32(ImGuiCol_Text), data->name.c_str(), nullptr);
 	draw_list->PathClear();
 }
 
-void Dock::AddChild(Dock* dock)
+void Dock::AddChildData(DockData* data, int position)
 {
-	childs.push_back(dock);
-	dock->child_index = childs.size();
-	dock->parent = this;
-	dock->root = false;
+	data->SetParent(this);
+	if (position == -1 || position > data_children.size())
+		data_children.push_back(data);
+	else
+		data_children.insert(data_children.begin() + position, data);
 }
 
-void Dock::RemoveChild(Dock* dock)
+void Dock::RemoveChildData(DockData* dock)
 {
-	for (std::vector<Dock*>::iterator it = childs.begin(); it != childs.end(); ++it)
+	for (std::vector<DockData*>::iterator it = data_children.begin(); it != data_children.end(); ++it)
 	{
 		if (*it == dock)
 		{
-			childs.erase(it);
+			data_children.erase(it);
 			break;
 		}
 	}
 }
 
-void Dock::SetActive(bool active)
-{
-	this->active = active;
-}
-
 void Dock::Close()
 {
+	/*
 	if (childs.size() > 0)
 	{
 		childs[0]->root = true;
@@ -198,4 +181,26 @@ void Dock::Close()
 		parent->RemoveChild(this);
 	}
 	root = false;
+	*/
+}
+
+void Dock::SetDataActive(DockData* data)
+{
+	for (uint i = 0; i < data_children.size(); ++i)
+	{
+		data_children[i]->SetActive(data == data_children[i]);
+	}
+}
+
+void Dock::CloseDockData(DockData* data)
+{
+	std::vector<DockData*>::iterator it;
+	for (it = data_children.begin(); it != data_children.end(); ++it)
+	{
+		if ((*it) == data)
+		{
+			data_children.erase(it);
+			data->SetActive(false);
+		}
+	}
 }

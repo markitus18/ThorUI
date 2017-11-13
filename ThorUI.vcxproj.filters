@@ -74,6 +74,9 @@
     <ClCompile Include="Source Code\External Libraries\ImGui\Dock\imgui_dock.cpp">
       <Filter>External Libraries\ImGui\Dock</Filter>
     </ClCompile>
+    <ClCompile Include="Source Code\DockData.cpp">
+      <Filter>Editor\MyDock</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\UI_Item.h">
@@ -135,6 +138,9 @@
       <Filter>External Libraries\ImGui\Dock</Filter>
     </ClInclude>
     <ClInclude Include="Source Code\Dock.h">
+      <Filter>Editor\MyDock</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\DockData.h">
       <Filter>Editor\MyDock</Filter>
     </ClInclude>
   </ItemGroup>

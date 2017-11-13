@@ -44,9 +44,10 @@ bool UI_Editor::Init(SDL_Window* window)
 
 	ThorUI::Init(window);
 	Dock* dock = new Dock("0 Dock");
-	dock->SetActive(true);
+	dock->separation = HORIZONTAL;
 	docks.push_back(dock);
 
+	/*
 	for (uint i = 0; i < 5; ++i)
 	{
 		char name[50];
@@ -56,7 +57,7 @@ bool UI_Editor::Init(SDL_Window* window)
 		docks.push_back(next);
 		int k = 1;
 	}
-
+	*/
 
 	if (ImGui_ImplSdlGL3_Init(window) == true)
 	{

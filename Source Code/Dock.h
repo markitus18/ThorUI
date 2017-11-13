@@ -6,6 +6,21 @@
 #include "Vec2.h"
 
 typedef unsigned int uint;
+class DockData;
+
+struct Separator
+{
+	float position = 200.0f;
+	bool pressed = false;
+	float init_position = 200.0f;
+};
+
+enum Separation_Type
+{
+	NONE,
+	VERTICAL,
+	HORIZONTAL,
+};
 
 class Dock
 {
@@ -13,37 +28,37 @@ public:
 	Dock(const char* name, Vec2 size = Vec2(800, 300));
 	~Dock();
 
-	virtual void Draw();
-	virtual void DrawData();
+	void Draw();
+	void DrawAsChild(Separation_Type = NONE, float size = 0.0f);
+	void DrawSeparator();
 
-	void AddChild(Dock* dock);
-	void RemoveChild(Dock* dock);
-
-	void SetActive(bool active);
+	void AddChildData(DockData* dock, int position = -1);
+	void RemoveChildData(DockData* dock);
 
 	void Close();
 
+	void SetDataActive(DockData* data);
+	void CloseDockData(DockData* data);
+
 private:
 	void DrawTabPanels();
-	void DrawSingleTab(Dock* dock);
+	void DrawSingleTab(DockData* data);
 
 public:
 	std::string name = "dock";
 	bool root = true;
 
+	Separation_Type separation = NONE;
 private:
 	Dock* parent = nullptr;
-	std::vector<Dock*> childs;
-
+	std::vector<DockData*> data_children;
+	std::vector<Dock*> dock_children;
 	Vec2 size;
 
-	float separator_position = 200.0f;
-	bool button_pressed = false;
-	float init_separator_position = 0.0f;
+
+	Separator separator;
 
 	bool open = true;
-	bool active = false;
-	uint child_index = 0;
 };
 
 #endif

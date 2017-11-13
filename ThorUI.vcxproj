@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="Source Code\Config.cpp" />
     <ClCompile Include="Source Code\Dock.cpp" />
+    <ClCompile Include="Source Code\DockData.cpp" />
     <ClCompile Include="Source Code\Editor.cpp" />
     <ClCompile Include="Source Code\External Libraries\ImGui\Dock\imgui_dock.cpp" />
     <ClCompile Include="Source Code\External Libraries\ImGui\imgui.cpp" />
@@ -40,6 +41,7 @@
   <ItemGroup>
     <ClInclude Include="Source Code\Config.h" />
     <ClInclude Include="Source Code\Dock.h" />
+    <ClInclude Include="Source Code\DockData.h" />
     <ClInclude Include="Source Code\Editor.h" />
     <ClInclude Include="Source Code\External Libraries\ImGui\Dock\imgui_dock.h" />
     <ClInclude Include="Source Code\External Libraries\ImGui\imconfig.h" />
