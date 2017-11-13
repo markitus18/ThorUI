@@ -19,60 +19,79 @@ Dock::~Dock()
 
 void Dock::Draw()
 {
-	ImGuiWindowFlags flags =	ImGuiWindowFlags_NoTitleBar			| ImGuiWindowFlags_NoCollapse |
-								ImGuiWindowFlags_NoSavedSettings	| ImGuiWindowFlags_NoScrollbar |
-								ImGuiWindowFlags_NoScrollWithMouse	| ImGuiWindowFlags_NoBringToFrontOnFocus;
-
-	ImGui::SetNextWindowSize(ImVec2(size.x, size.y));
-	if (ImGui::Begin(name.c_str(), &open, flags))
+	if (root == true)
 	{
-		switch (separation)
+		ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
+			ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoScrollbar |
+			ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBringToFrontOnFocus;
+
+		ImGui::SetNextWindowSize(ImVec2(size.x, size.y));
+		ImGui::Begin(name.c_str(), &open, flags);
+	}
+	else
+	{
+		ImGui::PushID(this);
+		ImGui::BeginChild("Child", ImVec2(size.x, size.y), true);
+
+	}
+	switch (separation)
+	{
+		case(NONE):
 		{
-			case(NONE):
+			if (!data_children.empty())
 			{
-				if (!data_children.empty())
+				DrawTabPanels();
+			}
+			else
+			{
+				ImGui::Text("Child");
+				if (ImGui::Button("Split"))
 				{
-					DrawTabPanels();
+					Split(parent->separation == HORIZONTAL ? VERTICAL : HORIZONTAL);
 				}
-				break;
 			}
-			case(VERTICAL): {}
-			case(HORIZONTAL):
+			break;
+		}
+		case(VERTICAL): {}
+		case(HORIZONTAL):
+		{
+			if (dock_children.size() == 2)
 			{
-				DrawAsChild(separation, separator.position);
-
-				if (separation == VERTICAL) ImGui::SameLine(0, 2);
-
-				DrawSeparator();
-
-				if (separation == VERTICAL) ImGui::SameLine(0, 2);
-
-				ImVec2 cursor_pos = ImGui::GetCursorPos();
-				float padding = (separation == VERTICAL ? ImGui::GetStyle().WindowPadding.x : ImGui::GetStyle().WindowPadding.y);
-				float child_size = (separation == VERTICAL ? size.x - cursor_pos.x - padding : size.y - cursor_pos.y - padding);
-
-				DrawAsChild(separation, child_size);
-				break;
+				dock_children[0]->Draw();
 			}
+
+			if (separation == VERTICAL) ImGui::SameLine(0, 2);
+
+			DrawSeparator();
+
+			if (separation == VERTICAL) ImGui::SameLine(0, 2);
+
+			ImVec2 cursor_pos = ImGui::GetCursorPos();
+			float padding = (separation == VERTICAL ? ImGui::GetStyle().WindowPadding.x : ImGui::GetStyle().WindowPadding.y);
+			float child_size = (separation == VERTICAL ? size.x - cursor_pos.x - padding : size.y - cursor_pos.y - padding);
+
+			if (dock_children.size() == 2)
+			{
+				dock_children[1]->Draw();
+			}
+			break;
 		}
 	}
-	ImGui::End();
-}
-
-void Dock::DrawAsChild(Separation_Type sep_type, float size)
-{
-	ImGui::PushID(std::rand());
-	ImGui::BeginChild("###", ( separation == VERTICAL ? ImVec2(size, 0) : ImVec2(0, size)), true);
-		ImGui::Text("Child");
-	ImGui::EndChild();
-	ImGui::PopID();
-
+	if (root == true)
+	{
+		ImGui::End();
+	}
+	else
+	{
+		ImGui::EndChild();
+		ImGui::PopID();
+	}
 }
 
 void Dock::DrawSeparator()
 {
-	ImVec2 button_size = (separation == VERTICAL ?	ImVec2(5, size.y - ImGui::GetStyle().WindowPadding.y * 2) :
-														ImVec2(size.x - ImGui::GetStyle().WindowPadding.x * 2, 5));
+	ImVec2 button_size = (separation == VERTICAL ?	ImVec2(5, ImGui::GetContentRegionAvail().y ) :
+														ImVec2(ImGui::GetContentRegionAvail().x, 5));
 	ImGui::Button("b", button_size);
 
 	if (ImGui::IsItemHovered() && ImGui::IsMouseDown(0))
@@ -91,6 +110,7 @@ void Dock::DrawSeparator()
 	{
 		ImVec2 delta = ImGui::GetMouseDragDelta(0);
 		separator.position = separator.init_position + (separation == VERTICAL ? delta.x : delta.y);
+		separation == VERTICAL ? dock_children[0]->size.x = separator.position : dock_children[0]->size.y = separator.position;
 	}
 }
 
@@ -177,6 +197,27 @@ void Dock::RemoveChildData(DockData* dock)
 	}
 }
 
+void Dock::Split(Separation_Type type)
+{
+	separation = type;
+
+	ClearDockChildren();
+	dock_children.push_back(new Dock("Child 1"));
+	dock_children.push_back(new Dock("Child 2"));
+
+	while(data_children.size() > 0)
+	{
+		dock_children[0]->AddChildData(data_children[0]);
+		data_children.erase(data_children.begin());
+	}
+	dock_children[0]->root = false;
+	separation == VERTICAL ? dock_children[0]->size.x = separator.position : dock_children[0]->size.y = separator.position;
+	dock_children[1]->root = false;
+
+	dock_children[0]->parent = this;
+	dock_children[1]->parent = this;
+}
+
 void Dock::Close()
 {
 	/*
@@ -195,6 +236,15 @@ void Dock::Close()
 	}
 	root = false;
 	*/
+}
+
+void Dock::ClearDockChildren()
+{
+	for (uint i = 0; i < dock_children.size(); ++i)
+	{
+		delete dock_children[i];
+	}
+	dock_children.clear();
 }
 
 void Dock::SetDataActive(DockData* data)

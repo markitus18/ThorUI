@@ -43,10 +43,10 @@ bool UI_Editor::Init(SDL_Window* window)
 	//TODO: load own font
 
 	ThorUI::Init(window);
-	Dock* dock = new Dock("0 Dock");
+	Dock* dock = new Dock("0 Dock", Vec2(800, 500));
 	dock->separation = HORIZONTAL;
 	docks.push_back(dock);
-
+	dock->Split(VERTICAL);
 	/*
 	for (uint i = 0; i < 5; ++i)
 	{

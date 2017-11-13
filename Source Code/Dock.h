@@ -25,17 +25,19 @@ enum Separation_Type
 class Dock
 {
 public:
-	Dock(const char* name, Vec2 size = Vec2(800, 300));
+	Dock(const char* name, Vec2 size = Vec2(0, 0));
 	~Dock();
 
 	void Draw();
-	void DrawAsChild(Separation_Type = NONE, float size = 0.0f);
 	void DrawSeparator();
 
 	void AddChildData(DockData* dock, int position = -1);
 	void RemoveChildData(DockData* dock);
 
+	void Split(Separation_Type type);
+
 	void Close();
+	void ClearDockChildren();
 
 	void SetDataActive(DockData* data);
 	void CloseDockData(DockData* data);
