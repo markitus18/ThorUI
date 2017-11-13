@@ -43,6 +43,7 @@ public:
 private:
 	void DrawTabPanels();
 	void DrawSingleTab(DockData* data);
+	bool DoesTabFit(DockData* dock);
 
 public:
 	std::string name = "dock";

@@ -42,7 +42,7 @@ void Dock::Draw()
 				DrawAsChild(separation, separator.position);
 
 				if (separation == VERTICAL) ImGui::SameLine(0, 2);
-				
+
 				DrawSeparator();
 
 				if (separation == VERTICAL) ImGui::SameLine(0, 2);
@@ -52,8 +52,6 @@ void Dock::Draw()
 				float child_size = (separation == VERTICAL ? size.x - cursor_pos.x - padding : size.y - cursor_pos.y - padding);
 
 				DrawAsChild(separation, child_size);
-
-
 				break;
 			}
 		}
@@ -108,6 +106,14 @@ void Dock::DrawSingleTab(DockData* data)
 {
 	ImGui::SameLine(0, 15);
 
+	if (!DoesTabFit(data))
+	{
+		ImGui::NewLine();
+		ImGui::NewLine();
+		ImGui::SameLine(0, 15);
+		int k = 1;
+	}
+
 	float line_height = ImGui::GetTextLineHeightWithSpacing();
 	ImVec2 size(ImGui::CalcTextSize(data->name.c_str(), data->name.c_str() + data->name.length()).x, line_height);
 	if (ImGui::InvisibleButton(data->name.c_str(), size))
@@ -150,6 +156,13 @@ void Dock::AddChildData(DockData* data, int position)
 		data_children.push_back(data);
 	else
 		data_children.insert(data_children.begin() + position, data);
+}
+
+bool Dock::DoesTabFit(DockData* data)
+{
+	ImVec2 cursor_pos = ImGui::GetCursorPos();
+	ImVec2 size(ImGui::CalcTextSize(data->name.c_str(), data->name.c_str() + data->name.length()).x, 0);
+	return (cursor_pos.x + size.x + 15 < ImGui::GetWindowSize().x);
 }
 
 void Dock::RemoveChildData(DockData* dock)
