@@ -89,6 +89,9 @@
     <ClCompile Include="Source Code\InspectorDock.cpp">
       <Filter>Editor\DockData</Filter>
     </ClCompile>
+    <ClCompile Include="Source Code\ResourcesDock.cpp">
+      <Filter>Editor\DockData</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\UI_Item.h">
@@ -162,6 +165,9 @@
       <Filter>Editor\DockData</Filter>
     </ClInclude>
     <ClInclude Include="Source Code\InspectorDock.h">
+      <Filter>Editor\DockData</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\ResourcesDock.h">
       <Filter>Editor\DockData</Filter>
     </ClInclude>
   </ItemGroup>

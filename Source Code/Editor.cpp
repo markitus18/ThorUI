@@ -24,6 +24,7 @@
 #include "HierarchyDock.h"
 #include "SceneDock.h"
 #include "InspectorDock.h"
+#include "ResourcesDock.h"
 
 UI_Editor::UI_Editor()
 {
@@ -79,6 +80,10 @@ bool UI_Editor::Init(SDL_Window* window)
 
 	i_dock = new Inspector(this);
 	dock->GetDockChildren()[0]->GetDockChildren()[1]->AddChildData(i_dock);
+
+	r_dock = new Resources(this);
+	dock->GetDockChildren()[1]->AddChildData(r_dock);
+
 
 	return ret;
 }

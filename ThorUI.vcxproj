@@ -34,6 +34,7 @@
     <ClCompile Include="Source Code\InspectorDock.cpp" />
     <ClCompile Include="Source Code\Log.cpp" />
     <ClCompile Include="Source Code\Main.cpp" />
+    <ClCompile Include="Source Code\ResourcesDock.cpp" />
     <ClCompile Include="Source Code\SceneDock.cpp" />
     <ClCompile Include="Source Code\ThorUI.cpp" />
     <ClCompile Include="Source Code\UI_Image.cpp" />
@@ -58,6 +59,7 @@
     <ClInclude Include="Source Code\FileSystem.h" />
     <ClInclude Include="Source Code\HierarchyDock.h" />
     <ClInclude Include="Source Code\InspectorDock.h" />
+    <ClInclude Include="Source Code\ResourcesDock.h" />
     <ClInclude Include="Source Code\SceneDock.h" />
     <ClInclude Include="Source Code\UI_Button.h" />
     <ClInclude Include="Source Code\Color.h" />

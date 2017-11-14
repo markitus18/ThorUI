@@ -22,6 +22,7 @@ typedef unsigned int uint;
 class Scene;
 class Inspector;
 class Hierarchy;
+class Resources;
 
 class UI_Editor
 {
@@ -58,6 +59,7 @@ private:
 	Scene* s_dock = nullptr;
 	Inspector* i_dock = nullptr;
 	Hierarchy* h_dock = nullptr;
+	Resources* r_dock = nullptr;
 };
 
 #endif //__EDITOR_H__

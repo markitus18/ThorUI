@@ -7383,7 +7383,7 @@ bool ImGui::DragFloatN(const char* label, float* v, int components, float v_spee
 	TextUnformatted(label, FindRenderedTextEnd(label));
 	SameLine(0, 100 - CalcTextSize(label).x);
 
-
+	//ThorUI modification -> text rendering before input
     PushMultiItemsWidths(components);
     for (int i = 0; i < components; i++)
     {
