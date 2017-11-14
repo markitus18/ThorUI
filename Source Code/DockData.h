@@ -5,11 +5,12 @@
 
 class Dock;
 typedef unsigned int uint;
+class UI_Editor;
 
 class DockData
 {
 public:
-	DockData();
+	DockData(UI_Editor* editor);
 	~DockData();
 
 	virtual void Draw();
@@ -27,8 +28,9 @@ private:
 public:
 	uint child_index = 0;
 	std::string name;
+	UI_Editor* editor;
 
-private:
+protected:
 	Dock* parent = nullptr;
 	bool active = false;
 };

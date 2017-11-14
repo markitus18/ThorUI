@@ -10,9 +10,9 @@ class DockData;
 
 struct Separator
 {
-	float position = 200.0f;
+	float position = 0.5f;
 	bool pressed = false;
-	float init_position = 200.0f;
+	float init_position = 0.5f;
 };
 
 enum Separation_Type
@@ -34,7 +34,7 @@ public:
 	void AddChildData(DockData* dock, int position = -1);
 	void RemoveChildData(DockData* dock);
 
-	void Split(Separation_Type type);
+	void Split(Separation_Type type, float pos = 0.5f);
 
 	void Close();
 	void ClearDockChildren();
@@ -42,22 +42,29 @@ public:
 	void SetDataActive(DockData* data);
 	void CloseDockData(DockData* data);
 
+	void SetSize(Vec2 size);
+
+	std::vector<Dock*>& GetDockChildren();
+
 private:
 	void DrawTabPanels();
 	void DrawSingleTab(DockData* data);
 	bool DoesTabFit(DockData* dock);
 
+	void UpdateChildrenPosition();
+
 public:
 	std::string name = "dock";
 	bool root = true;
+
+	Vec2 position;
+	Vec2 size;
 
 	Separation_Type separation = NONE;
 private:
 	Dock* parent = nullptr;
 	std::vector<DockData*> data_children;
 	std::vector<Dock*> dock_children;
-	Vec2 size;
-
 
 	Separator separator;
 

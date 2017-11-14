@@ -2,7 +2,7 @@
 
 #include "Dock.h"
 
-DockData::DockData()
+DockData::DockData(UI_Editor* editor) :editor(editor)
 {
 
 }

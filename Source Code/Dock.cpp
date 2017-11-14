@@ -19,19 +19,21 @@ Dock::~Dock()
 
 void Dock::Draw()
 {
+	ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
+		ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoScrollbar |
+		ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBringToFrontOnFocus |
+		ImGuiWindowFlags_NoResize;
+
 	if (root == true)
 	{
-		ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
-			ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoScrollbar |
-			ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBringToFrontOnFocus;
-
+		ImGui::SetNextWindowPos(ImVec2(position.x, position.y));
 		ImGui::SetNextWindowSize(ImVec2(size.x, size.y));
 		ImGui::Begin(name.c_str(), &open, flags);
 	}
 	else
 	{
 		ImGui::PushID(this);
-		ImGui::BeginChild("Child", ImVec2(size.x, size.y), true);
+		ImGui::BeginChild("Child", ImVec2(size.x, size.y), false, flags);
 
 	}
 	switch (separation)
@@ -41,6 +43,12 @@ void Dock::Draw()
 			if (!data_children.empty())
 			{
 				DrawTabPanels();
+				ImGui::Separator();
+				for (uint i = 0; i < data_children.size(); ++i)
+				{
+					if (data_children[i]->IsActive())
+						data_children[i]->Draw();
+				}
 			}
 			else
 			{
@@ -109,8 +117,11 @@ void Dock::DrawSeparator()
 	if (separator.pressed == true)
 	{
 		ImVec2 delta = ImGui::GetMouseDragDelta(0);
-		separator.position = separator.init_position + (separation == VERTICAL ? delta.x : delta.y);
-		separation == VERTICAL ? dock_children[0]->size.x = separator.position : dock_children[0]->size.y = separator.position;
+		float init_position = separator.init_position * (separation == VERTICAL ? size.x : size.y);
+		float final_pos = separation == VERTICAL ? init_position + delta.x : init_position + delta.y;
+		separator.position = final_pos / (separation == VERTICAL ? size.x : size.y);
+
+		UpdateChildrenPosition();
 	}
 }
 
@@ -171,11 +182,19 @@ void Dock::DrawSingleTab(DockData* data)
 
 void Dock::AddChildData(DockData* data, int position)
 {
-	data->SetParent(this);
-	if (position == -1 || position > data_children.size())
-		data_children.push_back(data);
+	if (dock_children.size() == 0)
+	{
+		data->SetParent(this);
+		if (position == -1 || position > data_children.size())
+			data_children.push_back(data);
+		else
+			data_children.insert(data_children.begin() + position, data);
+		SetDataActive(data_children[0]);
+	}
 	else
-		data_children.insert(data_children.begin() + position, data);
+	{
+		dock_children[0]->AddChildData(data, position);
+	}
 }
 
 bool Dock::DoesTabFit(DockData* data)
@@ -183,6 +202,23 @@ bool Dock::DoesTabFit(DockData* data)
 	ImVec2 cursor_pos = ImGui::GetCursorPos();
 	ImVec2 size(ImGui::CalcTextSize(data->name.c_str(), data->name.c_str() + data->name.length()).x, 0);
 	return (cursor_pos.x + size.x + 15 < ImGui::GetWindowSize().x);
+}
+
+void Dock::UpdateChildrenPosition()
+{
+	if (dock_children.size() > 0)
+	{
+		if (separation == VERTICAL)
+		{
+			dock_children[0]->SetSize(Vec2(separator.position * size.x, size.y));
+			dock_children[1]->SetSize(Vec2(size.x - (separator.position * size.x), size.y));
+		}
+		else
+		{
+			dock_children[0]->SetSize(Vec2(size.x, size.y * separator.position));
+			dock_children[1]->SetSize(Vec2(size.x, size.y - (size.y * separator.position)));
+		}
+	}
 }
 
 void Dock::RemoveChildData(DockData* dock)
@@ -197,9 +233,10 @@ void Dock::RemoveChildData(DockData* dock)
 	}
 }
 
-void Dock::Split(Separation_Type type)
+void Dock::Split(Separation_Type type, float pos)
 {
 	separation = type;
+	separator.position = pos;
 
 	ClearDockChildren();
 	dock_children.push_back(new Dock("Child 1"));
@@ -211,9 +248,10 @@ void Dock::Split(Separation_Type type)
 		data_children.erase(data_children.begin());
 	}
 	dock_children[0]->root = false;
-	separation == VERTICAL ? dock_children[0]->size.x = separator.position : dock_children[0]->size.y = separator.position;
-	dock_children[1]->root = false;
 
+	UpdateChildrenPosition();
+
+	dock_children[1]->root = false;
 	dock_children[0]->parent = this;
 	dock_children[1]->parent = this;
 }
@@ -266,4 +304,15 @@ void Dock::CloseDockData(DockData* data)
 			data->SetActive(false);
 		}
 	}
+}
+
+void Dock::SetSize(Vec2 size)
+{
+	this->size = size;
+	UpdateChildrenPosition();
+}
+
+std::vector<Dock*>& Dock::GetDockChildren()
+{
+	return dock_children;
 }

@@ -30,8 +30,11 @@
     <ClCompile Include="Source Code\External Libraries\ImGui\imgui_impl_sdl_gl3.cpp" />
     <ClCompile Include="Source Code\External Libraries\parson\parson.c" />
     <ClCompile Include="Source Code\FileSystem.cpp" />
+    <ClCompile Include="Source Code\HierarchyDock.cpp" />
+    <ClCompile Include="Source Code\InspectorDock.cpp" />
     <ClCompile Include="Source Code\Log.cpp" />
     <ClCompile Include="Source Code\Main.cpp" />
+    <ClCompile Include="Source Code\SceneDock.cpp" />
     <ClCompile Include="Source Code\ThorUI.cpp" />
     <ClCompile Include="Source Code\UI_Image.cpp" />
     <ClCompile Include="Source Code\UI_Button.cpp" />
@@ -53,6 +56,9 @@
     <ClInclude Include="Source Code\External Libraries\ImGui\stb_truetype.h" />
     <ClInclude Include="Source Code\External Libraries\parson\parson.h" />
     <ClInclude Include="Source Code\FileSystem.h" />
+    <ClInclude Include="Source Code\HierarchyDock.h" />
+    <ClInclude Include="Source Code\InspectorDock.h" />
+    <ClInclude Include="Source Code\SceneDock.h" />
     <ClInclude Include="Source Code\UI_Button.h" />
     <ClInclude Include="Source Code\Color.h" />
     <ClInclude Include="Source Code\Log.h" />

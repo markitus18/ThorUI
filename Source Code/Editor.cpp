@@ -16,10 +16,14 @@
 
 #include "FileSystem.h"
 #include "ImGui\Dock\imgui_dock.h"
+
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "ImGui\imgui_internal.h"
 #include "Log.h"
 #include "Dock.h"
+#include "HierarchyDock.h"
+#include "SceneDock.h"
+#include "InspectorDock.h"
 
 UI_Editor::UI_Editor()
 {
@@ -33,52 +37,86 @@ UI_Editor::~UI_Editor()
 
 bool UI_Editor::Init(SDL_Window* window)
 {
+	bool ret = true;
+
 	this->window = window;
 	int w, h;
 	SDL_GetWindowSize(window, &w, &h);
 	window_size.Set(w, h);
 
+	if (ImGui_ImplSdlGL3_Init(window) == true)
+	{
+		ret = true;
+	}
+	else
+	{
+		ret = false;
+	}
+
 	ImGuiIO io = ImGui::GetIO();
 	io.Fonts->AddFontDefault();
 	//TODO: load own font
 
-	ThorUI::Init(window);
-	Dock* dock = new Dock("0 Dock", Vec2(800, 500));
-	dock->separation = HORIZONTAL;
-	docks.push_back(dock);
-	dock->Split(VERTICAL);
-	/*
-	for (uint i = 0; i < 5; ++i)
-	{
-		char name[50];
-		sprintf_s(name, "%i Dock", i+1);
-		Dock* next = new Dock(name);
-		dock->AddChild(next);
-		docks.push_back(next);
-		int k = 1;
-	}
-	*/
+	ImGuiContext& g = *GImGui;
+	float menubar_size = 13 + g.Style.FramePadding.y * 2.0f;
 
-	if (ImGui_ImplSdlGL3_Init(window) == true)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	ThorUI::Init(window);
+
+	Dock* dock = new Dock("0 Dock", Vec2(window_size.x, window_size.y - menubar_size));
+	docks.push_back(dock);
+	dock->position = Vec2(0, menubar_size);
+	dock->Split(HORIZONTAL, 0.8f);
+	dock->GetDockChildren()[0]->Split(VERTICAL, 0.8f);
+	dock->GetDockChildren()[0]->GetDockChildren()[0]->Split(VERTICAL, 0.2f);
+	
+	h_dock = new Hierarchy(this);
+	dock->AddChildData(h_dock);
+	dock->GetDockChildren()[0]->GetDockChildren()[0]->GetDockChildren()[0]->AddChildData(h_dock);
+
+	s_dock = new Scene(this);
+	dock->AddChildData(s_dock);
+	dock->GetDockChildren()[0]->GetDockChildren()[0]->GetDockChildren()[1]->AddChildData(s_dock);
+
+	i_dock = new Inspector(this);
+	dock->GetDockChildren()[0]->GetDockChildren()[1]->AddChildData(i_dock);
+
+	return ret;
 }
 
 void UI_Editor::Draw()
 {
 	ThorUI::Draw();
-	ImGui_ImplSdlGL3_NewFrame(window);
 
+	SDL_Surface* screen_surf = SDL_GetWindowSurface(window);
+
+	SDL_LockSurface(screen_surf);
+
+	char* pixels = new char[screen_surf->w * screen_surf->h * 4];
+	glReadPixels(0, 0, screen_surf->w, screen_surf->h, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+
+	SDL_UnlockSurface(screen_surf);
+
+	ThorUI::FreeTexture(s_dock->tex_id);
+	s_dock->tex_id = ThorUI::GenTexture();
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, screen_surf->w, screen_surf->h, 0,
+				GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, pixels);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	delete[] pixels;
+
+	s_dock->scene_size = Vec2(screen_surf->w, screen_surf->h);
+
+	glClear(GL_COLOR_BUFFER_BIT);
+	ImGui_ImplSdlGL3_NewFrame(window);
+	
 	for (uint i = 0; i < docks.size(); ++i)
 	{
 		if (docks[i]->root) docks[i]->Draw();
 	}
-
+	
 	if (ImGui::BeginMainMenuBar())
 	{
 		if (ImGui::BeginMenu("File"))
@@ -154,8 +192,8 @@ void UI_Editor::Draw()
 			ImGui::End();
 		}
 
-		DrawHierarchy();
-		DrawInspector();
+	//	DrawHierarchy();
+	//	DrawInspector();
 	}
 	
 	ImGui::Render();
@@ -169,169 +207,6 @@ void UI_Editor::ProcessEvent(SDL_Event* event)
 bool UI_Editor::CleanUp()
 {
 	return true;
-}
-
-void UI_Editor::DrawHierarchy()
-{
-	if (!ImGui::Begin("Hierarchy"))
-	{
-		ImGui::End();
-		return;
-	}
-
-	DrawHierarchyChilds(ThorUI::window_item);
-
-	ImGui::End();
-}
-
-void UI_Editor::DrawHierarchyNode(UI_Item* item)
-{
-	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
-	if (item->GetChildCount() == 0)
-		flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
-	if (item == selected)
-		flags |= ImGuiTreeNodeFlags_Selected;
-	bool node_open = ImGui::TreeNodeEx(item, flags, item->GetName());
-	if (ImGui::IsItemHoveredRect() && ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_DOWN)
-	{
-		selected = item;
-	}
-
-	if (node_open == true)
-	{
-		if (item->GetChildCount() > 0)
-		{
-			DrawHierarchyChilds(item);
-			ImGui::TreePop();
-		}
-	}
-}
-
-void UI_Editor::DrawHierarchyChilds(UI_Item* item)
-{
-	const std::vector<UI_Item*> children = item->GetChildren();
-	for (std::vector<UI_Item*>::const_iterator it = children.begin(); it != children.end(); ++it)
-	{
-		DrawHierarchyNode(*it);
-	}
-}
-
-void UI_Editor::DrawInspector()
-{
-	if (ImGui::Begin("Inspector"))
-	{
-		if (selected != nullptr)
-		{
-			DrawItemData(selected);
-		}
-		ImGui::End();
-	}
-}
-
-void UI_Editor::DrawItemData(UI_Item* item)
-{
-	if (item != nullptr)
-	{
-		char name[50];
-		strcpy_s(name, 50, item->GetName());
-		ImGuiInputTextFlags name_input_flags = ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue;
-		if (ImGui::InputText("###", name, 50, name_input_flags))
-			item->SetName(name);
-		ImGui::Separator();
-
-		Vec2 pos = item->GetPos();
-		if (ImGui::DragFloat2("Position", &pos))
-		{
-			item->SetPos(pos);
-		}
-
-		Vec2 size = item->GetSize();
-		if (ImGui::DragFloat2("Size", &size))
-		{
-			item->SetSize(size);
-		}
-
-		Vec2 pivot = item->GetPivot();
-		if (ImGui::DragFloat2("Pivot", &pivot, 0.03f))
-		{
-			item->SetPivot(pivot);
-		}
-
-		ImGui::Separator();
-
-		switch (item->GetType())
-		{
-			case(Image):
-			{
-				UI_Image* img = (UI_Image*)item;
-				DrawInspectorImage((UI_Image*)item);
-				break;
-			}
-			case(Text):
-			{
-				UI_Text* txt = (UI_Text*)item;
-				DrawInspectorText((UI_Text*)item);
-				break;
-			}
-
-		}
-	}
-}
-
-void UI_Editor::DrawInspectorImage(UI_Image* img)
-{
-	ImGui::Text("Source Image");
-	if (img->GetTexID() != 0)
-	{
-		DisplayTexture(ThorUI::GetTexture(img->GetTexID()));
-	}
-	if (ImGui::BeginMenu_ThorUI("Set Texture: "))
-	{
-		std::map<uint, ThorUI::Texture>::iterator it;
-		for (it = ThorUI::textures.begin(); it != ThorUI::textures.end(); ++it)
-		{
-			if (ImGui::MenuItem((*it).second.path.c_str()))
-			{
-				img->SetTexture((*it).second.id);
-			}
-		}
-		if (ImGui::MenuItem("Load New Texture..."))
-		{
-			std::string fileName = OpenFileDialog();
-			if (fileName != "")
-			{
-				img->SetTexture(ThorUI::LoadTexture(fileName.c_str()));
-			}
-		}
-		ImGui::EndMenu();
-	}
-	Color color = img->GetColor();
-	if (ImGui::ColorEdit3("Color", color.ptr()))
-	{
-		img->SetColor(color);
-	}
-}
-
-void UI_Editor::DrawInspectorText(UI_Text* text)
-{
-	char orig_text[50];
-	strcpy_s(orig_text, 50, text->GetText());
-
-	if (ImGui::InputText("Text", orig_text, 50))
-	{
-		text->SetText(orig_text);
-	}
-
-	Color color = text->GetColor();
-	if (ImGui::ColorEdit3("Color", color.ptr()))
-	{
-		text->SetColor(color);
-	}
-}
-
-void UI_Editor::DrawInspectorButton(UI_Button* button)
-{
-
 }
 
 void UI_Editor::DisplayTexture(ThorUI::Texture* tex)

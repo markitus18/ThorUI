@@ -25,6 +25,9 @@
     <Filter Include="Editor\MyDock">
       <UniqueIdentifier>{57a82c5f-8216-4c60-99e1-4b7ec71d4fa0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Editor\DockData">
+      <UniqueIdentifier>{8443b14a-cd94-49bb-ad72-112810fbf704}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\UI_Item.cpp">
@@ -76,6 +79,15 @@
     </ClCompile>
     <ClCompile Include="Source Code\DockData.cpp">
       <Filter>Editor\MyDock</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\HierarchyDock.cpp">
+      <Filter>Editor\DockData</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\SceneDock.cpp">
+      <Filter>Editor\DockData</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\InspectorDock.cpp">
+      <Filter>Editor\DockData</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +154,15 @@
     </ClInclude>
     <ClInclude Include="Source Code\DockData.h">
       <Filter>Editor\MyDock</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\HierarchyDock.h">
+      <Filter>Editor\DockData</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\SceneDock.h">
+      <Filter>Editor\DockData</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\InspectorDock.h">
+      <Filter>Editor\DockData</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

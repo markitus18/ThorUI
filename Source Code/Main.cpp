@@ -98,7 +98,7 @@ bool init()
 	else
 	{
 		//Create window
-		gWindow = SDL_CreateWindow("ThorUI", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1000, 800, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+		gWindow = SDL_CreateWindow("ThorUI", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1600, 900, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 		if (gWindow == NULL)
 		{
 			printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -184,7 +184,6 @@ int main(int argc, char** args)
 			//ThorUI::StartFrame();
 			//ThorUI::Draw();
 			editor->Draw();
-
 			SDL_GL_SwapWindow(gWindow);
 			ThorUI::UpdateKeyboardState();
 		}
