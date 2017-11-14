@@ -118,6 +118,7 @@ bool UI_Text::LoadTexture()
 			ThorUI::FreeTexture(texture_id);
 
 		texture_id = ThorUI::GenTextTexture(text.c_str(), font_id, texture_size, size);
+		size = texture_size;
 		if (texture_id == 0) return false;
 	}
 }

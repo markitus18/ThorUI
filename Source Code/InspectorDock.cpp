@@ -8,6 +8,7 @@
 #include "ImGui\imgui.h"
 #include "ImGui\imgui_internal.h"
 
+#include "ThorUI.h"
 #include "Editor.h"
 #include "Dock.h"
 
@@ -64,12 +65,53 @@ void Inspector::Draw()
 
 void Inspector::DrawImage(UI_Image* img)
 {
-
+	ImGui::Text("Source Image");
+	if (img->GetTexID() != 0)
+	{
+		editor->DisplayTexture(ThorUI::GetTexture(img->GetTexID()));
+	}
+	if (ImGui::BeginMenu_ThorUI("Set Texture: "))
+	{
+		std::map<uint, ThorUI::Texture>::iterator it;
+		for (it = ThorUI::textures.begin(); it != ThorUI::textures.end(); ++it)
+		{
+			if (ImGui::MenuItem((*it).second.path.c_str()))
+			{
+				img->SetTexture((*it).second.id);
+			}
+		}
+		if (ImGui::MenuItem("Load New Texture..."))
+		{
+			std::string fileName = editor->OpenFileDialog();
+			if (fileName != "")
+			{
+				img->SetTexture(ThorUI::LoadTexture(fileName.c_str()));
+			}
+		}
+		ImGui::EndMenu();
+	}
+	Color color = img->GetColor();
+	if (ImGui::ColorEdit3("Color", color.ptr()))
+	{
+		img->SetColor(color);
+	}
 }
 
 void Inspector::DrawText(UI_Text* text)
 {
+	char orig_text[50];
+	strcpy_s(orig_text, 50, text->GetText());
 
+	if (ImGui::InputText("Text", orig_text, 50))
+	{
+		text->SetText(orig_text);
+	}
+
+	Color color = text->GetColor();
+	if (ImGui::ColorEdit3("Color", color.ptr()))
+	{
+		text->SetColor(color);
+	}
 }
 
 void Inspector::DrawButton(UI_Button* button)

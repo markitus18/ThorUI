@@ -231,6 +231,10 @@ void Dock::RemoveChildData(DockData* dock)
 			break;
 		}
 	}
+	if (data_children.size() == 0)
+	{
+
+	}
 }
 
 void Dock::Split(Separation_Type type, float pos)

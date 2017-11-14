@@ -35,9 +35,7 @@ public:
 	void ProcessEvent(SDL_Event* event);
 	bool CleanUp();
 
-private:
 	void DisplayTexture(ThorUI::Texture* tex);
-
 	std::string OpenFileDialog() const;
 
 public:
