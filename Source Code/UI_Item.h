@@ -37,8 +37,9 @@ public:
 	virtual void SetSize(Vec2 size);
 	void SetName(const char* name);
 	void SetPivot(Vec2 pivot);
+	void SetActive(bool active);
 
-	void SetParent(UI_Item* parent);
+	void SetParent(UI_Item* parent, bool keep_global = true);
 	void RemoveChild(UI_Item* child);
 
 	void UpdateGlobalPos();
@@ -60,6 +61,8 @@ public:
 	const std::vector<UI_Item*> GetChildren() const;
 	Item_Type GetType() const;
 
+	bool IsActive() const;
+	bool IsParentActive() const;
 protected:
 	std::string name;
 	Item_Type type;
@@ -73,6 +76,8 @@ protected:
 
 	UI_Item* parent = nullptr;
 	std::vector<UI_Item*> children;
+
+	bool active = true;
 };
 
 #endif

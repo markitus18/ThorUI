@@ -17,11 +17,14 @@ void Inspector::Draw()
 	if (editor->selected != nullptr)
 	{
 		UI_Item* selected = editor->selected;
-		char name[50];
-		strcpy_s(name, 50, selected->GetName());
-		ImGuiInputTextFlags name_input_flags = ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue;
-		if (ImGui::InputTextEx("###", name, 50, ImVec2(200, 0), name_input_flags))
-			selected->SetName(name);
+
+		bool active = selected->IsActive();
+		if (ImGui::Checkbox("", &active))
+		{
+			selected->SetActive(active);
+		}
+		ImGui::SameLine();
+		DisplayItemName(selected);
 		ImGui::Separator();
 
 		ImGui::BeginChild("ChildID", ImVec2(parent->size.x < 330 ? 0 : 330, ImGui::GetItemsLineHeightWithSpacing() * 3)); //To limit DragFloat size
@@ -61,6 +64,15 @@ void Inspector::Draw()
 			}
 		}
 	}
+}
+
+void Inspector::DisplayItemName(UI_Item* item)
+{
+	char name[50];
+	strcpy_s(name, 50, item->GetName());
+	ImGuiInputTextFlags name_input_flags = ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue;
+	if (ImGui::InputTextEx("###", name, 50, ImVec2(200, 0), name_input_flags))
+		item->SetName(name);
 }
 
 void Inspector::DrawImage(UI_Image* img)

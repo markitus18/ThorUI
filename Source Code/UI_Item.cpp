@@ -37,13 +37,23 @@ void UI_Item::SetPivot(Vec2 pivot)
 	SetPos(new_pos);
 }
 
-void UI_Item::SetParent(UI_Item* parent)
+void UI_Item::SetActive(bool active)
+{
+	this->active = active;
+}
+
+void UI_Item::SetParent(UI_Item* parent, bool keep_global)
 {
 	if (this->parent != nullptr) this->parent->RemoveChild(this);
 
 	this->parent = parent;
 	parent->children.push_back(this);
-	UpdateGlobalPos();
+
+	//Keeping global pos coordinates
+	if (keep_global)
+		pos = global_pos - (parent ? parent->GetPos() : Vec2());
+	else
+		UpdateGlobalPos();
 }
 
 void UI_Item::RemoveChild(UI_Item* child)
@@ -128,4 +138,18 @@ const std::vector<UI_Item*> UI_Item::GetChildren() const
 Item_Type UI_Item::GetType() const
 {
 	return type;
+}
+
+bool UI_Item::IsActive() const
+{
+	return active;
+}
+
+bool UI_Item::IsParentActive() const
+{
+	if (parent == nullptr)
+		return true;
+	if (active == false || parent->IsActive() == false)
+		return false;
+	return parent->IsParentActive();
 }

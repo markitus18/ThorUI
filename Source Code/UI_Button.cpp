@@ -22,7 +22,8 @@ UI_Button::UI_Button(Vec2 size, Vec2 pos) : UI_Item(size, pos)
 
 void UI_Button::Draw()
 {
-	ThorUI::DrawQuad(global_pos - (size * pivot), size, color, true, 5.0f);
+	if (IsParentActive() == true)
+		ThorUI::DrawQuad(global_pos - (size * pivot), size, color, true, 5.0f);
 }
 
 void UI_Button::OnItemEvent(Item_Event event)

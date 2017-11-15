@@ -119,6 +119,12 @@ void Dock::DrawSeparator()
 		ImVec2 delta = ImGui::GetMouseDragDelta(0);
 		float init_position = separator.init_position * (separation == VERTICAL ? size.x : size.y);
 		float final_pos = separation == VERTICAL ? init_position + delta.x : init_position + delta.y;
+
+		float current_size = separation == VERTICAL ? size.x : size.y;
+
+		if (final_pos > current_size - min_size) final_pos = current_size - min_size;
+		if (final_pos < min_size) final_pos = min_size;
+
 		separator.position = final_pos / (separation == VERTICAL ? size.x : size.y);
 
 		UpdateChildrenPosition();

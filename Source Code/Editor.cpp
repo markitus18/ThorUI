@@ -161,7 +161,7 @@ void UI_Editor::Draw()
 				ThorUI::AddItem(button);
 
 				UI_Text* text = new UI_Text(Vec2(0, 0), Vec2(0, 0), "Button");
-				text->SetParent(button);
+				text->SetParent(button, false);
 				ThorUI::AddItem(text);
 			}
 			if (ImGui::MenuItem("Image"))

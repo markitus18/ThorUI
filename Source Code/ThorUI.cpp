@@ -75,7 +75,6 @@ namespace ThorUI
 
 	void Draw()
 	{
-		DrawQuad(window_item->GetPos(), window_item->GetSize(), Color::White(), false, 2.0f);
 		std::vector<UI_Item*>::iterator it;
 		for (it = items.begin(); it != items.end(); ++it)
 		{

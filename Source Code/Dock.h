@@ -59,6 +59,7 @@ public:
 
 	Vec2 position;
 	Vec2 size;
+	float min_size = 150.0f;
 
 	Separation_Type separation = NONE;
 private:

@@ -11,6 +11,8 @@ UI_Image::UI_Image(Vec2 pos, Vec2 size, int texture_id) : UI_Item(pos, size)
 
 void UI_Image::Draw()
 {
+	if (IsParentActive() == false) return;
+
 	if (texture_id != 0)
 	{
 		ThorUI::DrawImage(global_pos - (size * pivot), size, texture_id, color);
