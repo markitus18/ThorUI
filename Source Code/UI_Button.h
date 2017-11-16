@@ -27,8 +27,12 @@ public:
 	void Draw();
 	void OnItemEvent(Item_Event event);
 
-	//void Save(Config& config);
-	//void Load(Config& config);
+	void SetColor(Color color);
+
+	Color GetColor() const;
+
+	void InternalSave(Config& config);
+	void InternalLoad(Config& config);
 
 private:
 	Color color;

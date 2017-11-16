@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="External Libraries">
-      <UniqueIdentifier>{bfd3402f-6564-4cce-b360-723551bb53b7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="UI Items">
       <UniqueIdentifier>{1237ddf1-0e57-4db9-a2d4-8aba45c7cb6c}</UniqueIdentifier>
     </Filter>
@@ -16,17 +13,20 @@
     <Filter Include="Editor">
       <UniqueIdentifier>{429c6265-88eb-4f5a-92e6-f432b0c6eae6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="External Libraries\ImGui">
-      <UniqueIdentifier>{c60f0c1e-ab9f-49a2-8693-7c7a19411079}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="External Libraries\ImGui\Dock">
-      <UniqueIdentifier>{01c0fc2e-e6b7-47dc-b21e-72eae191eaa8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Editor\MyDock">
       <UniqueIdentifier>{57a82c5f-8216-4c60-99e1-4b7ec71d4fa0}</UniqueIdentifier>
     </Filter>
     <Filter Include="Editor\DockData">
       <UniqueIdentifier>{8443b14a-cd94-49bb-ad72-112810fbf704}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External Libraries">
+      <UniqueIdentifier>{bfd3402f-6564-4cce-b360-723551bb53b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External Libraries\ImGui">
+      <UniqueIdentifier>{c60f0c1e-ab9f-49a2-8693-7c7a19411079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External Libraries\ImGui\Dock">
+      <UniqueIdentifier>{01c0fc2e-e6b7-47dc-b21e-72eae191eaa8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -18,6 +18,11 @@ void UI_Item::SetSize(float w, float h)
 	size = Vec2(w, h);
 }
 
+void UI_Item::SetID(int id)
+{
+	this->id = id;
+}
+
 void UI_Item::SetSize(Vec2 size)
 {
 	this->size = size;
@@ -85,6 +90,9 @@ void UI_Item::Save(Config& config)
 	config.SetNumber("Type", (int)type);
 	config.SetArray("Position").AddVec2(pos);
 	config.SetArray("Size").AddVec2(size);
+	config.SetNumber("ID", id);
+	config.SetNumber("Parent ID", parent ? parent->GetID() : -1);
+	InternalSave(config);
 }
 
 void UI_Item::Load(Config& config)
@@ -92,6 +100,9 @@ void UI_Item::Load(Config& config)
 	name = config.GetString("Name", "Undefined");
 	pos = config.GetArray("Position").GetVec2(0);
 	size = config.GetArray("Size").GetVec2(0);
+	id = config.GetNumber("ID", -1);
+
+	InternalLoad(config); //TODO: consider if updating pos before or after
 	UpdateGlobalPos();
 }
 
@@ -108,6 +119,11 @@ Vec2 UI_Item::GetSize() const
 Vec2 UI_Item::GetPivot() const
 {
 	return pivot;
+}
+
+int UI_Item::GetID() const
+{
+	return id;
 }
 
 Item_Event UI_Item::GetLastEvent() const

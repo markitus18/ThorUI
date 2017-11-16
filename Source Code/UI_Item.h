@@ -34,11 +34,12 @@ public:
 	void SetPos(float x, float y);
 	void SetPos(Vec2 pos);
 	void SetSize(float w, float h);
+	void SetID(int id);
+
 	virtual void SetSize(Vec2 size);
 	void SetName(const char* name);
 	void SetPivot(Vec2 pivot);
 	void SetActive(bool active);
-
 	void SetParent(UI_Item* parent, bool keep_global = true);
 	void RemoveChild(UI_Item* child);
 
@@ -47,12 +48,13 @@ public:
 	virtual void Draw() {}; //TODO: draw here, or in ThorUI?
 	virtual void OnItemEvent(Item_Event event) { last_event = event; };
 
-	virtual void Save(Config& config);
-	virtual void Load(Config& config);
+	void Save(Config& config);
+	void Load(Config& config);
 
 	Vec2 GetPos() const;
 	Vec2 GetSize() const;
 	Vec2 GetPivot() const;
+	int GetID() const;
 
 	Item_Event GetLastEvent() const;
 	UI_Item* GetParent() const;
@@ -63,6 +65,11 @@ public:
 
 	bool IsActive() const;
 	bool IsParentActive() const;
+
+protected:
+	virtual void InternalSave(Config& config) = 0;
+	virtual void InternalLoad(Config& config) = 0;
+
 protected:
 	std::string name;
 	Item_Type type;
@@ -78,6 +85,7 @@ protected:
 	std::vector<UI_Item*> children;
 
 	bool active = true;
+	int id = -1;
 };
 
 #endif

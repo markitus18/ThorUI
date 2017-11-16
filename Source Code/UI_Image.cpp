@@ -23,18 +23,15 @@ void UI_Image::Draw()
 	}
 }
 
-void UI_Image::Save(Config& config)
+void UI_Image::InternalSave(Config& config)
 {
-	UI_Item::Save(config);
-
 	ThorUI::Texture* tex = ThorUI::GetTexture(texture_id);
 	config.SetString("Texture", tex != nullptr ? tex->path.c_str() : "");
 	config.SetArray("Color").AddColor(color);
 }
 
-void UI_Image::Load(Config& config)
+void UI_Image::InternalLoad(Config& config)
 {
-	UI_Item::Load(config);
 	color = config.GetArray("Color").GetColor(0);
 	std::string tex_path =  config.GetString("Texture");
 	if (tex_path != "")

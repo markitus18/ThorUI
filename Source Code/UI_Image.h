@@ -14,8 +14,8 @@ public:
 
 	void Draw();
 	
-	void Save(Config& config);
-	void Load(Config& config);
+	void InternalSave(Config& config);
+	void InternalLoad(Config& config);
 
 	//Setters
 	void SetColor(Color color);
@@ -24,7 +24,6 @@ public:
 	//Getters
 	Color GetColor() const;
 	uint GetTexID() const;
-
 
 public:
 

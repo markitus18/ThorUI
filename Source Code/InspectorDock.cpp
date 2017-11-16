@@ -52,14 +52,17 @@ void Inspector::Draw()
 		{
 			case(Image):
 			{
-				UI_Image* img = (UI_Image*)selected;
 				DrawImage((UI_Image*)selected);
 				break;
 			}
 			case(Text):
 			{
-				UI_Text* txt = (UI_Text*)selected;
 				DrawText((UI_Text*)selected);
+				break;
+			}
+			case(Button):
+			{
+				DrawButton((UI_Button*)selected);
 				break;
 			}
 		}
@@ -128,5 +131,9 @@ void Inspector::DrawText(UI_Text* text)
 
 void Inspector::DrawButton(UI_Button* button)
 {
-
+	Color color = button->GetColor();
+	if (ImGui::ColorEdit3("Color", color.ptr()))
+	{
+		button->SetColor(color);
+	}
 }

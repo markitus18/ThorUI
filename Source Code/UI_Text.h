@@ -24,8 +24,9 @@ public:
 
 	void Draw();
 
-	void Save(Config& config);
-	void Load(Config& config);
+protected:
+	void InternalSave(Config& config);
+	void InternalLoad(Config& config);
 
 private:
 	bool LoadTexture();

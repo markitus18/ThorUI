@@ -62,8 +62,10 @@ namespace ThorUI
 			LoadFont("Times_New_Roman_Normal.ttf", 36);
 		}
 
-		window_item = new UI_Item(Vec2(0, 0), screen_size);
+		window_item = new UI_Text(Vec2(0, 0), screen_size, ""); //Hehe
 		window_item->SetName("Window");
+		window_item->SetID(0);
+		items.push_back(window_item);
 	}
 
 	void StartFrame()
@@ -393,9 +395,12 @@ namespace ThorUI
 	void AddItem(UI_Item* item)
 	{
 		items.push_back(item);
+
+		if (item->GetID() == -1)
+			item->SetID(items.size() - 1);
 		if (item->GetParent() == nullptr)
 		{
-			item->SetParent(window_item);
+			item->SetParent(window_item, false);
 		}
 	}
 
@@ -430,7 +435,7 @@ namespace ThorUI
 			Config file;
 			Config_Array arr = file.SetArray("Items");
 
-			for (uint i = 0; i < items.size(); ++i)
+			for (uint i = 1; i < items.size(); ++i)
 			{
 				items[i]->Save(arr.AddNode());
 
@@ -457,6 +462,7 @@ namespace ThorUI
 
 			if (SDL_RWread(rw, buf, 1, size) == size)
 			{
+				std::vector<int> parent_ids;
 				ClearScene();
 				Config file(buf);
 				Config_Array arr = file.GetArray("Items");
@@ -486,6 +492,24 @@ namespace ThorUI
 					}
 					item->Load(node);
 					AddItem(item);
+					parent_ids.push_back(node.GetNumber("Parent ID", -1));
+				}
+
+				for (uint i = 0; i < parent_ids.size(); ++i)
+				{
+					bool set = false;
+					for (uint item = 0; item < items.size() && !set; ++item)
+					{
+						if (parent_ids[i] == items[item]->GetID())
+						{
+							items[i]->SetParent(items[item]);
+							set = true;
+						}
+					}
+					if (!set)
+					{
+						items[i]->SetParent(window_item, false);
+					}
 				}
 			}
 			SDL_RWclose(rw);
@@ -497,6 +521,7 @@ namespace ThorUI
 		while (window_item->GetChildCount() > 0)
 			window_item->RemoveChild(window_item->GetChildren()[0]);
 		items.clear();
+		items.push_back(window_item);
 	}
 
 	void SetCanvasSize(Vec2 size)

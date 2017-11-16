@@ -14,6 +14,7 @@ UI_Text::UI_Text(Vec2 pos, Vec2 size, const char* text) :  UI_Item(pos, size), c
 {
 	name = "Text";
 	font_id = 1; //Default font
+	ThorUI::OnSetFont(font_id);
 	LoadTexture();
 	type = Text;
 }
@@ -46,9 +47,17 @@ void UI_Text::SetFont(uint font_id)
 	if (this->font_id != 0)
 		ThorUI::OnLeaveFont(this->font_id);
 
-	this->font_id = font_id;
-	ThorUI::OnSetFont(font_id);
-	LoadTexture();
+	if (font_id <= ThorUI::fonts.size())
+	{
+		this->font_id = font_id;
+		ThorUI::OnSetFont(font_id);
+		LoadTexture();
+	}
+	else
+	{
+		font_id = 0;
+	}
+
 }
 
 void UI_Text::SetSize(Vec2 size)
@@ -74,14 +83,12 @@ Vec2 UI_Text::GetTexSize() const
 
 void UI_Text::Draw()
 {
-	if (IsParentActive() == true)
+	if (IsParentActive() == true && texture_id != 0)
 		ThorUI::DrawImage(global_pos - (texture_size * pivot), texture_size, texture_id, color);
 }
 
-void UI_Text::Save(Config& config)
+void UI_Text::InternalSave(Config& config)
 {
-	UI_Item::Save(config);
-
 	config.SetString("Text", text.c_str());
 
 	ThorUI::Font* font = &ThorUI::fonts[font_id - 1];
@@ -94,10 +101,8 @@ void UI_Text::Save(Config& config)
 	config.SetArray("Color").AddColor(color);
 }
 
-void UI_Text::Load(Config& config)
+void UI_Text::InternalLoad(Config& config)
 {
-	UI_Item::Load(config);
-
 	text = config.GetString("Text", "Undefined");
 
 	std::string font = config.GetString("Font");
@@ -113,13 +118,17 @@ void UI_Text::Load(Config& config)
 
 bool UI_Text::LoadTexture()
 {
+	if (texture_id != 0)
+		ThorUI::FreeTexture(texture_id);
+
 	if (font_id != 0 && text != "")
 	{
-		if (texture_id != 0)
-			ThorUI::FreeTexture(texture_id);
-
 		texture_id = ThorUI::GenTextTexture(text.c_str(), font_id, texture_size, size);
 		size = texture_size;
-		if (texture_id == 0) return false;
 	}
+	else
+	{
+		texture_id = 0;
+	}
+	if (texture_id == 0) return false;
 }

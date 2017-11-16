@@ -1,6 +1,7 @@
 #include "UI_Button.h"
 #include "ThorUI.h"
 #include "Log.h"
+#include "Config.h"
 
 UI_Button::UI_Button()
 {
@@ -36,4 +37,24 @@ void UI_Button::OnItemEvent(Item_Event event)
 		case(Mouse_Up):		color = color_data[1]; break;
 		case(Mouse_Exit):	color = color_data[0]; break;
 	}
+}
+
+void UI_Button::SetColor(Color color)
+{
+	color_data[0] = this->color = color;
+}
+
+Color UI_Button::GetColor() const
+{
+	return color;
+}
+
+void UI_Button::InternalSave(Config& config)
+{
+	config.SetArray("Color").AddColor(color);
+}
+
+void UI_Button::InternalLoad(Config& config)
+{
+	color = config.GetArray("Color").GetColor(0);
 }
