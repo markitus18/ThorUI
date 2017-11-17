@@ -30,5 +30,5 @@ void Scene::Draw()
 	ImVec2 cursor_pos = ImGui::GetCursorPos();
 	cursor_pos += (original_size - size_v) / 2;
 	ImGui::SetCursorPos(cursor_pos);
-	ImGui::Image((ImTextureID)tex_id, size_v, ImVec2(0, 1), ImVec2(1, 0));
+	ImGui::Image((ImTextureID)renderTexture, size_v, ImVec2(0, 1), ImVec2(1, 0));
 }

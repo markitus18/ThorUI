@@ -463,6 +463,8 @@ namespace ThorUI
 			if (SDL_RWread(rw, buf, 1, size) == size)
 			{
 				std::vector<int> parent_ids;
+				std::vector<UI_Item*> new_items;
+
 				ClearScene();
 				Config file(buf);
 				Config_Array arr = file.GetArray("Items");
@@ -493,6 +495,7 @@ namespace ThorUI
 					item->Load(node);
 					AddItem(item);
 					parent_ids.push_back(node.GetNumber("Parent ID", -1));
+					new_items.push_back(item);
 				}
 
 				for (uint i = 0; i < parent_ids.size(); ++i)
@@ -502,13 +505,13 @@ namespace ThorUI
 					{
 						if (parent_ids[i] == items[item]->GetID())
 						{
-							items[i]->SetParent(items[item]);
+							new_items[i]->SetParent(items[item], false);
 							set = true;
 						}
 					}
 					if (!set)
 					{
-						items[i]->SetParent(window_item, false);
+						new_items[i]->SetParent(window_item, false);
 					}
 				}
 			}

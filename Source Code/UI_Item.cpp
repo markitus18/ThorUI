@@ -1,6 +1,11 @@
 #include "UI_Item.h"
 #include "Config.h"
 
+UI_Item::~UI_Item()
+{
+	DeleteChildren();
+}
+
 void UI_Item::SetPos(float x, float y)
 {
 	pos = Vec2(x, y);
@@ -73,11 +78,21 @@ void UI_Item::RemoveChild(UI_Item* child)
 	}
 }
 
+void UI_Item::DeleteChildren()
+{
+	std::vector<UI_Item*>::iterator it = children.begin();
+	while (it != children.end())
+	{
+		(*it)->DeleteChildren();
+		delete (*it);
+		it = children.erase(it);
+	}
+}
+
 void UI_Item::UpdateGlobalPos()
 {
 	global_pos = (parent ? parent->GetPos() : Vec2()) + pos;
 
-	//TODO: iterative method for full optimization?
 	for (std::vector<UI_Item*>::iterator it = children.begin(); it != children.end(); ++it)
 	{
 		(*it)->UpdateGlobalPos();
@@ -163,9 +178,7 @@ bool UI_Item::IsActive() const
 
 bool UI_Item::IsParentActive() const
 {
-	if (parent == nullptr)
-		return true;
-	if (active == false || parent->IsActive() == false)
+	if (active == false)
 		return false;
-	return parent->IsParentActive();
+	return (parent == nullptr ? true : parent->IsParentActive());
 }

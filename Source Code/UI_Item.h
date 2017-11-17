@@ -30,6 +30,7 @@ public:
 	UI_Item() {};
 	UI_Item(float x, float y) : pos(x, y) { UpdateGlobalPos(); };
 	UI_Item(Vec2 pos, Vec2 size) : pos(pos), size(size) { UpdateGlobalPos(); };
+	~UI_Item();
 
 	void SetPos(float x, float y);
 	void SetPos(Vec2 pos);
@@ -42,6 +43,7 @@ public:
 	void SetActive(bool active);
 	void SetParent(UI_Item* parent, bool keep_global = true);
 	void RemoveChild(UI_Item* child);
+	void DeleteChildren();
 
 	void UpdateGlobalPos();
 

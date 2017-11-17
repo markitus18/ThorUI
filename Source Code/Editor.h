@@ -14,10 +14,7 @@ class UI_Button;
 class UI_Text;
 class Dock;
 
-namespace ThorUI
-{
-	struct Texture;
-}
+namespace ThorUI{struct Texture;}
 typedef unsigned int uint;
 class Scene;
 class Inspector;
@@ -54,10 +51,10 @@ private:
 
 	uint tmp_buff = 0;
 
-	Scene* s_dock = nullptr;
-	Inspector* i_dock = nullptr;
-	Hierarchy* h_dock = nullptr;
-	Resources* r_dock = nullptr;
+	Scene* scene = nullptr;
+	Inspector* inspector = nullptr;
+	Hierarchy* hierarchy = nullptr;
+	Resources* resources = nullptr;
 };
 
 #endif //__EDITOR_H__

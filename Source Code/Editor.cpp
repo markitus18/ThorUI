@@ -70,19 +70,32 @@ bool UI_Editor::Init(SDL_Window* window)
 	dock->GetDockChildren()[0]->Split(VERTICAL, 0.8f);
 	dock->GetDockChildren()[0]->GetDockChildren()[0]->Split(VERTICAL, 0.2f);
 	
-	h_dock = new Hierarchy(this);
-	dock->AddChildData(h_dock);
-	dock->GetDockChildren()[0]->GetDockChildren()[0]->GetDockChildren()[0]->AddChildData(h_dock);
+	hierarchy = new Hierarchy(this);
+	dock->GetDockChildren()[0]->GetDockChildren()[0]->GetDockChildren()[0]->AddChildData(hierarchy);
 
-	s_dock = new Scene(this);
-	dock->AddChildData(s_dock);
-	dock->GetDockChildren()[0]->GetDockChildren()[0]->GetDockChildren()[1]->AddChildData(s_dock);
+	scene = new Scene(this);
+	dock->GetDockChildren()[0]->GetDockChildren()[0]->GetDockChildren()[1]->AddChildData(scene);
 
-	i_dock = new Inspector(this);
-	dock->GetDockChildren()[0]->GetDockChildren()[1]->AddChildData(i_dock);
+	glGenFramebuffers(1, &scene->frameBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, scene->frameBuffer);
 
-	r_dock = new Resources(this);
-	dock->GetDockChildren()[1]->AddChildData(r_dock);
+	glGenTextures(1, &scene->renderTexture);
+	glBindTexture(GL_TEXTURE_2D, scene->renderTexture);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ThorUI::window_item->GetSize().x, ThorUI::window_item->GetSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, scene->renderTexture, 0);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	inspector = new Inspector(this);
+	dock->GetDockChildren()[0]->GetDockChildren()[1]->AddChildData(inspector);
+
+	resources = new Resources(this);
+	dock->GetDockChildren()[1]->AddChildData(resources);
 
 
 	return ret;
@@ -90,8 +103,11 @@ bool UI_Editor::Init(SDL_Window* window)
 
 void UI_Editor::Draw()
 {
+	glDrawBuffer(scene->frameBuffer);
 	ThorUI::Draw();
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	/*
 	SDL_Surface* screen_surf = SDL_GetWindowSurface(window);
 
 	SDL_LockSurface(screen_surf);
@@ -101,8 +117,8 @@ void UI_Editor::Draw()
 
 	SDL_UnlockSurface(screen_surf);
 
-	ThorUI::FreeTexture(s_dock->tex_id);
-	s_dock->tex_id = ThorUI::GenTexture();
+	ThorUI::FreeTexture(scene->tex_id);
+	scene->tex_id = ThorUI::GenTexture();
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, screen_surf->w, screen_surf->h, 0,
 				GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, pixels);
@@ -112,9 +128,10 @@ void UI_Editor::Draw()
 	glBindTexture(GL_TEXTURE_2D, 0);
 	delete[] pixels;
 
-	s_dock->scene_size = Vec2(screen_surf->w, screen_surf->h);
+	scene->scene_size = Vec2(screen_surf->w, screen_surf->h);
 
 	glClear(GL_COLOR_BUFFER_BIT);
+	*/
 	ImGui_ImplSdlGL3_NewFrame(window);
 	
 	for (uint i = 0; i < docks.size(); ++i)
