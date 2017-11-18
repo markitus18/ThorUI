@@ -5,10 +5,6 @@
 #include "glew-2.1.0\include\GL\glew.h"
 #include "SDL2-2.0.6\include\SDL.h"
 
-#include <Windows.h>
-#include <ShObjIdl.h>
-#include <comdef.h>
-
 #include "ThorUI.h"
 #include "UI_Image.h"
 #include "UI_Button.h"
@@ -124,7 +120,11 @@ void UI_Editor::Draw()
 	{
 		if (docks[i]->root) docks[i]->Draw();
 	}
-	
+	DrawMainMenuBar();
+}
+
+void UI_Editor::DrawMainMenuBar()
+{
 	if (ImGui::BeginMainMenuBar())
 	{
 		if (ImGui::BeginMenu("File"))
@@ -171,7 +171,7 @@ void UI_Editor::Draw()
 			{
 				Vec2 image_size(100, 100);
 				Vec2 image_pos = window_size / 2;
-				
+
 				UI_Image* image = new UI_Image(image_pos, image_size);
 				ThorUI::AddItem(image);
 			}
@@ -200,10 +200,9 @@ void UI_Editor::Draw()
 			ImGui::End();
 		}
 	}
-	
+
 	ImGui::Render();
 }
-
 void UI_Editor::ProcessEvent(SDL_Event* event)
 {
 	ImGui_ImplSdlGL3_ProcessEvent(event);
@@ -218,63 +217,8 @@ void UI_Editor::DisplayTexture(ThorUI::Texture* tex)
 {
 	ImVec2 window_size = ImGui::GetWindowSize();
 	float padding = ImGui::GetStyle().WindowPadding.x;
-	float max_h = 200;
-	Vec2 size = tex->original_size;
+	Vec2 size = tex->original_size.FitInRect(Vec2(window_size.x - padding * 2, 200));
 
-	if (size.x > (window_size.x - padding * 2))
-	{
-		size.y /= (size.x / (window_size.x - padding * 2));
-		size.x /= (size.x / (window_size.x - padding * 2));
-	}
-	if (size.y > max_h)
-	{
-		size.x /= (size.y / max_h);
-		size.y /= (size.y / max_h);
-	}
 	ImGui::Image((ImTextureID)tex->id, ImVec2(size.x, size.y));
 	ImGui::Text("Original size: %i, %i", (int)tex->original_size.x, (int)tex->original_size.y);
-}
-
-std::string UI_Editor::OpenFileDialog() const
-{
-	std::string result = "";
-	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
-		COINIT_DISABLE_OLE1DDE);
-	if (SUCCEEDED(hr))
-	{
-		IFileOpenDialog *pFileOpen;
-
-		// Create the FileOpenDialog object.
-		hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
-			IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
-
-		if (SUCCEEDED(hr))
-		{
-			hr = pFileOpen->Show(NULL);
-
-			// Get the file name from the dialog box.
-			if (SUCCEEDED(hr))
-			{
-				IShellItem *pItem;
-				hr = pFileOpen->GetResult(&pItem);
-				if (SUCCEEDED(hr))
-				{
-					wchar_t* pszFilePath;
-					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
-
-					// Display the file name to the user.
-					if (SUCCEEDED(hr))
-					{
-						result = _bstr_t(pszFilePath);
-						char* base_path = SDL_GetBasePath();
-						result = FileSystem::GetRelativePath(base_path, result.c_str());
-					}
-					pItem->Release();
-				}
-			}
-			pFileOpen->Release();
-		}
-		CoUninitialize();
-	}
-	return result;
 }

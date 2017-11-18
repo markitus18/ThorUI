@@ -19,9 +19,9 @@ public:
 
 private:
 	void DisplayItemName(UI_Item* item);
-	void DrawImage(UI_Image* img);
-	void DrawText(UI_Text* text);
-	void DrawButton(UI_Button* button);
+	void DrawImageItem(UI_Image* img);
+	void DrawTextItem(UI_Text* text);
+	void DrawButtonItem(UI_Button* button);
 };
 
 #endif

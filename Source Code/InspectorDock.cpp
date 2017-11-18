@@ -11,6 +11,7 @@
 #include "ThorUI.h"
 #include "Editor.h"
 #include "Dock.h"
+#include "FileSystem.h"
 
 void Inspector::Draw()
 {
@@ -52,17 +53,17 @@ void Inspector::Draw()
 		{
 			case(Image):
 			{
-				DrawImage((UI_Image*)selected);
+				DrawImageItem((UI_Image*)selected);
 				break;
 			}
 			case(Text):
 			{
-				DrawText((UI_Text*)selected);
+				DrawTextItem((UI_Text*)selected);
 				break;
 			}
 			case(Button):
 			{
-				DrawButton((UI_Button*)selected);
+				DrawButtonItem((UI_Button*)selected);
 				break;
 			}
 		}
@@ -78,7 +79,7 @@ void Inspector::DisplayItemName(UI_Item* item)
 		item->SetName(name);
 }
 
-void Inspector::DrawImage(UI_Image* img)
+void Inspector::DrawImageItem(UI_Image* img)
 {
 	ImGui::Text("Source Image");
 	if (img->GetTexID() != 0)
@@ -97,7 +98,7 @@ void Inspector::DrawImage(UI_Image* img)
 		}
 		if (ImGui::MenuItem("Load New Texture..."))
 		{
-			std::string fileName = editor->OpenFileDialog();
+			std::string fileName = FileSystem::OpenFileDialog();
 			if (fileName != "")
 			{
 				img->SetTexture(ThorUI::LoadTexture(fileName.c_str()));
@@ -112,7 +113,7 @@ void Inspector::DrawImage(UI_Image* img)
 	}
 }
 
-void Inspector::DrawText(UI_Text* text)
+void Inspector::DrawTextItem(UI_Text* text)
 {
 	char orig_text[50];
 	strcpy_s(orig_text, 50, text->GetText());
@@ -129,7 +130,7 @@ void Inspector::DrawText(UI_Text* text)
 	}
 }
 
-void Inspector::DrawButton(UI_Button* button)
+void Inspector::DrawButtonItem(UI_Button* button)
 {
 	Color color = button->GetColor();
 	if (ImGui::ColorEdit3("Color", color.ptr()))

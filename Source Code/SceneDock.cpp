@@ -12,26 +12,13 @@
 
 void Scene::Draw()
 {
-	ImVec2 original_size(parent->size.x, parent->size.y); ImGui::GetContentRegionAvail();
-	original_size.y -= 28;
-	original_size.x -= 11;
-
-	ImVec2 size_v = original_size;
-	float screen_ratio = scene_size.x / scene_size.y;
-	float x_ratio = size_v.x / scene_size.x;
-	float y_ratio = size_v.y / scene_size.y;
-
-	if (x_ratio < y_ratio)
-	{
-		size_v.y = size_v.x / screen_ratio;
-	}
-	else
-	{
-		size_v.x = size_v.y * screen_ratio;
-	}
+	Vec2 space_size = Vec2(parent->size.x, parent->size.y) - Vec2(10, 10);
+	Vec2 final_size = scene_size.FitInRect(space_size);
 
 	ImVec2 cursor_pos = ImGui::GetCursorPos();
-	cursor_pos += (original_size - size_v) / 2;
+	ImVec2 offset = ImVec2(space_size.x - final_size.x, space_size.y - final_size.y) / 2;
+	cursor_pos += offset;
 	ImGui::SetCursorPos(cursor_pos);
-	ImGui::Image((ImTextureID)renderTexture, size_v, ImVec2(0, 1), ImVec2(1, 0));
+
+	ImGui::Image((ImTextureID)renderTexture, ImVec2(final_size.x, final_size.y), ImVec2(0, 1), ImVec2(1, 0));
 }

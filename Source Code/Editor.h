@@ -33,7 +33,9 @@ public:
 	bool CleanUp();
 
 	void DisplayTexture(ThorUI::Texture* tex);
-	std::string OpenFileDialog() const;
+
+private:
+	void DrawMainMenuBar();
 
 public:
 	UI_Item* selected = nullptr;
