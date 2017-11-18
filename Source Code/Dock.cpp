@@ -119,14 +119,8 @@ void Dock::DrawSeparator()
 		ImVec2 delta = ImGui::GetMouseDragDelta(0);
 		float init_position = separator.init_position * (separation == VERTICAL ? size.x : size.y);
 		float final_pos = separation == VERTICAL ? init_position + delta.x : init_position + delta.y;
-
-		float current_size = separation == VERTICAL ? size.x : size.y;
-
-		if (final_pos > current_size - min_size) final_pos = current_size - min_size;
-		if (final_pos < min_size) final_pos = min_size;
-
 		separator.position = final_pos / (separation == VERTICAL ? size.x : size.y);
-
+		CapSeparatorPosition();
 		UpdateChildrenPosition();
 	}
 }
@@ -227,6 +221,44 @@ void Dock::UpdateChildrenPosition()
 	}
 }
 
+void Dock::CapSeparatorPosition()
+{
+	float separator_pos = separator.position * (separation == VERTICAL ? size.x : size.y);
+	float axis_size = (separation == VERTICAL ? size.x : size.y);
+
+	float min_size = dock_children[0]->GetMinSize(separation);
+	float max_size = axis_size - dock_children[1]->GetMinSize(separation);
+
+	if (separator_pos < min_size) separator_pos = min_size;
+	if (separator_pos > max_size) separator_pos = max_size;
+
+	separator.position = separator_pos / (separation == VERTICAL ? size.x : size.y);
+}
+
+float Dock::GetMinSize(Separation_Type sep_type)
+{
+	if (dock_children.size() == 0)
+	{
+		return min_size;
+	}
+
+	float final_min_size = 0;
+	for (uint i = 0; i < dock_children.size(); ++i)
+	{
+		if (sep_type != separation)
+		{
+			float child_size = dock_children[i]->GetMinSize(sep_type);
+			if (child_size > final_min_size)
+				final_min_size = child_size;
+		}
+		else
+		{
+			final_min_size += dock_children[i]->GetMinSize(sep_type);
+		}
+	}
+	return final_min_size;
+
+}
 void Dock::RemoveChildData(DockData* dock)
 {
 	for (std::vector<DockData*>::iterator it = data_children.begin(); it != data_children.end(); ++it)
@@ -319,7 +351,12 @@ void Dock::CloseDockData(DockData* data)
 void Dock::SetSize(Vec2 size)
 {
 	this->size = size;
-	UpdateChildrenPosition();
+
+	if (dock_children.size() > 0)
+	{
+		CapSeparatorPosition();
+		UpdateChildrenPosition();
+	}
 }
 
 std::vector<Dock*>& Dock::GetDockChildren()

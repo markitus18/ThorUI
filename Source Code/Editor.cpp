@@ -75,21 +75,7 @@ bool UI_Editor::Init(SDL_Window* window)
 
 	scene = new Scene(this);
 	dock->GetDockChildren()[0]->GetDockChildren()[0]->GetDockChildren()[1]->AddChildData(scene);
-
-	glGenFramebuffers(1, &scene->frameBuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, scene->frameBuffer);
-
-	glGenTextures(1, &scene->renderTexture);
-	glBindTexture(GL_TEXTURE_2D, scene->renderTexture);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ThorUI::window_item->GetSize().x, ThorUI::window_item->GetSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, scene->renderTexture, 0);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
+	scene->scene_size = Vec2(ThorUI::screen_size.x, ThorUI::screen_size.y);
 
 	inspector = new Inspector(this);
 	dock->GetDockChildren()[0]->GetDockChildren()[1]->AddChildData(inspector);
@@ -97,41 +83,41 @@ bool UI_Editor::Init(SDL_Window* window)
 	resources = new Resources(this);
 	dock->GetDockChildren()[1]->AddChildData(resources);
 
+	//Generating buffers for scene render
+	glGenFramebuffers(1, &scene->frameBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, scene->frameBuffer);
 
+	//Generating texture to render to
+	glGenTextures(1, &scene->renderTexture);
+	glBindTexture(GL_TEXTURE_2D, scene->renderTexture);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ThorUI::screen_size.x, ThorUI::screen_size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	
+	//Configuring frame buffer
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, scene->renderTexture, 0);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		int k = 1;
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	return ret;
 }
 
 void UI_Editor::Draw()
 {
-	glDrawBuffer(scene->frameBuffer);
-	ThorUI::Draw();
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	/*
-	SDL_Surface* screen_surf = SDL_GetWindowSurface(window);
-
-	SDL_LockSurface(screen_surf);
-
-	char* pixels = new char[screen_surf->w * screen_surf->h * 4];
-	glReadPixels(0, 0, screen_surf->w, screen_surf->h, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-
-	SDL_UnlockSurface(screen_surf);
-
-	ThorUI::FreeTexture(scene->tex_id);
-	scene->tex_id = ThorUI::GenTexture();
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, screen_surf->w, screen_surf->h, 0,
-				GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, pixels);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-	delete[] pixels;
-
-	scene->scene_size = Vec2(screen_surf->w, screen_surf->h);
-
+	glBindFramebuffer(GL_FRAMEBUFFER, scene->frameBuffer);
+	glClearColor(0.f, 0.f, 0.f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT);
-	*/
+
+	ThorUI::Draw();
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glClearColor(0.f, 0.f, 0.f, 1.f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
 	ImGui_ImplSdlGL3_NewFrame(window);
 	
 	for (uint i = 0; i < docks.size(); ++i)
@@ -213,9 +199,6 @@ void UI_Editor::Draw()
 			}
 			ImGui::End();
 		}
-
-	//	DrawHierarchy();
-	//	DrawInspector();
 	}
 	
 	ImGui::Render();

@@ -19,6 +19,9 @@
 #include "UI_Text.h"
 #include "Editor.h"
 
+//tmp
+#include "SceneDock.h"
+
 SDL_Window* gWindow = nullptr;
 SDL_Surface* gScreenSurface = nullptr;
 SDL_Surface* imageSurf = nullptr;
@@ -64,7 +67,7 @@ bool initGL()
 
 	//Initialize clear color
 	glClearColor(0.f, 0.f, 0.f, 1.f);
-
+	glEnable(GL_TEXTURE_2D);
 	//Check for error
 	error = glGetError();
 	if (error != GL_NO_ERROR)
@@ -169,6 +172,7 @@ int main(int argc, char** args)
 
 		while (quit == false)
 		{
+			glClearColor(0.f, 0.f, 0.f, 1.f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			while (SDL_PollEvent(&ev) != 0)
@@ -183,7 +187,10 @@ int main(int argc, char** args)
 
 			//ThorUI::StartFrame();
 			//ThorUI::Draw();
+
 			editor->Draw();
+			//ThorUI::DrawImage(Vec2(0, 0), Vec2(ThorUI::screen_size.x * 4 / 5, ThorUI::screen_size.y * 4 / 5), editor->scene->renderTexture, Color::White());
+
 			SDL_GL_SwapWindow(gWindow);
 			ThorUI::UpdateKeyboardState();
 		}

@@ -52,6 +52,8 @@ private:
 	bool DoesTabFit(DockData* dock);
 
 	void UpdateChildrenPosition();
+	void CapSeparatorPosition();
+	float GetMinSize(Separation_Type sep_type);
 
 public:
 	std::string name = "dock";

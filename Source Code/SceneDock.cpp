@@ -7,6 +7,9 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "ImGui\imgui_internal.h"
 
+//tmp
+#include "glew-2.1.0\include\GL\glew.h"
+
 void Scene::Draw()
 {
 	ImVec2 original_size(parent->size.x, parent->size.y); ImGui::GetContentRegionAvail();
@@ -26,7 +29,7 @@ void Scene::Draw()
 	{
 		size_v.x = size_v.y * screen_ratio;
 	}
-	
+
 	ImVec2 cursor_pos = ImGui::GetCursorPos();
 	cursor_pos += (original_size - size_v) / 2;
 	ImGui::SetCursorPos(cursor_pos);

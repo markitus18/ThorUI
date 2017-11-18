@@ -37,7 +37,7 @@ public:
 
 public:
 	UI_Item* selected = nullptr;
-
+	Scene* scene = nullptr;
 private:
 	SDL_Window* window = nullptr;
 	Vec2 window_size;
@@ -51,7 +51,7 @@ private:
 
 	uint tmp_buff = 0;
 
-	Scene* scene = nullptr;
+
 	Inspector* inspector = nullptr;
 	Hierarchy* hierarchy = nullptr;
 	Resources* resources = nullptr;
