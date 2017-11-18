@@ -15,9 +15,11 @@ public:
 
 	void Draw();
 
+private:
+	void GenerateScreenBuffers();
+
 public:
 	uint frameBuffer = 0;
 	uint renderTexture = 0;
-	Vec2 scene_size;
 };
 #endif

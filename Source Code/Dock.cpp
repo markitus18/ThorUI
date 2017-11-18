@@ -60,28 +60,21 @@ void Dock::Draw()
 			}
 			break;
 		}
-		case(VERTICAL): {}
-		case(HORIZONTAL):
+		default:
 		{
-			if (dock_children.size() == 2)
-			{
-				dock_children[0]->Draw();
-			}
+			if (dock_children.size() == 0) //Security check
+				break;
 
-			if (separation == VERTICAL) ImGui::SameLine(0, 2);
+			dock_children[0]->Draw();
 
+			if (separation == VERTICAL) ImGui::SameLine(0, 10);
+
+			ImVec2 separator_pos = ImGui::GetCursorPos();
+			dock_children[1]->Draw();
+
+			ImVec2 offset = (separation == VERTICAL ? ImVec2(-10, 0) : ImVec2(0, -10));
+			ImGui::SetCursorPos(separator_pos + offset);
 			DrawSeparator();
-
-			if (separation == VERTICAL) ImGui::SameLine(0, 2);
-
-			ImVec2 cursor_pos = ImGui::GetCursorPos();
-			float padding = (separation == VERTICAL ? ImGui::GetStyle().WindowPadding.x : ImGui::GetStyle().WindowPadding.y);
-			float child_size = (separation == VERTICAL ? size.x - cursor_pos.x - padding : size.y - cursor_pos.y - padding);
-
-			if (dock_children.size() == 2)
-			{
-				dock_children[1]->Draw();
-			}
 			break;
 		}
 	}
