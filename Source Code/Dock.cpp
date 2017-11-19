@@ -40,40 +40,30 @@ void Dock::Draw()
 	{
 		case(NONE):
 		{
-			if (!data_children.empty())
+			if (data_children.empty()) break;
+
+			DrawTabPanels();
+			ImGui::Separator();
+			for (uint i = 0; i < data_children.size(); ++i)
 			{
-				DrawTabPanels();
-				ImGui::Separator();
-				for (uint i = 0; i < data_children.size(); ++i)
-				{
-					if (data_children[i]->IsActive())
-						data_children[i]->Draw();
-				}
-			}
-			else
-			{
-				ImGui::Text("Child");
-				if (ImGui::Button("Split"))
-				{
-					Split(parent->separation == HORIZONTAL ? VERTICAL : HORIZONTAL);
-				}
+				if (data_children[i]->IsActive())
+					data_children[i]->Draw();
 			}
 			break;
 		}
 		default:
 		{
-			if (dock_children.size() == 0) //Security check
-				break;
+			if (dock_children.size() == 0) break;
 
 			dock_children[0]->Draw();
 
-			if (separation == VERTICAL) ImGui::SameLine(0, 10);
-
+			if (separation == VERTICAL)	ImGui::SameLine(0, 0);
 			ImVec2 separator_pos = ImGui::GetCursorPos();
+			ImGui::SetCursorPos(separator_pos + (separation == VERTICAL ? ImVec2(7, 0) : ImVec2(0, 7)));
+	
 			dock_children[1]->Draw();
 
-			ImVec2 offset = (separation == VERTICAL ? ImVec2(-10, 0) : ImVec2(0, -10));
-			ImGui::SetCursorPos(separator_pos + offset);
+			ImGui::SetCursorPos(separator_pos);
 			DrawSeparator();
 			break;
 		}
@@ -91,8 +81,8 @@ void Dock::Draw()
 
 void Dock::DrawSeparator()
 {
-	ImVec2 button_size = (separation == VERTICAL ?	ImVec2(5, ImGui::GetContentRegionAvail().y ) :
-														ImVec2(ImGui::GetContentRegionAvail().x, 5));
+	ImVec2 button_size = (separation == VERTICAL ?	ImVec2(5, size.y ) :
+														ImVec2(size.x, 5));
 	ImGui::Button("b", button_size);
 
 	if (ImGui::IsItemHovered() && ImGui::IsMouseDown(0))

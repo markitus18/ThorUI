@@ -10,7 +10,7 @@ class UI_Editor;
 class Scene : public DockData
 {
 public:
-	Scene(UI_Editor* editor) : DockData(editor) { name = "Scene"; }
+	Scene(UI_Editor* editor);
 	~Scene() {}
 
 	void Draw();
