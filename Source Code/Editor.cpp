@@ -189,6 +189,17 @@ void UI_Editor::ProcessEvent(SDL_Event* event)
 
 bool UI_Editor::CleanUp()
 {
+	for (uint i = 0; i < docks.size(); ++i)
+	{
+		delete docks[i];
+	}
+	docks.clear();
+
+	delete hierarchy;
+	delete inspector;
+	delete resources;
+	delete scene;
+
 	return true;
 }
 

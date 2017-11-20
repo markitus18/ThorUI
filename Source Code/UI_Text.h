@@ -36,7 +36,7 @@ private:
 	std::string text;
 	Color color;
 	uint texture_id = 0;
-	uint font_id = 0;
+	uint font_id = 1;
 };
 
 #endif // !UI_TEXT_H

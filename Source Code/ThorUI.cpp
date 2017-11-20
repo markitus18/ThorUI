@@ -86,6 +86,8 @@ namespace ThorUI
 
 	void CleanUp()
 	{
+		delete[] mouse_buttons;
+		mouse_buttons = nullptr;
 		delete[] keyboard;
 		keyboard = nullptr;
 	}
@@ -98,12 +100,10 @@ namespace ThorUI
 			if (keys[i] == 1)
 			{
 				keyboard[i] = (keyboard[i] == KEY_DOWN || keyboard[i] == KEY_REPEAT) ? KEY_REPEAT : KEY_DOWN;
-				//DebugKeyboardState(i, keyboard[i]);
 			}
 			else if (keyboard[i] != KEY_IDLE)
 			{
 				keyboard[i] = (keyboard[i] == KEY_REPEAT || keyboard[i] == KEY_DOWN) ? KEY_UP : KEY_IDLE;
-				//DebugKeyboardState(i, keyboard[i]);
 			}
 		}
 	}
@@ -204,7 +204,7 @@ namespace ThorUI
 
 	void FreeTexture(uint texture_id)
 	{
-		glDeleteTextures(1, (GLuint*)&texture_id);
+		glDeleteTextures(1, &texture_id);
 		if (textures.find(texture_id) != textures.end())
 		{
 			textures.erase(texture_id);

@@ -61,6 +61,7 @@ namespace ThorUI
 	void Init(SDL_Window* window);
 	void StartFrame();
 	void Draw();
+	void CleanUp();
 
 	//Keyboard event handling -------------------------
 	void UpdateKeyboardState();

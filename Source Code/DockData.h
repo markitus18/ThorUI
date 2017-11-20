@@ -13,15 +13,13 @@ public:
 	DockData(UI_Editor* editor);
 	~DockData();
 
-	virtual void Draw();
+	virtual void Draw() = 0;
 
 	void SetParent(Dock* dock);
 	void SetActive(bool active);
 
 	Dock* GetParent() const;
 	bool IsActive() const;
-
-
 
 private:
 

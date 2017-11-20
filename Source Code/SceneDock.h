@@ -16,7 +16,7 @@ public:
 	void Draw();
 
 private:
-	void GenerateScreenBuffers();
+	void GenScreenBuffers();
 
 public:
 	uint frameBuffer = 0;

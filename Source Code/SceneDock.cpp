@@ -13,7 +13,7 @@
 Scene::Scene(UI_Editor* editor) : DockData(editor)
 {
 	name = "Scene";
-	GenerateScreenBuffers();
+	GenScreenBuffers();
 }
 
 void Scene::Draw()
@@ -27,7 +27,7 @@ void Scene::Draw()
 	ImGui::Image((ImTextureID)renderTexture, ImVec2(final_size.x, final_size.y), ImVec2(0, 1), ImVec2(1, 0));
 }
 
-void Scene::GenerateScreenBuffers()
+void Scene::GenScreenBuffers()
 {
 	//Generating buffers for scene render
 	glGenFramebuffers(1, &frameBuffer);

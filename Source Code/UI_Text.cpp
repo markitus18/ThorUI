@@ -6,14 +6,12 @@
 UI_Text::UI_Text() : color(Color::White())
 {
 	name = "Text";
-	font_id = 1; //Default font
 	type = Text;
 }
 
 UI_Text::UI_Text(Vec2 pos, Vec2 size, const char* text) :  UI_Item(pos, size), color(Color::White()), text(text)
 {
 	name = "Text";
-	font_id = 1; //Default font
 	ThorUI::OnSetFont(font_id);
 	LoadTexture();
 	type = Text;
