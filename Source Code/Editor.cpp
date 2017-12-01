@@ -140,6 +140,7 @@ void UI_Editor::DrawMainMenuBar()
 			if (ImGui::MenuItem("Button"))
 			{
 				UI_Button* button = new UI_Button(window_size / 2, Vec2(150, 60));
+				button->SetName(ThorUI::GenUniqueName(ThorUI::window_item, "Button").c_str());
 				ThorUI::AddItem(button);
 
 				UI_Text* text = new UI_Text(Vec2(0, 0), Vec2(0, 0), "Button");
@@ -152,13 +153,15 @@ void UI_Editor::DrawMainMenuBar()
 				Vec2 image_pos = window_size / 2;
 
 				UI_Image* image = new UI_Image(image_pos, image_size);
+				image->SetName(ThorUI::GenUniqueName(ThorUI::window_item, "Image").c_str());
 				ThorUI::AddItem(image);
 			}
 			if (ImGui::MenuItem("Text"))
 			{
-				UI_Text* text = new UI_Text(Vec2(0, 0), Vec2(0, 0), "New Text");
-				Vec2 text_pos = window_size / 2 - Vec2(text->GetSize().x / 2, text->GetSize().y / 2);
-				text->SetPos(text_pos);
+				UI_Text* text = new UI_Text(window_size / 2, Vec2(0, 0), "New Text");
+				text->SetName(ThorUI::GenUniqueName(ThorUI::window_item, "Text").c_str());
+				//Vec2 text_pos = window_size / 2 - Vec2(text->GetSize().x / 2, text->GetSize().y / 2);
+			//	text->SetPos(text_pos);
 				ThorUI::AddItem(text);
 			}
 			ImGui::EndMenu();

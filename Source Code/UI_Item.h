@@ -62,6 +62,7 @@ public:
 	UI_Item* GetParent() const;
 	const char* GetName() const;
 	uint GetChildCount() const;
+	UI_Item* GetChild(uint index) const;
 	const std::vector<UI_Item*> GetChildren() const;
 	Item_Type GetType() const;
 

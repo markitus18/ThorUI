@@ -161,6 +161,12 @@ uint UI_Item::GetChildCount() const
 	return children.size();
 }
 
+UI_Item* UI_Item::GetChild(uint index) const
+{
+	if (index >= children.size()) return nullptr;
+	return children[index];
+}
+
 const std::vector<UI_Item*> UI_Item::GetChildren() const
 {
 	return children;

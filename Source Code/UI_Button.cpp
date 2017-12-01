@@ -12,7 +12,7 @@ UI_Button::UI_Button()
 	type = Button;
 }
 
-UI_Button::UI_Button(Vec2 size, Vec2 pos) : UI_Item(size, pos)
+UI_Button::UI_Button(Vec2 pos, Vec2 size) : UI_Item(pos, size)
 {
 	color = color_data[0] = Color::Teal();
 	color_data[1] = Color::Olive();

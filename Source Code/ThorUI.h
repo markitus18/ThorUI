@@ -135,6 +135,7 @@ namespace ThorUI
 
 	//Item management ---------------------------------
 	void AddItem(UI_Item* item);
+	std::string GenUniqueName(UI_Item* parent, const char* name);
 	void UpdateItems();
 	//-------------------------------------------------
 

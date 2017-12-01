@@ -404,6 +404,27 @@ namespace ThorUI
 		}
 	}
 
+	std::string GenUniqueName(UI_Item* parent, const char* name)
+	{
+		uint dup_count = 0;
+		bool dup_found = true;
+		std::string current_name = name;
+		while (dup_found == true)
+		{
+			dup_found = false;
+			for (uint i = 0; i < parent->GetChildren().size(); ++i)
+			{
+				if (parent->GetChild(i)->GetName() == current_name)
+				{
+					dup_found = true;
+					dup_count++;
+					current_name = std::string(name).append(" (").append(std::to_string(dup_count)).append(")");
+				}
+			}
+		}
+		return current_name;
+	}
+
 	void UpdateItems()
 	{
 		std::vector<UI_Item*>::iterator it;
