@@ -6,6 +6,7 @@
 
 #include "Log.h"
 #include "DockData.h"
+#include "Editor.h"
 
 Dock::Dock(const char* name, Vec2 size): size(size), name(name)
 {
@@ -35,6 +36,10 @@ void Dock::Draw()
 		ImGui::PushID(this);
 		ImGui::BeginChild("Child", ImVec2(size.x, size.y), false, flags);
 
+	}
+	if (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(0) && dock_children.size() == 0)
+	{
+		editor->SetDockFocus(this);
 	}
 	switch (separation)
 	{
@@ -145,6 +150,7 @@ void Dock::DrawSingleTab(DockData* data)
 	ImU32 color = ImGui::GetColorU32(ImGuiCol_FrameBg);
 	ImU32 color_active = ImGui::GetColorU32(ImGuiCol_FrameBgActive);
 	ImU32 color_hovered = ImGui::GetColorU32(ImGuiCol_FrameBgHovered);
+	ImU32 color_dock_active = ImGui::GetColorU32(ImVec4(0.85, 0.65, 0.68, 0.8));
 
 	ImVec2 pos = ImGui::GetItemRectMin();
 	ImDrawList* draw_list = ImGui::GetWindowDrawList();
@@ -158,7 +164,7 @@ void Dock::DrawSingleTab(DockData* data)
 		pos + ImVec2(size.x + 10, size.y),
 		pos + ImVec2(size.x + 15, size.y),
 		10);
-	draw_list->PathFillConvex(hovered ? color_hovered : (data->IsActive() ? color_active : color));
+	draw_list->PathFillConvex(focused ? color_dock_active : (hovered ? color_hovered : (data->IsActive() ? color_active : color)));
 	draw_list->AddText(pos, ImGui::GetColorU32(ImGuiCol_Text), data->name.c_str(), nullptr);
 	draw_list->PathClear();
 }

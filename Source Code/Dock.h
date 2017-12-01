@@ -58,6 +58,7 @@ private:
 public:
 	std::string name = "dock";
 	bool root = true;
+	bool focused = false;
 
 	Vec2 position;
 	Vec2 size;

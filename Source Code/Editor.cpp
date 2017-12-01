@@ -184,6 +184,22 @@ void UI_Editor::DrawMainMenuBar()
 }
 void UI_Editor::ProcessEvent(SDL_Event* event)
 {
+	switch (event->type)
+	{
+		case(SDL_WINDOWEVENT):
+		{
+			switch (event->window.event)
+			{
+				case(SDL_WINDOWEVENT_SIZE_CHANGED):
+				{
+					int w, h;
+					SDL_GetWindowSize(window, &w, &h);
+					window_size.Set(w, h);
+					docks[0]->SetSize(window_size);
+				}
+			}
+		}
+	}
 	ImGui_ImplSdlGL3_ProcessEvent(event);
 }
 
@@ -211,4 +227,13 @@ void UI_Editor::DisplayTexture(ThorUI::Texture* tex)
 
 	ImGui::Image((ImTextureID)tex->id, ImVec2(size.x, size.y));
 	ImGui::Text("Original size: %i, %i", (int)tex->original_size.x, (int)tex->original_size.y);
+}
+
+void UI_Editor::SetDockFocus(Dock* dock)
+{
+	if (dock_focus)
+		dock_focus->focused = false;
+	dock_focus = dock;
+	if (dock_focus)
+		dock_focus->focused = true;
 }

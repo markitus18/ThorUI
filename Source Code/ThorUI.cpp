@@ -361,7 +361,7 @@ namespace ThorUI
 		glVertex2f(pos.x + size.x, pos.y + size.y);
 		glVertex2f(pos.x, pos.y + size.y);
 		glEnd();
-		filled == false ? glLineWidth(1.0f) : 0;
+		filled ? 0 : glLineWidth(1.0f);
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 

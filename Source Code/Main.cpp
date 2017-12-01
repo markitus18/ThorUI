@@ -31,13 +31,17 @@ UI_Image* image;
 UI_Button* button;
 UI_Text* text;
 
-UI_Editor* editor;
+//UI_Editor* editor;
 
 uint font_1;
 uint font_2;
 
+UI_Editor* editor = nullptr;
+
 bool initGL()
 {
+	editor = new UI_Editor();
+
 	bool success = true;
 	GLenum error = GL_NO_ERROR;
 
@@ -82,8 +86,6 @@ bool initGL()
 		success = false;
 	}
 
-	editor = new UI_Editor();
-
 	return success;
 }
 
@@ -101,7 +103,7 @@ bool init()
 	else
 	{
 		//Create window
-		gWindow = SDL_CreateWindow("ThorUI", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1600, 900, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+		gWindow = SDL_CreateWindow("PINK PRINCESS UI", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1600, 900, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN |SDL_WINDOW_RESIZABLE);
 		if (gWindow == NULL)
 		{
 			printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());

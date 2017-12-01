@@ -34,6 +34,8 @@ public:
 
 	void DisplayTexture(ThorUI::Texture* tex);
 
+	void SetDockFocus(Dock* dock);
+
 private:
 	void DrawMainMenuBar();
 
@@ -57,6 +59,11 @@ private:
 	Inspector* inspector = nullptr;
 	Hierarchy* hierarchy = nullptr;
 	Resources* resources = nullptr;
+
+	Dock* dock_focus = nullptr;
+		//delete marc;
 };
+
+extern UI_Editor* editor;
 
 #endif //__EDITOR_H__
