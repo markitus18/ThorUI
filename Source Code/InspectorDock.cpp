@@ -28,25 +28,30 @@ void Inspector::Draw()
 		DisplayItemName(selected);
 		ImGui::Separator();
 
-		ImGui::BeginChild("ChildID", ImVec2(parent->size.x < 330 ? 0 : 330, ImGui::GetItemsLineHeightWithSpacing() * 3)); //To limit DragFloat size
-			Vec2 pos = selected->GetPos();
-			if (ImGui::DragFloat2("Position", &pos))
-			{
-				selected->SetPos(pos);
-			}
+		Vec2 pos = selected->GetPos();
+		if (ImGui::DragFloat2("Position", &pos))
+		{
+			selected->SetPos(pos);
+		}
 
-			Vec2 size = selected->GetSize();
-			if (ImGui::DragFloat2("Size", &size))
-			{
-				selected->SetSize(size);
-			}
+		Vec2 size = selected->GetSize();
+		if (ImGui::DragFloat2("Size", &size))
+		{
+			selected->SetSize(size);
+		}
 
-			Vec2 pivot = selected->GetPivot();
-			if (ImGui::DragFloat2("Pivot", &pivot, 0.03f))
-			{
-				selected->SetPivot(pivot);
-			}
-		ImGui::EndChild();
+		Vec2 pivot = selected->GetPivot();
+		if (ImGui::DragFloat2("Pivot", &pivot, 0.03f))
+		{
+			selected->SetPivot(pivot);
+		}
+
+		Vec2 scale = selected->GetScale();
+		if (ImGui::DragFloat2("Scale", &scale, 0.03f))
+		{
+			selected->SetScale(scale);
+		}
+
 		ImGui::Separator();
 
 		switch (selected->GetType())

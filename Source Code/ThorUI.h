@@ -137,6 +137,7 @@ namespace ThorUI
 	void AddItem(UI_Item* item);
 	std::string GenUniqueName(UI_Item* parent, const char* name);
 	void UpdateItems();
+	void DeleteItem(UI_Item* item);
 	//-------------------------------------------------
 
 	//Secen management --------------------------------

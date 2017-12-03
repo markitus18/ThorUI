@@ -28,16 +28,18 @@ class UI_Item
 {
 public:
 	UI_Item() {};
-	UI_Item(float x, float y) : pos(x, y) { UpdateGlobalPos(); };
-	UI_Item(Vec2 pos, Vec2 size) : pos(pos), size(size) { UpdateGlobalPos(); };
+	UI_Item(float x, float y) : pos(x, y) { UpdateGlobalTransform(); };
+	UI_Item(Vec2 pos, Vec2 size) : pos(pos), size(size) { UpdateGlobalTransform(); };
 	~UI_Item();
 
 	void SetPos(float x, float y);
 	void SetPos(Vec2 pos);
 	void SetSize(float w, float h);
-	void SetID(int id);
-
 	virtual void SetSize(Vec2 size);
+	void SetScale(float x, float y);
+	void SetScale(Vec2 scale);
+
+	void SetID(int id);
 	void SetName(const char* name);
 	void SetPivot(Vec2 pivot);
 	void SetActive(bool active);
@@ -45,7 +47,7 @@ public:
 	void RemoveChild(UI_Item* child);
 	void DeleteChildren();
 
-	void UpdateGlobalPos();
+	void UpdateGlobalTransform();
 
 	virtual void Draw() {}; //TODO: draw here, or in ThorUI?
 	virtual void OnItemEvent(Item_Event event) { last_event = event; };
@@ -54,7 +56,10 @@ public:
 	void Load(Config& config);
 
 	Vec2 GetPos() const;
+	Vec2 GetGlobalPos() const;
 	Vec2 GetSize() const;
+	Vec2 GetScale() const;
+	Vec2 GetGlobalScale() const;
 	Vec2 GetPivot() const;
 	int GetID() const;
 
@@ -64,6 +69,7 @@ public:
 	uint GetChildCount() const;
 	UI_Item* GetChild(uint index) const;
 	const std::vector<UI_Item*> GetChildren() const;
+	void CollectAllChildren(std::vector<UI_Item*>& vector) const;
 	Item_Type GetType() const;
 
 	bool IsActive() const;
@@ -80,6 +86,9 @@ protected:
 	Vec2 pos;
 	Vec2 global_pos;
 	Vec2 size;
+	Vec2 scale = Vec2(1.0, 1.0);
+	Vec2 global_scale = Vec2(1.0, 1.0);
+
 	Vec2 pivot = Vec2(0.5, 0.5);
 
 	Item_Event last_event = Mouse_Exit;

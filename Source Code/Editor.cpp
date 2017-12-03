@@ -160,8 +160,6 @@ void UI_Editor::DrawMainMenuBar()
 			{
 				UI_Text* text = new UI_Text(window_size / 2, Vec2(0, 0), "New Text");
 				text->SetName(ThorUI::GenUniqueName(ThorUI::window_item, "Text").c_str());
-				//Vec2 text_pos = window_size / 2 - Vec2(text->GetSize().x / 2, text->GetSize().y / 2);
-			//	text->SetPos(text_pos);
 				ThorUI::AddItem(text);
 			}
 			ImGui::EndMenu();

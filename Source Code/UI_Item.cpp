@@ -9,18 +9,23 @@ UI_Item::~UI_Item()
 void UI_Item::SetPos(float x, float y)
 {
 	pos = Vec2(x, y);
-	UpdateGlobalPos();
+	UpdateGlobalTransform();
 }
 
 void UI_Item::SetPos(Vec2 pos)
 {
 	this->pos = pos;
-	UpdateGlobalPos();
+	UpdateGlobalTransform();
 }
 
 void UI_Item::SetSize(float w, float h)
 {
-	size = Vec2(w, h);
+	size.Set(w, h);
+}
+
+void UI_Item::SetSize(Vec2 size)
+{
+	this->size = size;
 }
 
 void UI_Item::SetID(int id)
@@ -28,9 +33,17 @@ void UI_Item::SetID(int id)
 	this->id = id;
 }
 
-void UI_Item::SetSize(Vec2 size)
+void UI_Item::SetScale(float x, float y)
 {
-	this->size = size;
+	scale.Set(x, y);
+	UpdateGlobalTransform();
+
+}
+
+void UI_Item::SetScale(Vec2 scale)
+{
+	this->scale = scale;
+	UpdateGlobalTransform();
 }
 
 void UI_Item::SetName(const char* name)
@@ -61,9 +74,12 @@ void UI_Item::SetParent(UI_Item* parent, bool keep_global)
 
 	//Keeping global pos coordinates
 	if (keep_global)
+	{
 		pos = global_pos - (parent ? parent->GetPos() : Vec2());
+		scale = global_scale / (parent ? parent->GetGlobalPos() : Vec2());
+	}
 	else
-		UpdateGlobalPos();
+		UpdateGlobalTransform();
 }
 
 void UI_Item::RemoveChild(UI_Item* child)
@@ -89,13 +105,14 @@ void UI_Item::DeleteChildren()
 	}
 }
 
-void UI_Item::UpdateGlobalPos()
+void UI_Item::UpdateGlobalTransform()
 {
-	global_pos = (parent ? parent->GetPos() : Vec2()) + pos;
+	global_pos = (parent ? parent->GetGlobalPos() : Vec2()) + pos * (parent ? parent->GetGlobalScale() : Vec2());
+	global_scale = (parent ? parent->GetGlobalScale() : Vec2(1, 1)) * scale;
 
 	for (std::vector<UI_Item*>::iterator it = children.begin(); it != children.end(); ++it)
 	{
-		(*it)->UpdateGlobalPos();
+		(*it)->UpdateGlobalTransform();
 	}
 }
 
@@ -118,7 +135,7 @@ void UI_Item::Load(Config& config)
 	id = config.GetNumber("ID", -1);
 
 	InternalLoad(config); //TODO: consider if updating pos before or after
-	UpdateGlobalPos();
+	UpdateGlobalTransform();
 }
 
 Vec2 UI_Item::GetPos() const
@@ -126,9 +143,24 @@ Vec2 UI_Item::GetPos() const
 	return pos;
 }
 
+Vec2 UI_Item::GetGlobalPos() const
+{
+	return global_pos;
+}
+
 Vec2 UI_Item::GetSize() const
 {
 	return size;
+}
+
+Vec2 UI_Item::GetScale() const
+{
+	return scale;
+}
+
+Vec2 UI_Item::GetGlobalScale() const
+{
+	return global_scale;
 }
 
 Vec2 UI_Item::GetPivot() const
@@ -170,6 +202,15 @@ UI_Item* UI_Item::GetChild(uint index) const
 const std::vector<UI_Item*> UI_Item::GetChildren() const
 {
 	return children;
+}
+
+void UI_Item::CollectAllChildren(std::vector<UI_Item*>& vector) const
+{
+	for (std::vector<UI_Item*>::const_iterator it = children.begin(); it != children.end(); ++it)
+	{
+		vector.push_back(*it);
+		(*it)->CollectAllChildren(vector);
+	}
 }
 
 Item_Type UI_Item::GetType() const

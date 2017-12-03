@@ -448,6 +448,18 @@ namespace ThorUI
 		}
 	}
 
+	void DeleteItem(UI_Item* item)
+	{
+		std::vector<UI_Item*> children;
+		item->CollectAllChildren(children);
+
+		std::vector<UI_Item*>::iterator it = children.begin();
+		while (it != children.end())
+		{
+
+		}
+	}
+
 	void SaveScene(const char* path)
 	{
 		SDL_RWops *rw = SDL_RWFromFile(path, "w");

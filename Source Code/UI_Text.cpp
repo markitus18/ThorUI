@@ -82,7 +82,7 @@ Vec2 UI_Text::GetTexSize() const
 void UI_Text::Draw()
 {
 	if (IsParentActive() == true && texture_id != 0)
-		ThorUI::DrawImage(global_pos - (texture_size * pivot), texture_size, texture_id, color);
+		ThorUI::DrawImage(global_pos - (texture_size * pivot * global_scale), texture_size * global_scale, texture_id, color);
 }
 
 void UI_Text::InternalSave(Config& config)
