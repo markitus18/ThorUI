@@ -452,12 +452,26 @@ namespace ThorUI
 	{
 		std::vector<UI_Item*> children;
 		item->CollectAllChildren(children);
+		children.push_back(item);
 
 		std::vector<UI_Item*>::iterator it = children.begin();
 		while (it != children.end())
 		{
-
+			std::vector<UI_Item*>::iterator item = items.begin();
+			while (item != items.end())
+			{
+				if (*item == *it)
+				{
+					items.erase(item);
+					break;
+				}
+				else
+					++item;
+			}
+			it = children.erase(it);
 		}
+		delete item;
+		item = nullptr;
 	}
 
 	void SaveScene(const char* path)
