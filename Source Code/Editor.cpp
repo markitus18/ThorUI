@@ -100,6 +100,14 @@ void UI_Editor::Draw()
 		if (docks[i]->root) docks[i]->Draw();
 	}
 	DrawMainMenuBar();
+	if (ThorUI::GetKeyState(SDL_SCANCODE_DELETE) == KEY_DOWN)
+	{
+		if (selected)
+		{
+			ThorUI::DeleteItem(selected);
+			selected = nullptr;
+		}
+	}
 }
 
 void UI_Editor::DrawMainMenuBar()

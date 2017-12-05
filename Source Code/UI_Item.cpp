@@ -3,6 +3,8 @@
 
 UI_Item::~UI_Item()
 {
+	if (parent)
+		parent->RemoveChild(this);
 	DeleteChildren();
 }
 
