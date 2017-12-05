@@ -25,6 +25,7 @@
     <ClCompile Include="Source Code\Editor.cpp" />
     <ClCompile Include="Source Code\External Libraries\ImGui\Dock\imgui_dock.cpp" />
     <ClCompile Include="Source Code\External Libraries\ImGui\imgui.cpp" />
+    <ClCompile Include="Source Code\External Libraries\ImGui\ImGuizmo\ImGuizmo.cpp" />
     <ClCompile Include="Source Code\External Libraries\ImGui\imgui_demo.cpp" />
     <ClCompile Include="Source Code\External Libraries\ImGui\imgui_draw.cpp" />
     <ClCompile Include="Source Code\External Libraries\ImGui\imgui_impl_sdl_gl3.cpp" />
@@ -50,6 +51,7 @@
     <ClInclude Include="Source Code\External Libraries\ImGui\Dock\imgui_dock.h" />
     <ClInclude Include="Source Code\External Libraries\ImGui\imconfig.h" />
     <ClInclude Include="Source Code\External Libraries\ImGui\imgui.h" />
+    <ClInclude Include="Source Code\External Libraries\ImGui\ImGuizmo\ImGuizmo.h" />
     <ClInclude Include="Source Code\External Libraries\ImGui\imgui_impl_sdl_gl3.h" />
     <ClInclude Include="Source Code\External Libraries\ImGui\imgui_internal.h" />
     <ClInclude Include="Source Code\External Libraries\ImGui\stb_rect_pack.h" />

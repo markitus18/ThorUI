@@ -10,6 +10,8 @@
 #include "ImGui\imgui_internal.h"
 #include "glew-2.1.0\include\GL\glew.h"
 
+#include "ImGui\ImGuizmo\ImGuizmo.h"
+
 Scene::Scene(UI_Editor* editor) : DockData(editor)
 {
 	name = "Scene";
@@ -18,6 +20,7 @@ Scene::Scene(UI_Editor* editor) : DockData(editor)
 
 void Scene::Draw()
 {
+	ImGuizmo::SetDrawlist();
 	Vec2 space_size = Vec2(parent->size.x, parent->size.y) - Vec2(10, 10);
 	Vec2 final_size = ThorUI::screen_size.FitInRect(space_size);
 

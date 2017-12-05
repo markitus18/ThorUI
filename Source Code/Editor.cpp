@@ -22,6 +22,8 @@
 #include "InspectorDock.h"
 #include "ResourcesDock.h"
 
+#include "ImGui\ImGuizmo\ImGuizmo.h"
+
 UI_Editor::UI_Editor()
 {
 
@@ -94,7 +96,8 @@ void UI_Editor::Draw()
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	ImGui_ImplSdlGL3_NewFrame(window);
-	
+	ImGuizmo::BeginFrame();
+
 	for (uint i = 0; i < docks.size(); ++i)
 	{
 		if (docks[i]->root) docks[i]->Draw();
@@ -108,6 +111,16 @@ void UI_Editor::Draw()
 			selected = nullptr;
 		}
 	}
+
+	float matrix[16] =
+	{
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	};
+	ImGuizmo::Manipulate(matrix, matrix, ImGuizmo::TRANSLATE, ImGuizmo::WORLD, matrix);
+
 }
 
 void UI_Editor::DrawMainMenuBar()

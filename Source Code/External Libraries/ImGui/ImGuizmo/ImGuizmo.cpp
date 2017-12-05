@@ -20,11 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "imgui.h"
+#include "ImGui\imgui.h"
 #ifndef IMGUI_DEFINE_MATH_OPERATORS
 #define IMGUI_DEFINE_MATH_OPERATORS
 #endif
-#include "imgui_internal.h"
+#include "ImGui\imgui_internal.h"
 #include "ImGuizmo.h"
 
 // includes patches for multiview from
@@ -1725,8 +1725,8 @@ namespace ImGuizmo
       // behind camera
       vec_t camSpacePosition;
       camSpacePosition.TransformPoint(makeVect(0.f, 0.f, 0.f), gContext.mMVP);
-      if (camSpacePosition.z < 0.001f)
-         return;
+   //   if (camSpacePosition.z < 0.001f)
+   //      return;
 
       // -- 
       int type = NONE;

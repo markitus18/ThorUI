@@ -28,6 +28,9 @@
     <Filter Include="External Libraries\ImGui\Dock">
       <UniqueIdentifier>{01c0fc2e-e6b7-47dc-b21e-72eae191eaa8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="External Libraries\ImGui\ImGuizmo">
+      <UniqueIdentifier>{97284067-5319-4c66-8c3a-5b6bd32a470e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\UI_Item.cpp">
@@ -92,6 +95,9 @@
     <ClCompile Include="Source Code\ResourcesDock.cpp">
       <Filter>Editor\DockData</Filter>
     </ClCompile>
+    <ClCompile Include="Source Code\External Libraries\ImGui\ImGuizmo\ImGuizmo.cpp">
+      <Filter>External Libraries\ImGui\ImGuizmo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\UI_Item.h">
@@ -118,9 +124,6 @@
     </ClInclude>
     <ClInclude Include="Source Code\Editor.h">
       <Filter>Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Code\External Libraries\ImGui\imconfig.h">
-      <Filter>External Libraries\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="Source Code\External Libraries\ImGui\imgui.h">
       <Filter>External Libraries\ImGui</Filter>
@@ -169,6 +172,12 @@
     </ClInclude>
     <ClInclude Include="Source Code\ResourcesDock.h">
       <Filter>Editor\DockData</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\External Libraries\ImGui\imconfig.h">
+      <Filter>External Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\External Libraries\ImGui\ImGuizmo\ImGuizmo.h">
+      <Filter>External Libraries\ImGui\ImGuizmo</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
