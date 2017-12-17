@@ -61,6 +61,7 @@
     <ClInclude Include="Source Code\FileSystem.h" />
     <ClInclude Include="Source Code\HierarchyDock.h" />
     <ClInclude Include="Source Code\InspectorDock.h" />
+    <ClInclude Include="Source Code\Rect.h" />
     <ClInclude Include="Source Code\ResourcesDock.h" />
     <ClInclude Include="Source Code\SceneDock.h" />
     <ClInclude Include="Source Code\UI_Button.h" />

@@ -2,6 +2,8 @@
 #define __UI_ITEM_H__
 
 #include "Vec2.h"
+#include "Rect.h"
+
 #include <vector>
 
 enum Item_Type

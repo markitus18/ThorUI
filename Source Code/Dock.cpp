@@ -130,7 +130,6 @@ void Dock::DrawSingleTab(DockData* data)
 		ImGui::NewLine();
 		ImGui::NewLine();
 		ImGui::SameLine(0, 15);
-		int k = 1;
 	}
 
 	float line_height = ImGui::GetTextLineHeightWithSpacing();
@@ -166,7 +165,6 @@ void Dock::DrawSingleTab(DockData* data)
 		10);
 	draw_list->PathFillConvex(focused ? color_dock_active : (hovered ? color_hovered : (data->IsActive() ? color_active : color)));
 	draw_list->AddText(pos, ImGui::GetColorU32(ImGuiCol_Text), data->name.c_str(), nullptr);
-	draw_list->PathClear();
 }
 
 void Dock::AddChildData(DockData* data, int position)

@@ -179,5 +179,8 @@
     <ClInclude Include="Source Code\External Libraries\ImGui\ImGuizmo\ImGuizmo.h">
       <Filter>External Libraries\ImGui\ImGuizmo</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\Rect.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

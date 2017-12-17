@@ -3,6 +3,8 @@
 #include "Dock.h"
 #include "ThorUI.h"
 #include "Log.h"
+#include "Editor.h"
+#include "UI_Item.h"
 
 //External Libraries include
 #include "ImGui\imgui.h"
@@ -26,8 +28,24 @@ void Scene::Draw()
 
 	ImVec2 offset = ImVec2(space_size.x - final_size.x, space_size.y - final_size.y) / 2;
 	ImGui::SetCursorPos(ImGui::GetCursorPos() + offset);
+	ImVec2 global_cursor = ImGui::GetCursorScreenPos();
 
 	ImGui::Image((ImTextureID)renderTexture, ImVec2(final_size.x, final_size.y), ImVec2(0, 1), ImVec2(1, 0));
+
+	if (editor->selected != nullptr)
+	{
+		Vec2 item_pos = editor->selected->GetGlobalPos();
+		Vec2 win_size = editor->window_size;
+		Vec2 relative_pos = item_pos / win_size;
+		relative_pos.y = 1 - relative_pos.y;
+		Vec2 final_pos = relative_pos * final_size;
+
+		ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+		draw_list->AddRectFilled(global_cursor + ImVec2(final_pos.x, final_pos.y), global_cursor + ImVec2(final_pos.x, final_pos.y) + ImVec2(50, -2), 0xFF0000AA);
+		draw_list->AddRectFilled(global_cursor + ImVec2(final_pos.x, final_pos.y), global_cursor + ImVec2(final_pos.x, final_pos.y) + ImVec2(2, -50), 0xFFAA0000);
+
+	}
 }
 
 void Scene::GenScreenBuffers()

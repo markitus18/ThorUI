@@ -47,6 +47,9 @@ struct Vec2
 	Vec2 operator/(const float& factor) { return Vec2(x / factor, y / factor); }
 	Vec2 operator/=(const float& factor) { return *this = Vec2(x / factor, y / factor); }
 
+	static Vec2 zero() { return Vec2(0, 0); };
+	static Vec2 one() { return Vec2(1, 1); };
+
 	//Variables
 	float x = 0, y = 0;
 };

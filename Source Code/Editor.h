@@ -42,9 +42,11 @@ private:
 public:
 	UI_Item* selected = nullptr;
 	Scene* scene = nullptr;
-private:
-	SDL_Window* window = nullptr;
 	Vec2 window_size;
+
+private:
+
+	SDL_Window* window = nullptr;
 	Vec2 default_img_size_ratio = Vec2(0.3, 0.3f);
 
 	ImFont* bold_font = nullptr;
@@ -52,9 +54,6 @@ private:
 	bool canvas_win = false;
 
 	std::vector<Dock*> docks;
-
-	uint tmp_buff = 0;
-
 
 	Inspector* inspector = nullptr;
 	Hierarchy* hierarchy = nullptr;

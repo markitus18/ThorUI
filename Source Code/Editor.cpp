@@ -96,13 +96,41 @@ void UI_Editor::Draw()
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	ImGui_ImplSdlGL3_NewFrame(window);
-	ImGuizmo::BeginFrame();
+	//ImGuizmo::BeginFrame();
 
+	bool open = true;
+	if (ImGui::Begin("Test Window", &open))
+	{
+		float line_height = ImGui::GetTextLineHeightWithSpacing();
+		ImVec2 size(ImGui::CalcTextSize("text", nullptr).x, line_height);
+		if (ImGui::InvisibleButton("text", size))
+		{
+		}
+
+		ImU32 color = ImGui::GetColorU32(ImGuiCol_FrameBg);
+
+		ImVec2 pos = ImGui::GetCursorScreenPos();
+		ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+		draw_list->PathClear();
+		draw_list->PathLineTo(pos + ImVec2(-15, size.y));
+		draw_list->PathLineTo(pos + ImVec2(15, size.y));
+		draw_list->PathLineTo(pos + ImVec2(15, size.y + 10));
+		draw_list->PathLineTo(pos + ImVec2(-15, size.y + 10));
+		draw_list->PathFillConvex(color);
+
+		draw_list->AddLine(pos + ImVec2(30, 0), pos + ImVec2(30, 50), 0xFF0000AA);
+	}
+	ImGui::End();
+	
 	for (uint i = 0; i < docks.size(); ++i)
 	{
 		if (docks[i]->root) docks[i]->Draw();
 	}
 	DrawMainMenuBar();
+	
+
+	ImGui::Render();
 	if (ThorUI::GetKeyState(SDL_SCANCODE_DELETE) == KEY_DOWN)
 	{
 		if (selected)
@@ -111,16 +139,6 @@ void UI_Editor::Draw()
 			selected = nullptr;
 		}
 	}
-
-	float matrix[16] =
-	{
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, 0,
-		0, 0, 0, 1
-	};
-	ImGuizmo::Manipulate(matrix, matrix, ImGuizmo::TRANSLATE, ImGuizmo::WORLD, matrix);
-
 }
 
 void UI_Editor::DrawMainMenuBar()
@@ -201,8 +219,6 @@ void UI_Editor::DrawMainMenuBar()
 			ImGui::End();
 		}
 	}
-
-	ImGui::Render();
 }
 void UI_Editor::ProcessEvent(SDL_Event* event)
 {
