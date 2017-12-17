@@ -1,6 +1,8 @@
 #ifndef __VEC2_H__
 #define __VEC2_H__
 
+//#include "Rect.h"
+
 struct Vec2
 {
 	//Methods

@@ -60,7 +60,7 @@ void UI_Text::SetFont(uint font_id)
 
 void UI_Text::SetSize(Vec2 size)
 {
-	this->size = size;
+	rect.size = size;
 	LoadTexture();
 }
 
@@ -121,8 +121,8 @@ bool UI_Text::LoadTexture()
 
 	if (font_id != 0 && text != "")
 	{
-		texture_id = ThorUI::GenTextTexture(text.c_str(), font_id, texture_size, size);
-		size = texture_size;
+		texture_id = ThorUI::GenTextTexture(text.c_str(), font_id, texture_size, rect.size);
+		rect.size = texture_size;
 	}
 	else
 	{

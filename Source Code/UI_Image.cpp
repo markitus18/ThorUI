@@ -15,11 +15,11 @@ void UI_Image::Draw()
 
 	if (texture_id != 0)
 	{
-		ThorUI::DrawImage(global_pos - (size * pivot), size * global_scale, texture_id, color);
+		ThorUI::DrawImage(global_pos - (rect.size * pivot), rect.size * global_scale, texture_id, color);
 	}
 	else
 	{
-		ThorUI::DrawQuad(global_pos - (size * pivot * global_scale), size * global_scale, color, true);
+		ThorUI::DrawQuad(global_pos - (rect.size * pivot * global_scale), rect.size * global_scale, color, true);
 	}
 }
 
@@ -58,12 +58,12 @@ void UI_Image::SetTexture(uint texture_id)
 	ThorUI::OnSetTexture(texture_id);
 
 	//Adjust size to texture size
-	if (size.x == -1 && size.y == -1)
+	if (rect.size.x == -1 && rect.size.y == -1)
 	{
 		ThorUI::Texture* tex = ThorUI::GetTexture(texture_id);
 		if (tex != nullptr)
 		{
-			size.Set(tex->original_size.x, tex->original_size.y);
+			rect.size.Set(tex->original_size.x, tex->original_size.y);
 		}
 	}
 }

@@ -21,5 +21,11 @@ private:
 public:
 	uint frameBuffer = 0;
 	uint renderTexture = 0;
+
+	bool dragging = false;
+	float x_start = -1;
+	float y_start = 0;
+	float x_item_start = 0;
+	float y_item_start = 0;
 };
 #endif

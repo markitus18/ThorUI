@@ -16,10 +16,15 @@ class Dock;
 
 namespace ThorUI{struct Texture;}
 typedef unsigned int uint;
+typedef unsigned int ImU32;
+
 class Scene;
 class Inspector;
 class Hierarchy;
 class Resources;
+struct Rect;
+struct ImVec2;
+struct Vec2;
 
 class UI_Editor
 {
@@ -33,8 +38,13 @@ public:
 	bool CleanUp();
 
 	void DisplayTexture(ThorUI::Texture* tex);
+	void DrawRect(Rect rect, ImU32 color);
+	void DrawTriangle(Vec2 a, Vec2 b, Vec2 c, ImU32 color);
 
 	void SetDockFocus(Dock* dock);
+
+	ImVec2 ToImVec2(Vec2 point);
+	Vec2 ToVec2(ImVec2 point);
 
 private:
 	void DrawMainMenuBar();

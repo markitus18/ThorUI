@@ -30,12 +30,13 @@ class UI_Item
 {
 public:
 	UI_Item() {};
-	UI_Item(float x, float y) : pos(x, y) { UpdateGlobalTransform(); };
-	UI_Item(Vec2 pos, Vec2 size) : pos(pos), size(size) { UpdateGlobalTransform(); };
+	UI_Item(float x, float y) : rect(Vec2(x,y), Vec2::zero()) { UpdateGlobalTransform(); };
+	UI_Item(Vec2 pos, Vec2 size) : rect(pos, size) { UpdateGlobalTransform(); };
 	~UI_Item();
 
 	void SetPos(float x, float y);
 	void SetPos(Vec2 pos);
+	void SetGlobalPos(float x, float y);
 	void SetSize(float w, float h);
 	virtual void SetSize(Vec2 size);
 	void SetScale(float x, float y);
@@ -85,9 +86,8 @@ protected:
 	std::string name;
 	Item_Type type;
 
-	Vec2 pos;
+	Rect rect;
 	Vec2 global_pos;
-	Vec2 size;
 	Vec2 scale = Vec2(1.0, 1.0);
 	Vec2 global_scale = Vec2(1.0, 1.0);
 

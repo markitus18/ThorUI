@@ -89,6 +89,7 @@ void UI_Editor::Draw()
 	glClearColor(0.f, 0.f, 0.f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
+	ThorUI::StartFrame(); //TODO: Careful, we are updating items too
 	ThorUI::Draw();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -96,32 +97,6 @@ void UI_Editor::Draw()
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	ImGui_ImplSdlGL3_NewFrame(window);
-	//ImGuizmo::BeginFrame();
-
-	bool open = true;
-	if (ImGui::Begin("Test Window", &open))
-	{
-		float line_height = ImGui::GetTextLineHeightWithSpacing();
-		ImVec2 size(ImGui::CalcTextSize("text", nullptr).x, line_height);
-		if (ImGui::InvisibleButton("text", size))
-		{
-		}
-
-		ImU32 color = ImGui::GetColorU32(ImGuiCol_FrameBg);
-
-		ImVec2 pos = ImGui::GetCursorScreenPos();
-		ImDrawList* draw_list = ImGui::GetWindowDrawList();
-
-		draw_list->PathClear();
-		draw_list->PathLineTo(pos + ImVec2(-15, size.y));
-		draw_list->PathLineTo(pos + ImVec2(15, size.y));
-		draw_list->PathLineTo(pos + ImVec2(15, size.y + 10));
-		draw_list->PathLineTo(pos + ImVec2(-15, size.y + 10));
-		draw_list->PathFillConvex(color);
-
-		draw_list->AddLine(pos + ImVec2(30, 0), pos + ImVec2(30, 50), 0xFF0000AA);
-	}
-	ImGui::End();
 	
 	for (uint i = 0; i < docks.size(); ++i)
 	{
@@ -267,6 +242,18 @@ void UI_Editor::DisplayTexture(ThorUI::Texture* tex)
 	ImGui::Text("Original size: %i, %i", (int)tex->original_size.x, (int)tex->original_size.y);
 }
 
+void UI_Editor::DrawRect(Rect rect, ImU32 color)
+{
+	ImDrawList* draw_list = ImGui::GetWindowDrawList();
+	draw_list->AddRectFilled(ImVec2(rect.pos.x, window_size.y - rect.pos.y), ImVec2(rect.pos.x + rect.size.x, window_size.y - rect.pos.y - rect.size.y), color);
+}
+
+void UI_Editor::DrawTriangle(Vec2 a, Vec2 b, Vec2 c, ImU32 color)
+{
+	ImDrawList* draw_list = ImGui::GetWindowDrawList();
+	draw_list->AddTriangleFilled(ToImVec2(a), ToImVec2(b), ToImVec2(c), color);
+}
+
 void UI_Editor::SetDockFocus(Dock* dock)
 {
 	if (dock_focus)
@@ -274,4 +261,14 @@ void UI_Editor::SetDockFocus(Dock* dock)
 	dock_focus = dock;
 	if (dock_focus)
 		dock_focus->focused = true;
+}
+
+ImVec2 UI_Editor::ToImVec2(Vec2 point)
+{
+	return ImVec2(point.x, window_size.y - point.y);
+}
+
+Vec2 UI_Editor::ToVec2(ImVec2 point)
+{
+	return Vec2(point.x, window_size.y - point.y);
 }

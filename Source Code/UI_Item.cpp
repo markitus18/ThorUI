@@ -10,24 +10,31 @@ UI_Item::~UI_Item()
 
 void UI_Item::SetPos(float x, float y)
 {
-	pos = Vec2(x, y);
+	rect.pos = Vec2(x, y);
 	UpdateGlobalTransform();
 }
 
 void UI_Item::SetPos(Vec2 pos)
 {
-	this->pos = pos;
+	rect.pos = pos;
+	UpdateGlobalTransform();
+}
+
+void UI_Item::SetGlobalPos(float x, float y)
+{
+	global_pos.Set(x, y);
+	rect.pos = (global_pos - (parent ? parent->GetGlobalPos() : Vec2())) / (parent ? parent->GetGlobalScale() : Vec2::one());
 	UpdateGlobalTransform();
 }
 
 void UI_Item::SetSize(float w, float h)
 {
-	size.Set(w, h);
+	rect.size = Vec2(w, h);
 }
 
 void UI_Item::SetSize(Vec2 size)
 {
-	this->size = size;
+	rect.size = size;
 }
 
 void UI_Item::SetID(int id)
@@ -39,7 +46,6 @@ void UI_Item::SetScale(float x, float y)
 {
 	scale.Set(x, y);
 	UpdateGlobalTransform();
-
 }
 
 void UI_Item::SetScale(Vec2 scale)
@@ -55,10 +61,10 @@ void UI_Item::SetName(const char* name)
 
 void UI_Item::SetPivot(Vec2 pivot)
 {
-	Vec2 prev_pos = pos - (size * this->pivot);
+	Vec2 prev_pos = rect.pos - (rect.size * this->pivot);
 	this->pivot = pivot;
 
-	Vec2 new_pos = prev_pos + (size * this->pivot);
+	Vec2 new_pos = prev_pos + (rect.size * this->pivot);
 	SetPos(new_pos);
 }
 
@@ -77,7 +83,7 @@ void UI_Item::SetParent(UI_Item* parent, bool keep_global)
 	//Keeping global pos coordinates
 	if (keep_global)
 	{
-		pos = global_pos - (parent ? parent->GetPos() : Vec2());
+		rect.pos = global_pos - (parent ? parent->GetPos() : Vec2());
 		scale = global_scale / (parent ? parent->GetGlobalPos() : Vec2());
 	}
 	else
@@ -109,7 +115,7 @@ void UI_Item::DeleteChildren()
 
 void UI_Item::UpdateGlobalTransform()
 {
-	global_pos = (parent ? parent->GetGlobalPos() : Vec2()) + pos * (parent ? parent->GetGlobalScale() : Vec2());
+	global_pos = (parent ? parent->GetGlobalPos() : Vec2()) + rect.pos * (parent ? parent->GetGlobalScale() : Vec2());
 	global_scale = (parent ? parent->GetGlobalScale() : Vec2(1, 1)) * scale;
 
 	for (std::vector<UI_Item*>::iterator it = children.begin(); it != children.end(); ++it)
@@ -122,8 +128,8 @@ void UI_Item::Save(Config& config)
 {
 	config.SetString("Name", name.c_str());
 	config.SetNumber("Type", (int)type);
-	config.SetArray("Position").AddVec2(pos);
-	config.SetArray("Size").AddVec2(size);
+	config.SetArray("Position").AddVec2(rect.pos);
+	config.SetArray("Size").AddVec2(rect.size);
 	config.SetNumber("ID", id);
 	config.SetNumber("Parent ID", parent ? parent->GetID() : -1);
 	InternalSave(config);
@@ -132,8 +138,8 @@ void UI_Item::Save(Config& config)
 void UI_Item::Load(Config& config)
 {
 	name = config.GetString("Name", "Undefined");
-	pos = config.GetArray("Position").GetVec2(0);
-	size = config.GetArray("Size").GetVec2(0);
+	rect.pos = config.GetArray("Position").GetVec2(0);
+	rect.size = config.GetArray("Size").GetVec2(0);
 	id = config.GetNumber("ID", -1);
 
 	InternalLoad(config); //TODO: consider if updating pos before or after
@@ -142,7 +148,7 @@ void UI_Item::Load(Config& config)
 
 Vec2 UI_Item::GetPos() const
 {
-	return pos;
+	return rect.pos;
 }
 
 Vec2 UI_Item::GetGlobalPos() const
@@ -152,7 +158,7 @@ Vec2 UI_Item::GetGlobalPos() const
 
 Vec2 UI_Item::GetSize() const
 {
-	return size;
+	return rect.size;
 }
 
 Vec2 UI_Item::GetScale() const
