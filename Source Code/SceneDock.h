@@ -7,6 +7,14 @@
 typedef unsigned int uint;
 class UI_Editor;
 
+enum class Drag_Type
+{
+	NONE,
+	X,
+	Y,
+	XY,
+};
+
 class Scene : public DockData
 {
 public:
@@ -22,10 +30,8 @@ public:
 	uint frameBuffer = 0;
 	uint renderTexture = 0;
 
-	bool dragging = false;
-	float x_start = -1;
-	float y_start = 0;
-	float x_item_start = 0;
-	float y_item_start = 0;
+	Drag_Type drag = Drag_Type::NONE;
+	Vec2 start_drag;
+	Vec2 init_drag_val;
 };
 #endif

@@ -42,77 +42,66 @@ void Scene::Draw()
 		Rect x_axis = Rect(initial_pos + Vec2(0, -1), Vec2(80, 3));
 		Rect y_axis = Rect(initial_pos + Vec2(-1, 0), Vec2(3, 80));
 
-		editor->DrawRect(x_axis, 0xFFAA0000);
+		editor->DrawRect(x_axis, drag == Drag_Type::X ? 0xFFFF9900 : 0xFFFF0000);
 		editor->DrawRect(y_axis, 0xFF0000AA);
 
 		Vec2 final_x = initial_pos + Vec2(70, 0);
 		Vec2 final_y = initial_pos + Vec2(0, 70);
-		editor->DrawTriangle(final_x + Vec2(0, 10), final_x + Vec2(15, 0), final_x + Vec2(0, -10), 0xFFAA0000);
-		editor->DrawTriangle(final_y + Vec2(10, 0), final_y + Vec2(0, 15), final_y + Vec2(-10, 0), 0xFF0000AA);
+		editor->DrawTriangle(final_x + Vec2(0, 10), final_x + Vec2(15, 0), final_x + Vec2(0, -10), drag == Drag_Type::X ? 0xFFFF9900 : 0xFFFF0000);
+		editor->DrawTriangle(final_y + Vec2(10, 0), final_y + Vec2(0, 15), final_y + Vec2(-10, 0), drag == Drag_Type::Y ? 0xFF9900FF : 0xFF0000FF);
 
 		Rect x_button = Rect(initial_pos + Vec2(8, -8), Vec2(70, 16));
 		Rect y_button = Rect(initial_pos + Vec2(-8, 8), Vec2(16, 70));
 		Rect xy_button = Rect(initial_pos + Vec2(-8, -8), Vec2(16, 16));
 
-		editor->DrawRect(x_button, 0x51AA0000);
-		editor->DrawRect(y_button, 0x510000AA);
-		editor->DrawRect(xy_button, 0x5100AA00);
+		//editor->DrawRect(x_button, 0x51AA0000);
+		//editor->DrawRect(y_button, 0x510000AA);
+		editor->DrawRect(xy_button, 0xFF00AA00);
 
 		Vec2 mouse_pos = editor->ToVec2(ImGui::GetMousePos());
 
-		if (xy_button.Contains(mouse_pos) && ThorUI::GetMouseState(1) == KEY_DOWN)
+		if (drag == Drag_Type::NONE)
 		{
-			dragging = true;
-			x_start = mouse_pos.x;
-			y_start = mouse_pos.y;
-			x_item_start = editor->selected->GetGlobalPos().x;
-			y_item_start = editor->selected->GetGlobalPos().y;
+			if (xy_button.Contains(mouse_pos) && ThorUI::GetMouseState(1) == KEY_DOWN)
+			{
+				drag = Drag_Type::XY;
+			}
+			else if (x_button.Contains(mouse_pos) && ThorUI::GetMouseState(1) == KEY_DOWN)
+			{
+				drag = Drag_Type::X;
+			}
+			else if (y_button.Contains(mouse_pos) && ThorUI::GetMouseState(1) == KEY_DOWN)
+			{
+				drag = Drag_Type::Y;
+			}
+			if (drag != Drag_Type::NONE)
+			{
+				start_drag = mouse_pos;
+				init_drag_val = editor->selected->GetGlobalPos();
+			}
 		}
-		else if (x_button.Contains(mouse_pos) && ThorUI::GetMouseState(1) == KEY_DOWN)
-		{
-			dragging = true;
-			x_start = mouse_pos.x;
-			x_item_start = editor->selected->GetGlobalPos().x;
-		}
-		else if (y_button.Contains(mouse_pos) && ThorUI::GetMouseState(1) == KEY_DOWN)
-		{
-			dragging = true;
-			y_start = mouse_pos.y;
-			x_item_start = editor->selected->GetGlobalPos().y;
-		}
-
-		if (dragging == true)
+		
+		else if (drag != Drag_Type::NONE)
 		{
 			if (ThorUI::IsMouseDown(1) == false)
 			{
-				dragging = false;
-				x_start = -1;
-				y_start = -1;
-			}
-			else if (y_start == -1)
-			{
-				float delta_x = mouse_pos.x - x_start;
-				float x_scale = image_size.x / editor->window_size.x;
-				delta_x /= x_scale;
-				editor->selected->SetGlobalPos(x_item_start + delta_x, editor->selected->GetGlobalPos().y);
-			}
-			else if (x_start == -1)
-			{
-				float delta_y = mouse_pos.y - y_start;
-				float y_scale = image_size.y / editor->window_size.y;
-				delta_y /= y_scale;
-				editor->selected->SetGlobalPos(editor->selected->GetGlobalPos().x, x_item_start + delta_y);
+				drag = Drag_Type::NONE;
 			}
 			else
 			{
-				Vec2 delta = mouse_pos - Vec2(x_start, y_start);
-				Vec2  scale = image_size / editor->window_size;
+				Vec2 delta = mouse_pos - start_drag;
+				Vec2 scale = image_size / editor->window_size;
 				delta /= scale;
-				editor->selected->SetGlobalPos(x_item_start + delta.x, y_item_start + delta.y);
+				if (delta.x != 0 && delta.y != 0)
+				{
+					int k = 1;
+				}
+				Vec2 previous_pos = editor->selected->GetGlobalPos();
+				Vec2 final_pos = Vec2(drag != Drag_Type::Y ? init_drag_val.x + delta.x : init_drag_val.x,
+									  drag != Drag_Type::X ? init_drag_val.y + delta.y : init_drag_val.y);
+				editor->selected->SetGlobalPos(final_pos.x, final_pos.y);
 			}
-
 		}
-
 	}
 }
 
