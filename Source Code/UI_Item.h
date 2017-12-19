@@ -29,18 +29,20 @@ class Config;
 class UI_Item
 {
 public:
-	UI_Item() {};
-	UI_Item(float x, float y) : rect(Vec2(x,y), Vec2::zero()) { UpdateGlobalTransform(); };
-	UI_Item(Vec2 pos, Vec2 size) : rect(pos, size) { UpdateGlobalTransform(); };
+	UI_Item() { global_rect.pivot.Set(0.5, 0.5); rect.pivot.Set(0.5, 0.5); };
+	UI_Item(float x, float y) : rect(Vec2(x, y), Vec2::zero()) { global_rect.pivot.Set(0.5, 0.5); rect.pivot.Set(0.5, 0.5); UpdateGlobalTransform(); };
+	UI_Item(Vec2 pos, Vec2 size) : rect(pos, size) { global_rect.pivot.Set(0.5, 0.5); rect.pivot.Set(0.5, 0.5); UpdateGlobalTransform(); };
 	~UI_Item();
 
 	void SetPos(float x, float y);
 	void SetPos(Vec2 pos);
 	void SetGlobalPos(float x, float y);
+	void SetGlobalPos(Vec2 pos);
 	void SetSize(float w, float h);
 	virtual void SetSize(Vec2 size);
 	void SetScale(float x, float y);
 	void SetScale(Vec2 scale);
+	void SetRotation(float rotation);
 
 	void SetID(int id);
 	void SetName(const char* name);
@@ -87,11 +89,10 @@ protected:
 	Item_Type type;
 
 	Rect rect;
-	Vec2 global_pos;
+	Rect global_rect;
+
 	Vec2 scale = Vec2(1.0, 1.0);
 	Vec2 global_scale = Vec2(1.0, 1.0);
-
-	Vec2 pivot = Vec2(0.5, 0.5);
 
 	Item_Event last_event = Mouse_Exit;
 

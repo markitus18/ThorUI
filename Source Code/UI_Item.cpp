@@ -22,8 +22,15 @@ void UI_Item::SetPos(Vec2 pos)
 
 void UI_Item::SetGlobalPos(float x, float y)
 {
-	global_pos.Set(x, y);
-	rect.pos = (global_pos - (parent ? parent->GetGlobalPos() : Vec2())) / (parent ? parent->GetGlobalScale() : Vec2::one());
+	global_rect.pos.Set(x, y);
+	rect.pos = (global_rect.pos - (parent ? parent->GetGlobalPos() : Vec2())) / (parent ? parent->GetGlobalScale() : Vec2::one());
+	UpdateGlobalTransform();
+}
+
+void UI_Item::SetGlobalPos(Vec2 pos)
+{
+	global_rect.pos = pos;
+	rect.pos = (global_rect.pos - (parent ? parent->GetGlobalPos() : Vec2())) / (parent ? parent->GetGlobalScale() : Vec2::one());
 	UpdateGlobalTransform();
 }
 
@@ -54,6 +61,11 @@ void UI_Item::SetScale(Vec2 scale)
 	UpdateGlobalTransform();
 }
 
+void UI_Item::SetRotation(float rotation)
+{
+	rect.SetAngle(rotation);
+}
+
 void UI_Item::SetName(const char* name)
 {
 	this->name = name;
@@ -61,10 +73,11 @@ void UI_Item::SetName(const char* name)
 
 void UI_Item::SetPivot(Vec2 pivot)
 {
-	Vec2 prev_pos = rect.pos - (rect.size * this->pivot);
-	this->pivot = pivot;
+	Vec2 prev_pos = rect.pos - (rect.size * rect.pivot);
+	rect.pivot = pivot;
+	global_rect.pivot = pivot;
 
-	Vec2 new_pos = prev_pos + (rect.size * this->pivot);
+	Vec2 new_pos = prev_pos + (rect.size * rect.pivot);
 	SetPos(new_pos);
 }
 
@@ -83,7 +96,7 @@ void UI_Item::SetParent(UI_Item* parent, bool keep_global)
 	//Keeping global pos coordinates
 	if (keep_global)
 	{
-		rect.pos = global_pos - (parent ? parent->GetPos() : Vec2());
+		rect.pos = global_rect.pos - (parent ? parent->GetPos() : Vec2());
 		scale = global_scale / (parent ? parent->GetGlobalPos() : Vec2());
 	}
 	else
@@ -115,8 +128,9 @@ void UI_Item::DeleteChildren()
 
 void UI_Item::UpdateGlobalTransform()
 {
-	global_pos = (parent ? parent->GetGlobalPos() : Vec2()) + rect.pos * (parent ? parent->GetGlobalScale() : Vec2());
+	global_rect.pos = (parent ? parent->GetGlobalPos() : Vec2()) + rect.pos * (parent ? parent->GetGlobalScale() : Vec2());
 	global_scale = (parent ? parent->GetGlobalScale() : Vec2(1, 1)) * scale;
+	global_rect.size = rect.size * global_scale;
 
 	for (std::vector<UI_Item*>::iterator it = children.begin(); it != children.end(); ++it)
 	{
@@ -153,7 +167,7 @@ Vec2 UI_Item::GetPos() const
 
 Vec2 UI_Item::GetGlobalPos() const
 {
-	return global_pos;
+	return global_rect.pos;
 }
 
 Vec2 UI_Item::GetSize() const
@@ -173,7 +187,7 @@ Vec2 UI_Item::GetGlobalScale() const
 
 Vec2 UI_Item::GetPivot() const
 {
-	return pivot;
+	return rect.pivot;
 }
 
 int UI_Item::GetID() const

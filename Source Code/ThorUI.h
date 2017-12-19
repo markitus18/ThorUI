@@ -131,6 +131,7 @@ namespace ThorUI
 	//Draw Utilities ----------------------------------
 	void DrawQuad(Vec2 pos, Vec2 size, Color color, bool filled = true, float lineWidth = 1.0f);
 	void DrawImage(Vec2 pos, Vec2 size, int texture_id, Color color);
+	void DrawImage(Vec2* corners, int texture_id, Color  color);
 	//-------------------------------------------------
 
 	//Item management ---------------------------------

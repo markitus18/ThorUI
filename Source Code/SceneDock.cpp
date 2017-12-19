@@ -112,6 +112,7 @@ void Scene::HandleGizmoActivation(Vec2 mouse_pos)
 		if (rot_button.Contains(mouse_pos) && ThorUI::GetMouseState(1) == KEY_DOWN)
 		{
 			drag = Drag_Type::XY;
+			//init_drag_val.x = editor->selected->;
 		}
 	}
 	else
@@ -147,10 +148,7 @@ void Scene::HandleDrag(Vec2 mouse_pos, Vec2 image_size)
 		Vec2 delta = mouse_pos - start_drag;
 		Vec2 scale = image_size / editor->window_size;
 		delta /= scale;
-		if (delta.x != 0 && delta.y != 0)
-		{
-			int k = 1;
-		}
+
 		Vec2 previous_pos = editor->selected->GetGlobalPos();
 		Vec2 final_pos = Vec2(drag != Drag_Type::Y ? init_drag_val.x + delta.x : init_drag_val.x,
 			drag != Drag_Type::X ? init_drag_val.y + delta.y : init_drag_val.y);

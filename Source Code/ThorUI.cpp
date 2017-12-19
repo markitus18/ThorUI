@@ -386,6 +386,27 @@ namespace ThorUI
 		glDisable(GL_TEXTURE_2D);
 	}
 
+	void DrawImage(Vec2* corners, int texture_id, Color  color)
+	{
+		glBindTexture(GL_TEXTURE_2D, texture_id);
+		glEnable(GL_TEXTURE_2D);
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		glBegin(GL_QUADS);
+		glColor4fv(color.ptr());
+		glTexCoord2f(0.0, 1.0);	glVertex2f(corners[0].x, corners[0].y);
+		glTexCoord2f(1.0, 1.0);	glVertex2f(corners[1].x, corners[1].y);
+		glTexCoord2f(1.0, 0.0);	glVertex2f(corners[2].x, corners[2].y);
+		glTexCoord2f(0.0, 0.0);	glVertex2f(corners[3].x, corners[3].y);
+		glEnd();
+		glColor4fv(Color::White().ptr());
+		glDisable(GL_BLEND);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_TEXTURE_2D);
+	}
+
 	bool IsMouseHovering(Vec2 pos, Vec2 size)
 	{
 		return (mouse_pos.x > pos.x && mouse_pos.x < pos.x + size.x &&
