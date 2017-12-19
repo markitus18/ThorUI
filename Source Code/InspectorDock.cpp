@@ -142,4 +142,10 @@ void Inspector::DrawButtonItem(UI_Button* button)
 	{
 		button->SetColor(color);
 	}
+
+	float angle = button->GetRect().angle;
+	if (ImGui::DragFloat("Angle", &angle))
+	{
+		button->GetRect().SetAngle(angle);
+	}
 }

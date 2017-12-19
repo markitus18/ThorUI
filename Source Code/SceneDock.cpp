@@ -243,5 +243,5 @@ void Scene::DrawRotationGizmo()
 	Vec2 initial_pos = img_corner + pos_on_image;
 
 	rot_button = Circle(initial_pos, 80);
-	editor->DrawCircle(rot_button, 0xAA42F1F4);
+	editor->DrawCircle(rot_button, drag == Drag_Type::XY ? 0xAAF1F1F4 : 0xAA42F1F4);
 }

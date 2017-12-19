@@ -10,27 +10,27 @@ UI_Item::~UI_Item()
 
 void UI_Item::SetPos(float x, float y)
 {
-	rect.pos = Vec2(x, y);
+	rect.SetPos(Vec2(x, y));
 	UpdateGlobalTransform();
 }
 
 void UI_Item::SetPos(Vec2 pos)
 {
-	rect.pos = pos;
+	rect.SetPos(pos);
 	UpdateGlobalTransform();
 }
 
 void UI_Item::SetGlobalPos(float x, float y)
 {
-	global_rect.pos.Set(x, y);
-	rect.pos = (global_rect.pos - (parent ? parent->GetGlobalPos() : Vec2())) / (parent ? parent->GetGlobalScale() : Vec2::one());
+	global_rect.SetPos(Vec2(x, y));
+	rect.SetPos((global_rect.pos - (parent ? parent->GetGlobalPos() : Vec2())) / (parent ? parent->GetGlobalScale() : Vec2::one()));
 	UpdateGlobalTransform();
 }
 
 void UI_Item::SetGlobalPos(Vec2 pos)
 {
-	global_rect.pos = pos;
-	rect.pos = (global_rect.pos - (parent ? parent->GetGlobalPos() : Vec2())) / (parent ? parent->GetGlobalScale() : Vec2::one());
+	global_rect.SetPos(pos);
+	rect.SetPos((global_rect.pos - (parent ? parent->GetGlobalPos() : Vec2())) / (parent ? parent->GetGlobalScale() : Vec2::one()));
 	UpdateGlobalTransform();
 }
 
@@ -103,7 +103,7 @@ void UI_Item::SetParent(UI_Item* parent, bool keep_global)
 	//Keeping global pos coordinates
 	if (keep_global)
 	{
-		rect.pos = global_rect.pos - (parent ? parent->GetPos() : Vec2());
+		rect.SetPos(global_rect.pos - (parent ? parent->GetPos() : Vec2()));
 		scale = global_scale / (parent ? parent->GetGlobalPos() : Vec2());
 	}
 	else
@@ -135,7 +135,7 @@ void UI_Item::DeleteChildren()
 
 void UI_Item::UpdateGlobalTransform()
 {
-	global_rect.pos = (parent ? parent->GetGlobalPos() : Vec2()) + rect.pos * (parent ? parent->GetGlobalScale() : Vec2());
+	global_rect.SetPos((parent ? parent->GetGlobalPos() : Vec2()) + rect.pos * (parent ? parent->GetGlobalScale() : Vec2()));
 	global_scale = (parent ? parent->GetGlobalScale() : Vec2(1, 1)) * scale;
 	global_rect.size = rect.size * global_scale;
 
@@ -192,7 +192,7 @@ Vec2 UI_Item::GetGlobalScale() const
 	return global_scale;
 }
 
-const Rect& UI_Item::GetRect() const
+Rect& UI_Item::GetRect()
 {
 	return rect;
 }

@@ -365,6 +365,20 @@ namespace ThorUI
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
+	void DrawQuad(Vec2* corners, Color color, bool filled, float lineWidth)
+	{
+		glColor4fv(color.ptr());
+		filled ? glBegin(GL_QUADS) : glBegin(GL_LINE_LOOP);
+		glLineWidth(lineWidth);
+		glVertex2f(corners[0].x, corners[0].y);
+		glVertex2f(corners[1].x, corners[1].y);
+		glVertex2f(corners[2].x, corners[2].y);
+		glVertex2f(corners[3].x, corners[3].y);
+		glEnd();
+		filled ? 0 : glLineWidth(1.0f);
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	}
+
 	void DrawImage(Vec2 pos, Vec2 size, int texture_id, Color color)
 	{
 		glBindTexture(GL_TEXTURE_2D, texture_id);

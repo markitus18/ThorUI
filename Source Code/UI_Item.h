@@ -67,7 +67,7 @@ public:
 	Vec2 GetScale() const;
 	Vec2 GetGlobalScale() const;
 	Vec2 GetPivot() const;
-	const Rect& GetRect() const;
+	Rect& GetRect();
 
 	int GetID() const;
 

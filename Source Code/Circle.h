@@ -13,7 +13,8 @@ struct Circle : public Shape
 
 	bool Contains(Vec2 point)
 	{
-		return pos.Distance(point) < radius;
+		Vec2 dst = pos - point;
+		return dst.Lenght() < radius;
 	}
 
 	float radius;

@@ -21,7 +21,32 @@ struct Rect : public Shape
 				point.y >= pos.y && point.y <= pos.y + size.y);
 	}
 
+	void SetPos(Vec2 pos)
+	{
+		this->pos = pos;
+		corners[0] = (pos - (pivot * size));
+		corners[1] = pos + Vec2(size.x - pivot.x * size.x, -pivot.y * size.y);
+		corners[2] = pos + (size - pivot * size);
+		corners[3] = pos + Vec2(-pivot.x * size.x, size.y - pivot.y * size.y);
+	}
+
+	void SetAngle(float angle)
+	{
+		this->angle = angle;
+
+		for (int i = 0; i < 4; ++i)
+		{
+			Vec2 dst = corners[0] - pos;
+			float new_angle = dst.Angle() + angle;
+		
+			rot_corners[i].x = cos(new_angle) * dst.Lenght();
+			rot_corners[i].y = sin(new_angle) * dst.Lenght();
+		}
+	}
+
 	Vec2 size;
+	Vec2 corners[4];
+	Vec2 rot_corners[4];
 };
 
 #endif // !__RECT_H__

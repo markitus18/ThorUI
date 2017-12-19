@@ -52,7 +52,8 @@ struct Vec2
 	static Vec2 zero() { return Vec2(0, 0); };
 	static Vec2 one() { return Vec2(1, 1); };
 
-	float Distance(const Vec2& other) { return sqrt((other.x - x) * (other.x - x) + (other.y - y) * (other.y - y)); }
+	float Lenght() { return sqrt(x * x + y * y); };
+	float Angle() { return atan2(y, x) * 180 / 3.1415; }
 
 	//Variables
 	float x = 0, y = 0;
