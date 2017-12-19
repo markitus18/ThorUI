@@ -53,7 +53,7 @@ struct Vec2
 	static Vec2 one() { return Vec2(1, 1); };
 
 	float Lenght() { return sqrt(x * x + y * y); };
-	float Angle() { return atan2(y, x) * 180 / 3.1415; }
+	float Angle() { return atan2(y, x); }
 
 	//Variables
 	float x = 0, y = 0;

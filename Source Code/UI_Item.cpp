@@ -136,6 +136,7 @@ void UI_Item::DeleteChildren()
 void UI_Item::UpdateGlobalTransform()
 {
 	global_rect.SetPos((parent ? parent->GetGlobalPos() : Vec2()) + rect.pos * (parent ? parent->GetGlobalScale() : Vec2()));
+//	global_rect.SetAngle(parent ? parent->GetGlobalRect().angle : 0)
 	global_scale = (parent ? parent->GetGlobalScale() : Vec2(1, 1)) * scale;
 	global_rect.size = rect.size * global_scale;
 
@@ -195,6 +196,11 @@ Vec2 UI_Item::GetGlobalScale() const
 Rect& UI_Item::GetRect()
 {
 	return rect;
+}
+
+Rect& UI_Item::GetGlobalRect()
+{
+	return global_rect;
 }
 
 Vec2 UI_Item::GetPivot() const

@@ -24,23 +24,39 @@ struct Rect : public Shape
 	void SetPos(Vec2 pos)
 	{
 		this->pos = pos;
-		corners[0] = (pos - (pivot * size));
-		corners[1] = pos + Vec2(size.x - pivot.x * size.x, -pivot.y * size.y);
-		corners[2] = pos + (size - pivot * size);
-		corners[3] = pos + Vec2(-pivot.x * size.x, size.y - pivot.y * size.y);
+		CalcCorners();
 	}
 
 	void SetAngle(float angle)
 	{
 		this->angle = angle;
+		CalcRotCorners();
 
+	}
+
+	void CalcCorners()
+	{
+		corners[0] = (pos - (pivot * size));
+		corners[1] = pos + Vec2(size.x - pivot.x * size.x, -pivot.y * size.y);
+		corners[2] = pos + (size - pivot * size);
+		corners[3] = pos + Vec2(-pivot.x * size.x, size.y - pivot.y * size.y);
+		CalcRotCorners();
+	}
+
+	void CalcRotCorners()
+	{
 		for (int i = 0; i < 4; ++i)
 		{
-			Vec2 dst = corners[0] - pos;
+			Vec2 dst = corners[i] - pos;
+			float current_angle = dst.Angle();
 			float new_angle = dst.Angle() + angle;
-		
-			rot_corners[i].x = cos(new_angle) * dst.Lenght();
-			rot_corners[i].y = sin(new_angle) * dst.Lenght();
+			float lenght = dst.Lenght();
+
+			float cos_ = cos(new_angle);
+			float sin_ = sin(new_angle);
+
+			rot_corners[i].x = pos.x + cos(new_angle) * dst.Lenght();
+			rot_corners[i].y = pos.y + sin(new_angle) * dst.Lenght();
 		}
 	}
 
