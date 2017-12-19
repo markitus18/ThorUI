@@ -44,6 +44,7 @@
     <ClCompile Include="Source Code\UI_Text.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source Code\Circle.h" />
     <ClInclude Include="Source Code\Config.h" />
     <ClInclude Include="Source Code\Dock.h" />
     <ClInclude Include="Source Code\DockData.h" />

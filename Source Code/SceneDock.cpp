@@ -112,7 +112,7 @@ void Scene::HandleGizmoActivation(Vec2 mouse_pos)
 		if (rot_button.Contains(mouse_pos) && ThorUI::GetMouseState(1) == KEY_DOWN)
 		{
 			drag = Drag_Type::XY;
-			//init_drag_val.x = editor->selected->;
+			init_drag_val.x = editor->selected->GetRect().angle;
 		}
 	}
 	else
@@ -133,7 +133,10 @@ void Scene::HandleGizmoActivation(Vec2 mouse_pos)
 	if (drag != Drag_Type::NONE)
 	{
 		start_drag = mouse_pos;
-		init_drag_val = editor->selected->GetGlobalPos();
+		if (gizmo_op == Gizmo_Op::TRANSLATION)
+			init_drag_val = editor->selected->GetGlobalPos();
+		else if (gizmo_op == Gizmo_Op::SCALE)
+			init_drag_val = editor->selected->GetGlobalScale();
 	}
 }
 
@@ -149,10 +152,27 @@ void Scene::HandleDrag(Vec2 mouse_pos, Vec2 image_size)
 		Vec2 scale = image_size / editor->window_size;
 		delta /= scale;
 
-		Vec2 previous_pos = editor->selected->GetGlobalPos();
-		Vec2 final_pos = Vec2(drag != Drag_Type::Y ? init_drag_val.x + delta.x : init_drag_val.x,
-			drag != Drag_Type::X ? init_drag_val.y + delta.y : init_drag_val.y);
-		editor->selected->SetGlobalPos(final_pos.x, final_pos.y);
+		if (gizmo_op == Gizmo_Op::TRANSLATION)
+		{
+			Vec2 final_pos = Vec2(drag != Drag_Type::Y ? init_drag_val.x + delta.x : init_drag_val.x,
+				drag != Drag_Type::X ? init_drag_val.y + delta.y : init_drag_val.y);
+			editor->selected->SetGlobalPos(final_pos.x, final_pos.y);
+		}
+		else if (gizmo_op == Gizmo_Op::SCALE)
+		{
+			Vec2 final_scale;
+			delta = delta * scale / 40;
+			if (drag == Drag_Type::Y)
+				final_scale.Set(init_drag_val.x, init_drag_val.y + delta.y);
+			if (drag==Drag_Type::X)
+				final_scale.Set(init_drag_val.x + delta.x, init_drag_val.y);
+			if (drag == Drag_Type::XY)
+			{
+				float delta_v = 1 + (delta.x + delta.y);
+				final_scale = init_drag_val * delta_v;
+			}
+			editor->selected->SetGlobalScale(final_scale);
+		}
 	}
 }
 
@@ -179,8 +199,8 @@ void Scene::DrawTranslationGizmo()
 	editor->DrawTriangle(final_x + Vec2(0, 10), final_x + Vec2(15, 0), final_x + Vec2(0, -10), drag == Drag_Type::X ? 0xFF42F1F4 : 0xFFFF0000);
 	editor->DrawTriangle(final_y + Vec2(10, 0), final_y + Vec2(0, 15), final_y + Vec2(-10, 0), drag == Drag_Type::Y ? 0xFF42F1F4 : 0xFF0000FF);
 
-	trans_buttons[0] = Rect(initial_pos + Vec2(8, -8), Vec2(70, 16));
-	trans_buttons[1] = Rect(initial_pos + Vec2(-8, 8), Vec2(16, 70));
+	trans_buttons[0] = Rect(initial_pos + Vec2(15, -8), Vec2(69, 16));
+	trans_buttons[1] = Rect(initial_pos + Vec2(-8, 15), Vec2(16, 69));
 	trans_buttons[2] = Rect(initial_pos + Vec2(-1, -1), Vec2(16, 16));
 
 	editor->DrawRect(trans_buttons[2], drag == Drag_Type::XY ? 0xFF42F1F4 : 0xFF00AA00);
@@ -208,8 +228,8 @@ void Scene::DrawScaleGizmo()
 	editor->DrawRect(rect_x, drag == Drag_Type::X ? 0xFF42F1F4 : 0xFFFF0000);
 	editor->DrawRect(rect_y, drag == Drag_Type::Y ? 0xFF42F1F4 : 0xFF0000FF);
 
-	trans_buttons[0] = Rect(initial_pos + Vec2(8, -8), Vec2(70, 16));
-	trans_buttons[1] = Rect(initial_pos + Vec2(-8, 8), Vec2(16, 70));
+	trans_buttons[0] = Rect(initial_pos + Vec2(15, -8), Vec2(69, 16));
+	trans_buttons[1] = Rect(initial_pos + Vec2(-8, 15), Vec2(16, 69));
 	trans_buttons[2] = Rect(initial_pos + Vec2(-1, -1), Vec2(16, 16));
 
 	editor->DrawRect(trans_buttons[2], drag == Drag_Type::XY ? 0xFF42F1F4 : 0xFF00AA00);
@@ -217,5 +237,11 @@ void Scene::DrawScaleGizmo()
 
 void Scene::DrawRotationGizmo()
 {
+	Vec2 relative_pos = editor->selected->GetGlobalPos() / editor->window_size;
+	Vec2 pos_on_image = relative_pos * img_size;
 
+	Vec2 initial_pos = img_corner + pos_on_image;
+
+	rot_button = Circle(initial_pos, 80);
+	editor->DrawCircle(rot_button, 0xAA42F1F4);
 }

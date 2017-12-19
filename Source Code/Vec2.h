@@ -1,7 +1,7 @@
 #ifndef __VEC2_H__
 #define __VEC2_H__
 
-//#include "Rect.h"
+#include <math.h>
 
 struct Vec2
 {
@@ -51,6 +51,8 @@ struct Vec2
 
 	static Vec2 zero() { return Vec2(0, 0); };
 	static Vec2 one() { return Vec2(1, 1); };
+
+	float Distance(const Vec2& other) { return sqrt((other.x - x) * (other.x - x) + (other.y - y) * (other.y - y)); }
 
 	//Variables
 	float x = 0, y = 0;

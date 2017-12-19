@@ -25,6 +25,7 @@ class Resources;
 struct Rect;
 struct ImVec2;
 struct Vec2;
+struct Circle;
 
 class UI_Editor
 {
@@ -40,6 +41,7 @@ public:
 	void DisplayTexture(ThorUI::Texture* tex);
 	void DrawRect(Rect rect, ImU32 color, bool filled = true, float thickness = 1.0f);
 	void DrawTriangle(Vec2 a, Vec2 b, Vec2 c, ImU32 color);
+	void DrawCircle(Circle circle, ImU32 color);
 
 	void SetDockFocus(Dock* dock);
 

@@ -61,6 +61,13 @@ void UI_Item::SetScale(Vec2 scale)
 	UpdateGlobalTransform();
 }
 
+void UI_Item::SetGlobalScale(Vec2 scale)
+{
+	global_scale = scale;
+	this->scale = global_scale / (parent ? parent->GetGlobalScale() : Vec2(1, 1));
+	UpdateGlobalTransform();
+}
+
 void UI_Item::SetRotation(float rotation)
 {
 	rect.SetAngle(rotation);
@@ -183,6 +190,11 @@ Vec2 UI_Item::GetScale() const
 Vec2 UI_Item::GetGlobalScale() const
 {
 	return global_scale;
+}
+
+const Rect& UI_Item::GetRect() const
+{
+	return rect;
 }
 
 Vec2 UI_Item::GetPivot() const

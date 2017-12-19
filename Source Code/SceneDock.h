@@ -3,8 +3,10 @@
 
 #include "DockData.h"
 #include "Vec2.h"
+
 #include "Shape.h"
 #include "Rect.h"
+#include "Circle.h"
 
 #include "ImGui\imgui.h" //TMP
 
@@ -57,7 +59,7 @@ private:
 	ImVec2 img_offset;
 
 	Rect trans_buttons[3];
-	Rect rot_button;
+	Circle rot_button;
 
 public:
 	uint frameBuffer = 0;

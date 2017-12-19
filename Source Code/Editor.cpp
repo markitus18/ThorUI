@@ -10,6 +10,9 @@
 #include "UI_Button.h"
 #include "UI_Text.h"
 
+#include "Rect.h"
+#include "Circle.h"
+
 #include "FileSystem.h"
 #include "ImGui\Dock\imgui_dock.h"
 
@@ -262,6 +265,12 @@ void UI_Editor::DrawTriangle(Vec2 a, Vec2 b, Vec2 c, ImU32 color)
 {
 	ImDrawList* draw_list = ImGui::GetWindowDrawList();
 	draw_list->AddTriangleFilled(ToImVec2(a), ToImVec2(b), ToImVec2(c), color);
+}
+
+void UI_Editor::DrawCircle(Circle circle, ImU32 color)
+{
+	ImDrawList* draw_list = ImGui::GetWindowDrawList();
+	draw_list->AddCircleFilled(ToImVec2(circle.pos), circle.radius, color, 64);
 }
 
 void UI_Editor::SetDockFocus(Dock* dock)

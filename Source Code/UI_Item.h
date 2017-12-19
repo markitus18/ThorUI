@@ -42,6 +42,7 @@ public:
 	virtual void SetSize(Vec2 size);
 	void SetScale(float x, float y);
 	void SetScale(Vec2 scale);
+	void SetGlobalScale(Vec2 scale);
 	void SetRotation(float rotation);
 
 	void SetID(int id);
@@ -66,6 +67,8 @@ public:
 	Vec2 GetScale() const;
 	Vec2 GetGlobalScale() const;
 	Vec2 GetPivot() const;
+	const Rect& GetRect() const;
+
 	int GetID() const;
 
 	Item_Event GetLastEvent() const;
