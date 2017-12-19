@@ -1,28 +1,26 @@
 #ifndef __RECT_H__
 #define __RECT_H__
 
-#include "Vec2.h"
+#include "Shape.h"
 
-struct Rect
+struct Rect : public Shape
 {
 	Rect() {};
-	Rect(float x, float y, float w, float h, float angle = 0) : pos(x, y), size(x, y), angle(angle)
+	Rect(float x, float y, float w, float h, float angle = 0) : Shape(Vec2(x, y), angle), size(x, y)
 	{
 
 	}
-	Rect(Vec2 pos, Vec2 size, float angle = 0) : pos(pos), size(size), angle(angle)
+	Rect(Vec2 pos, Vec2 size, float angle = 0) : Shape(pos, angle), size(size)
 	{
 
 	}
 
-	bool Contains(Vec2 point)
+	bool Contains(Vec2 point) override
 	{
 		return (point.x >= pos.x && point.x <= pos.x + size.x &&
 				point.y >= pos.y && point.y <= pos.y + size.y);
 	}
 
-	float angle;
-	Vec2 pos;
 	Vec2 size;
 };
 

@@ -18,6 +18,8 @@ public:
 	void SetParent(Dock* dock);
 	void SetActive(bool active);
 
+	virtual void OnResize() {};
+
 	Dock* GetParent() const;
 	bool IsActive() const;
 

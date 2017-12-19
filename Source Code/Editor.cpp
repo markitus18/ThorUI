@@ -58,12 +58,13 @@ bool UI_Editor::Init(SDL_Window* window)
 
 	ImGuiContext& g = *GImGui;
 	float menubar_size = 13 + g.Style.FramePadding.y * 2.0f;
+	float iconbar_size = 30.0f;
 
 	ThorUI::Init(window);
 
-	Dock* dock = new Dock("0 Dock", Vec2(window_size.x, window_size.y - menubar_size));
+	Dock* dock = new Dock("0 Dock", Vec2(window_size.x, window_size.y - menubar_size - iconbar_size));
 	docks.push_back(dock);
-	dock->position = Vec2(0, menubar_size);
+	dock->position = Vec2(0, menubar_size + iconbar_size);
 	dock->Split(HORIZONTAL, 0.8f);
 	dock->GetDockChildren()[0]->Split(VERTICAL, 0.8f);
 	dock->GetDockChildren()[0]->GetDockChildren()[0]->Split(VERTICAL, 0.2f);
@@ -103,7 +104,7 @@ void UI_Editor::Draw()
 		if (docks[i]->root) docks[i]->Draw();
 	}
 	DrawMainMenuBar();
-	
+	DrawIconBar();
 
 	ImGui::Render();
 	if (ThorUI::GetKeyState(SDL_SCANCODE_DELETE) == KEY_DOWN)
@@ -195,6 +196,12 @@ void UI_Editor::DrawMainMenuBar()
 		}
 	}
 }
+
+void UI_Editor::DrawIconBar()
+{
+
+}
+
 void UI_Editor::ProcessEvent(SDL_Event* event)
 {
 	switch (event->type)
@@ -242,10 +249,13 @@ void UI_Editor::DisplayTexture(ThorUI::Texture* tex)
 	ImGui::Text("Original size: %i, %i", (int)tex->original_size.x, (int)tex->original_size.y);
 }
 
-void UI_Editor::DrawRect(Rect rect, ImU32 color)
+void UI_Editor::DrawRect(Rect rect, ImU32 color, bool filled, float thickness)
 {
 	ImDrawList* draw_list = ImGui::GetWindowDrawList();
-	draw_list->AddRectFilled(ImVec2(rect.pos.x, window_size.y - rect.pos.y), ImVec2(rect.pos.x + rect.size.x, window_size.y - rect.pos.y - rect.size.y), color);
+	if (filled)
+		draw_list->AddRectFilled(ImVec2(rect.pos.x, window_size.y - rect.pos.y), ImVec2(rect.pos.x + rect.size.x, window_size.y - rect.pos.y - rect.size.y), color);
+	else
+		draw_list->AddRect(ImVec2(rect.pos.x, window_size.y - rect.pos.y), ImVec2(rect.pos.x + rect.size.x, window_size.y - rect.pos.y - rect.size.y), color, 0.0f, -1, thickness);
 }
 
 void UI_Editor::DrawTriangle(Vec2 a, Vec2 b, Vec2 c, ImU32 color)

@@ -339,11 +339,17 @@ void Dock::SetSize(Vec2 size)
 {
 	this->size = size;
 
+	for (uint i = 0; i < data_children.size(); ++i)
+	{
+		data_children[i]->OnResize();
+	}
+
 	if (dock_children.size() > 0)
 	{
 		CapSeparatorPosition();
 		UpdateChildrenPosition();
 	}
+
 }
 
 std::vector<Dock*>& Dock::GetDockChildren()

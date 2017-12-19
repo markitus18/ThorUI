@@ -24,6 +24,7 @@ void DockData::SetParent(Dock* dock)
 		parent->RemoveChildData(this);
 	}
 	parent = dock;
+	OnResize();
 }
 
 void DockData::SetActive(bool active)

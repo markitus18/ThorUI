@@ -38,7 +38,7 @@ public:
 	bool CleanUp();
 
 	void DisplayTexture(ThorUI::Texture* tex);
-	void DrawRect(Rect rect, ImU32 color);
+	void DrawRect(Rect rect, ImU32 color, bool filled = true, float thickness = 1.0f);
 	void DrawTriangle(Vec2 a, Vec2 b, Vec2 c, ImU32 color);
 
 	void SetDockFocus(Dock* dock);
@@ -48,6 +48,7 @@ public:
 
 private:
 	void DrawMainMenuBar();
+	void DrawIconBar();
 
 public:
 	UI_Item* selected = nullptr;
