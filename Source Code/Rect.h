@@ -60,6 +60,11 @@ struct Rect : public Shape
 		}
 	}
 
+	Vec2 GetCenterPos() //TODO: adding const -> operator "-" const
+	{
+		return pos + (Vec2(0.5, 0.5) - pivot) * size;
+	}
+
 	Vec2 size;
 	Vec2 corners[4];
 	Vec2 rot_corners[4];
