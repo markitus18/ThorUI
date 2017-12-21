@@ -98,6 +98,9 @@
     <ClCompile Include="Source Code\External Libraries\ImGui\ImGuizmo\ImGuizmo.cpp">
       <Filter>External Libraries\ImGui\ImGuizmo</Filter>
     </ClCompile>
+    <ClCompile Include="Source Code\Mat3x3.cpp">
+      <Filter>Containers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\UI_Item.h">
@@ -188,7 +191,7 @@
     <ClInclude Include="Source Code\Circle.h">
       <Filter>Containers</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\Mat4x4.h">
+    <ClInclude Include="Source Code\Mat3x3.h">
       <Filter>Containers</Filter>
     </ClInclude>
   </ItemGroup>

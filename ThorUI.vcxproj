@@ -35,6 +35,7 @@
     <ClCompile Include="Source Code\InspectorDock.cpp" />
     <ClCompile Include="Source Code\Log.cpp" />
     <ClCompile Include="Source Code\Main.cpp" />
+    <ClCompile Include="Source Code\Mat3x3.cpp" />
     <ClCompile Include="Source Code\ResourcesDock.cpp" />
     <ClCompile Include="Source Code\SceneDock.cpp" />
     <ClCompile Include="Source Code\ThorUI.cpp" />
@@ -60,7 +61,7 @@
     <ClInclude Include="Source Code\External Libraries\ImGui\stb_truetype.h" />
     <ClInclude Include="Source Code\External Libraries\parson\parson.h" />
     <ClInclude Include="Source Code\FileSystem.h" />
-    <ClInclude Include="Source Code\Mat4x4.h" />
+    <ClInclude Include="Source Code\Mat3x3.h" />
     <ClInclude Include="Source Code\Shape.h" />
     <ClInclude Include="Source Code\HierarchyDock.h" />
     <ClInclude Include="Source Code\InspectorDock.h" />
