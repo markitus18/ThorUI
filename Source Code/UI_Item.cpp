@@ -138,7 +138,7 @@ void UI_Item::UpdateGlobalTransform()
 	global_rect.SetPos((parent ? parent->GetGlobalRect().GetCenterPos() : Vec2()) + rect.pos * (parent ? parent->GetGlobalScale() : Vec2()));
 //	global_rect.SetAngle(parent ? parent->GetGlobalRect().angle : 0)
 	global_scale = (parent ? parent->GetGlobalScale() : Vec2(1, 1)) * scale;
-	global_rect.size = rect.size * global_scale;
+	global_rect.SetSize(rect.size * global_scale);
 
 	for (std::vector<UI_Item*>::iterator it = children.begin(); it != children.end(); ++it)
 	{

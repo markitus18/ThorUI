@@ -60,6 +60,7 @@
     <ClInclude Include="Source Code\External Libraries\ImGui\stb_truetype.h" />
     <ClInclude Include="Source Code\External Libraries\parson\parson.h" />
     <ClInclude Include="Source Code\FileSystem.h" />
+    <ClInclude Include="Source Code\Mat4x4.h" />
     <ClInclude Include="Source Code\Shape.h" />
     <ClInclude Include="Source Code\HierarchyDock.h" />
     <ClInclude Include="Source Code\InspectorDock.h" />

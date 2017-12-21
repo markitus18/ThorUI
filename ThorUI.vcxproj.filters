@@ -188,5 +188,8 @@
     <ClInclude Include="Source Code\Circle.h">
       <Filter>Containers</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\Mat4x4.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

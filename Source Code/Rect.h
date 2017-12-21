@@ -27,6 +27,12 @@ struct Rect : public Shape
 		CalcCorners();
 	}
 
+	void SetSize(Vec2 size)
+	{
+		this->size = size;
+		CalcCorners();
+	}
+
 	void SetAngle(float angle)
 	{
 		this->angle = angle;
