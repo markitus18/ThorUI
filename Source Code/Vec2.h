@@ -55,6 +55,20 @@ struct Vec2
 	float Lenght() { return sqrt(x * x + y * y); };
 	float Angle() { return atan2(y, x); }
 
+	//*Perform a rotation of the current point
+	//		*pivot - center of rotation
+	//		*angle - angle of the rotation in radians
+	void Rotate(Vec2 pivot, float angle)
+	{
+		Vec2 rot_vec = *this - pivot;
+
+		float new_angle = rot_vec.Angle() + angle;
+		float lenght = rot_vec.Lenght();
+
+		x = pivot.x + cos(new_angle) * lenght;
+		y = pivot.y + sin(new_angle) * lenght;
+	}
+
 	//Variables
 	float x = 0, y = 0;
 };

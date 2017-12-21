@@ -24,7 +24,6 @@ UI_Button::UI_Button(Vec2 pos, Vec2 size) : UI_Item(pos, size)
 void UI_Button::Draw()
 {
 	if (IsParentActive() == true)
-		//ThorUI::DrawQuad(global_rect.pos - (rect.size * rect.pivot * global_scale), rect.size * global_scale, color, true, 5.0f);
 		ThorUI::DrawQuad(global_rect.rot_corners, color, true, 5.0f);
 
 }

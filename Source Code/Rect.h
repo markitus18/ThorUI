@@ -47,16 +47,8 @@ struct Rect : public Shape
 	{
 		for (int i = 0; i < 4; ++i)
 		{
-			Vec2 dst = corners[i] - pos;
-			float current_angle = dst.Angle();
-			float new_angle = dst.Angle() + angle;
-			float lenght = dst.Lenght();
-
-			float cos_ = cos(new_angle);
-			float sin_ = sin(new_angle);
-
-			rot_corners[i].x = pos.x + cos(new_angle) * dst.Lenght();
-			rot_corners[i].y = pos.y + sin(new_angle) * dst.Lenght();
+			rot_corners[i] = corners[i];
+			rot_corners[i].Rotate(pos, angle);
 		}
 	}
 
