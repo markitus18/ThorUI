@@ -11,6 +11,7 @@ struct Vec2
 	Vec2(float x, float y) : x(x), y(y) {}
 
 	void Set(float x, float y) { this->x = x; this->y = y; }
+	float* Ptr() { return &x; }
 
 	Vec2 FitInRect(const Vec2& rect)
 	{

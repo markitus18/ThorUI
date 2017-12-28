@@ -62,6 +62,8 @@
     <ClInclude Include="Source Code\External Libraries\parson\parson.h" />
     <ClInclude Include="Source Code\FileSystem.h" />
     <ClInclude Include="Source Code\Mat3x3.h" />
+    <ClInclude Include="Source Code\Math.h" />
+    <ClInclude Include="Source Code\MToV.h" />
     <ClInclude Include="Source Code\Shape.h" />
     <ClInclude Include="Source Code\HierarchyDock.h" />
     <ClInclude Include="Source Code\InspectorDock.h" />

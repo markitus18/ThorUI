@@ -2,6 +2,9 @@
 #define __MAT3X3_H__
 
 #include "Vec2.h"
+#include "MToV.h"
+
+struct Vec2;
 
 class Mat3x3
 {
@@ -15,8 +18,15 @@ public:
 			float _20, float _21, float _22);
 	void SetIdentity();
 
-	float* operator[] (int row);
+	float* Ptr();
+	const float* Ptr() const;
+
+	MToV<4>& operator[] (int row);
+	const MToV<4>& operator[] (int row) const;
+
 	Mat3x3 operator*(const Mat3x3& mat) const;
+
+	void Translate(Vec2 tr);
 
 private:
 	float v[3][3];

@@ -1,4 +1,5 @@
 #include "Mat3x3.h"
+#include "Math.h"
 
 void Mat3x3::Set(float _00, float _01, float _02,
 	float _10, float _11, float _12,
@@ -14,12 +15,47 @@ void Mat3x3::SetIdentity()
 		0, 0, 0);
 }
 
-float* Mat3x3::operator[] (int row)
+float* Mat3x3::Ptr()
 {
-	return *v + (row * 3);
+	return &v[0][0];
+}
+const float* Mat3x3::Ptr() const
+{
+	return &v[0][0];
+}
+
+MToV<4>& Mat3x3::operator[] (int row)
+{
+	return *reinterpret_cast<MToV<4>*>(v[row]);
+}
+
+const MToV<4>& Mat3x3::operator[] (int row) const
+{
+	return *reinterpret_cast<const MToV<4>*>(v[row]);
 }
 
 Mat3x3 Mat3x3::operator*(const Mat3x3& mat) const
 {
-	float _00 = v[0][0] * mat[0][0] + v[0][1] * mat[1][0] + v[0][2] * mat[2][0];
+	Mat3x3 res;
+	res[0][0] = DOT3_STRIDED(v[0], mat.Ptr() + 0, 3);
+	res[0][1] = DOT3_STRIDED(v[0], mat.Ptr() + 1, 3);
+	res[0][2] = DOT3_STRIDED(v[0], mat.Ptr() + 2, 3);
+
+	res[1][0] = DOT3_STRIDED(v[1], mat.Ptr() + 0, 3);
+	res[1][1] = DOT3_STRIDED(v[1], mat.Ptr() + 1, 3);
+	res[1][2] = DOT3_STRIDED(v[1], mat.Ptr() + 2, 3);
+
+	res[2][0] = DOT3_STRIDED(v[2], mat.Ptr() + 0, 3);
+	res[2][1] = DOT3_STRIDED(v[2], mat.Ptr() + 1, 3);
+	res[2][2] = DOT3_STRIDED(v[2], mat.Ptr() + 2, 3);
+
+	return res;
+}
+
+void Mat3x3::Translate(Vec2 tr)
+{
+	float vec[3] = { tr.x, tr.y, 1 };
+
+	v[0][2] = DOT3(v[0], vec);
+	v[1][2] = DOT3(v[1], vec);
 }
