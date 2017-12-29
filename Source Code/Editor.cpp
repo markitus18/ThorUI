@@ -27,6 +27,10 @@
 
 #include "ImGui\ImGuizmo\ImGuizmo.h"
 
+
+//TMP TESTING
+#include "Mat3x3.h"
+
 UI_Editor::UI_Editor()
 {
 
@@ -83,6 +87,11 @@ bool UI_Editor::Init(SDL_Window* window)
 
 	resources = new Resources(this);
 	dock->GetDockChildren()[1]->AddChildData(resources);
+
+	Mat3x3 mat;
+	mat.SetIdentity();
+	mat.Translate(Vec2(5, 10));
+	mat.Translate(Vec2(2, 3));
 
 	return ret;
 }

@@ -27,6 +27,7 @@ public:
 	Mat3x3 operator*(const Mat3x3& mat) const;
 
 	void Translate(Vec2 tr);
+	void Scale(Vec2 scale);
 
 private:
 	float v[3][3];
