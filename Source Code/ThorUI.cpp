@@ -15,6 +15,8 @@
 #include "UI_Button.h"
 #include "UI_Text.h"
 
+#include "Mat3x3.h" //TMP TESTING
+
 #include "Config.h"
 
 #pragma comment (lib, "SDL2_ttf-2.0.14/libx86/SDL2_ttf.lib")
@@ -77,11 +79,26 @@ namespace ThorUI
 
 	void Draw()
 	{
+		float matrix[16] = {
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			20, 0, 0, 1
+		};
+
+		Mat3x3 mat;
+		mat.SetIdentity();
+		mat.Translate(Vec2(50, 0));
+		glPushMatrix();
+		glMultMatrixf(mat.ToOpenGL());
+
 		std::vector<UI_Item*>::iterator it;
 		for (it = items.begin(); it != items.end(); ++it)
 		{
 			(*it)->Draw();
 		}
+
+		glPopMatrix();
 	}
 
 	void CleanUp()

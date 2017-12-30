@@ -200,5 +200,8 @@
     <ClInclude Include="Source Code\Math.h">
       <Filter>Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\Transform.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

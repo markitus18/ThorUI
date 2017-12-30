@@ -70,6 +70,7 @@
     <ClInclude Include="Source Code\Rect.h" />
     <ClInclude Include="Source Code\ResourcesDock.h" />
     <ClInclude Include="Source Code\SceneDock.h" />
+    <ClInclude Include="Source Code\Transform.h" />
     <ClInclude Include="Source Code\UI_Button.h" />
     <ClInclude Include="Source Code\Color.h" />
     <ClInclude Include="Source Code\Log.h" />

@@ -20,6 +20,7 @@ public:
 
 	float* Ptr();
 	const float* Ptr() const;
+	const float* ToOpenGL();
 
 	MToV<4>& operator[] (int row);
 	const MToV<4>& operator[] (int row) const;
@@ -30,7 +31,8 @@ public:
 	void Scale(Vec2 scale);
 
 private:
-	float v[3][3];
+	float m[3][3];
+	float gl_m[4][4]; //TODO: change for a better way
 };
 
 #endif // !__MAT3X3_H__
