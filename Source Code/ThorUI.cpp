@@ -80,7 +80,7 @@ namespace ThorUI
 	void Draw()
 	{
 		float matrix[16] = {
-			1, 0, 0, 0,
+			2, 0, 0, 0,
 			0, 1, 0, 0,
 			0, 0, 1, 0,
 			20, 0, 0, 1
@@ -88,7 +88,7 @@ namespace ThorUI
 
 		Mat3x3 mat;
 		mat.SetIdentity();
-		mat.Translate(Vec2(50, 0));
+		mat.Scale(Vec2(1, 5));
 		glPushMatrix();
 		glMultMatrixf(mat.ToOpenGL());
 
