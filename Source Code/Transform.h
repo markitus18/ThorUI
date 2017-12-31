@@ -6,9 +6,18 @@
 
 class Transform
 {
-	Vec2 position;
+public:
+	Transform() { matrix.SetIdentity(); scale.Set(1, 1); }
+	Transform(Vec2 pos, Vec2 scale, float rotation);
+
+	void SetPos(Vec2 pos);
+	void SetScale(Vec2 scale);
+	void SetRotation(float rotation);
+
+private:
+	Vec2 pos;
 	Vec2 scale;
-	float rotation;
+	float rotation = 0;
 
 	Mat3x3 matrix;
 };

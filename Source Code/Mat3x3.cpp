@@ -64,6 +64,14 @@ Mat3x3 Mat3x3::operator*(const Mat3x3& mat) const
 	return res;
 }
 
+void Mat3x3::FromTRS(Vec2 tr, Vec2 scale, float angle)
+{
+	SetIdentity();
+	Scale(scale);
+	RotateDeg(angle);
+	Translate(tr);
+}
+
 void Mat3x3::Translate(Vec2 tr)
 {
 	float vec[3] = { tr.x, tr.y, 1 };
@@ -72,8 +80,27 @@ void Mat3x3::Translate(Vec2 tr)
 	m[1][2] = DOT3(m[1], vec);
 }
 
+void Mat3x3::SetTranslation(Vec2 tr)
+{
+	m[0][2] = tr.x;
+	m[1][2] = tr.y;
+}
+
 void Mat3x3::Scale(Vec2 scale)
 {
 	m[0][0] *= scale.x; m[0][1] *= scale.y;
 	m[1][0] *= scale.x; m[1][1] *= scale.y;
 }
+
+void Mat3x3::RotateDeg(float angle)
+{
+	float rad_angle = angle * DEGTORAD;
+	float s = sin(rad_angle);
+	float c = cos(rad_angle);
+
+	m[0][0] = c*m[0][0] + s*m[0][1]; 	m[0][1] = -s*m[0][0] + c*m[0][1];
+	m[1][0] = c*m[1][0] + s*m[1][1]; 	m[1][1] = -s*m[1][0] + c*m[1][1];
+}
+
+
+

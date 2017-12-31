@@ -27,8 +27,15 @@ public:
 
 	Mat3x3 operator*(const Mat3x3& mat) const;
 
+	void FromTRS(Vec2 tr, Vec2 scale, float angle);
+
 	void Translate(Vec2 tr);
+	void SetTranslation(Vec2 tr);
+
 	void Scale(Vec2 scale);
+	void RotateDeg(float angle);
+
+
 
 private:
 	float m[3][3];

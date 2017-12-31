@@ -101,6 +101,9 @@
     <ClCompile Include="Source Code\Mat3x3.cpp">
       <Filter>Containers</Filter>
     </ClCompile>
+    <ClCompile Include="Source Code\Transform.cpp">
+      <Filter>Containers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\UI_Item.h">

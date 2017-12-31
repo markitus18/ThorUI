@@ -85,20 +85,20 @@ namespace ThorUI
 			0, 0, 1, 0,
 			20, 0, 0, 1
 		};
-
+		/*
 		Mat3x3 mat;
 		mat.SetIdentity();
 		mat.Scale(Vec2(1, 5));
 		glPushMatrix();
 		glMultMatrixf(mat.ToOpenGL());
-
+		*/
 		std::vector<UI_Item*>::iterator it;
 		for (it = items.begin(); it != items.end(); ++it)
 		{
 			(*it)->Draw();
 		}
 
-		glPopMatrix();
+		//glPopMatrix();
 	}
 
 	void CleanUp()

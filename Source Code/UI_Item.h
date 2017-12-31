@@ -3,6 +3,7 @@
 
 #include "Vec2.h"
 #include "Rect.h"
+#include "Transform.h"
 
 #include <vector>
 
@@ -31,7 +32,7 @@ class UI_Item
 public:
 	UI_Item() { global_rect.pivot.Set(0.5, 0.5); rect.pivot.Set(0.5, 0.5); };
 	UI_Item(float x, float y) : rect(Vec2(x, y), Vec2::zero()) { global_rect.pivot.Set(0.5, 0.5); rect.pivot.Set(0.5, 0.5); UpdateGlobalTransform(); };
-	UI_Item(Vec2 pos, Vec2 size) : rect(pos, size) { global_rect.pivot.Set(0.5, 0.5); rect.pivot.Set(0.5, 0.5); UpdateGlobalTransform(); };
+	UI_Item(Vec2 pos, Vec2 size) : rect(pos, size) { global_rect.pivot.Set(0.5, 0.5); rect.pivot.Set(0.5, 0.5); UpdateGlobalTransform(); transform.SetPos(pos);};
 	~UI_Item();
 
 	void SetPos(float x, float y);
@@ -105,6 +106,10 @@ protected:
 
 	bool active = true;
 	int id = -1;
+
+public: //TODO: just by now
+	Transform transform;
+
 };
 
 #endif

@@ -12,12 +12,15 @@ void UI_Item::SetPos(float x, float y)
 {
 	rect.SetPos(Vec2(x, y));
 	UpdateGlobalTransform();
+	transform.SetPos(Vec2(x, y));
 }
 
 void UI_Item::SetPos(Vec2 pos)
 {
 	rect.SetPos(pos);
 	UpdateGlobalTransform();
+	transform.SetPos(pos);
+
 }
 
 void UI_Item::SetGlobalPos(float x, float y)
