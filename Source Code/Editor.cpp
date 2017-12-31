@@ -191,6 +191,14 @@ void UI_Editor::DrawMainMenuBar()
 			}
 			ImGui::EndMenu();
 		}
+		if (ImGui::BeginMenu("Dev Tools"))
+		{
+			if (ImGui::Checkbox("Enable", &dev_tools))
+			{
+
+			}
+			ImGui::EndMenu();
+		}
 		ImGui::EndMainMenuBar();
 
 		if (canvas_win && ImGui::Begin("Canvas_Popup", &canvas_win))

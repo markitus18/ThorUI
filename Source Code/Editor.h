@@ -56,6 +56,7 @@ public:
 	UI_Item* selected = nullptr;
 	Scene* scene = nullptr;
 	Vec2 window_size;
+	bool dev_tools = false;
 
 private:
 

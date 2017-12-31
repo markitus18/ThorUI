@@ -27,6 +27,7 @@ void UI_Item::SetGlobalPos(float x, float y)
 {
 	global_rect.SetPos(Vec2(x, y));
 	rect.SetPos((global_rect.pos - (parent ? parent->GetGlobalRect().GetCenterPos() : Vec2())) / (parent ? parent->GetGlobalScale() : Vec2::one()));
+	transform.SetPos(rect.pos);
 	UpdateGlobalTransform();
 }
 
@@ -34,6 +35,7 @@ void UI_Item::SetGlobalPos(Vec2 pos)
 {
 	global_rect.SetPos(pos);
 	rect.SetPos((global_rect.pos - (parent ? parent->GetGlobalRect().GetCenterPos() : Vec2())) / (parent ? parent->GetGlobalScale() : Vec2::one()));
+	transform.SetPos(rect.pos);
 	UpdateGlobalTransform();
 }
 

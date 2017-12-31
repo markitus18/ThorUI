@@ -52,6 +52,24 @@ void Inspector::Draw()
 			selected->SetScale(scale);
 		}
 
+		if (editor->dev_tools == true)
+		{
+			float* ptr = selected->transform.matrix.Ptr();
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 0, 1));
+
+			for (uint i = 0; i < 9; ++i)
+			{
+				ImGui::Text("%.2f  ", ptr[i]);
+				if ((i + 1) % 3 != 0)
+				{
+					ImGui::SameLine(((i + 1) % 3) * 60);
+				}
+
+			}
+
+			ImGui::PopStyleColor();
+		}
+
 		ImGui::Separator();
 
 		switch (selected->GetType())

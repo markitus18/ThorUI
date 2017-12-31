@@ -3,6 +3,8 @@
 #include "Log.h"
 #include "Config.h"
 
+#include "glew-2.1.0\include\GL\glew.h" //TODO: use it only in ThorUI?
+
 UI_Button::UI_Button()
 {
 	color = color_data[0] = Color::White();
@@ -24,7 +26,16 @@ UI_Button::UI_Button(Vec2 pos, Vec2 size) : UI_Item(pos, size)
 void UI_Button::Draw()
 {
 	if (IsParentActive() == true)
-		ThorUI::DrawQuad(global_rect.rot_corners, color, true, 5.0f);
+	{
+		glPushMatrix();
+		glMultMatrixf(transform.matrix.ToOpenGL());
+		Vec2 half_size = rect.size / 2;
+		Vec2 corners[4] = { Vec2() - half_size, Vec2(half_size.x, -half_size.y),
+							half_size, Vec2(-half_size.x, half_size.y) };
+		ThorUI::DrawQuad(corners, color, true, 5.0f);
+		glPopMatrix();
+	}
+
 
 }
 

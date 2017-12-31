@@ -14,7 +14,7 @@ public:
 	void SetScale(Vec2 scale);
 	void SetRotation(float rotation);
 
-private:
+public: //TODO: switch to private
 	Vec2 pos;
 	Vec2 scale;
 	float rotation = 0;
