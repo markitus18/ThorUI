@@ -85,20 +85,11 @@ namespace ThorUI
 			0, 0, 1, 0,
 			20, 0, 0, 1
 		};
-		/*
-		Mat3x3 mat;
-		mat.SetIdentity();
-		mat.Scale(Vec2(1, 5));
-		glPushMatrix();
-		glMultMatrixf(mat.ToOpenGL());
-		*/
 		std::vector<UI_Item*>::iterator it;
 		for (it = items.begin(); it != items.end(); ++it)
 		{
 			(*it)->Draw();
 		}
-
-		//glPopMatrix();
 	}
 
 	void CleanUp()
@@ -147,7 +138,7 @@ namespace ThorUI
 		{
 			int x, y;
 			SDL_GetMouseState(&x, &y);
-			mouse_pos.Set(x / screen_size.x, (1 - y / screen_size.y)); //Setting mouse to [0, 1]. Y must be inverted (SDL 0y is top)
+			mouse_pos.Set(x, screen_size.y - y); //Y must be inverted (SDL 0y is top)
 		}
 
 		for (int i = 0; i < 3; ++i)

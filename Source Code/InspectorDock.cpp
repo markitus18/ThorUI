@@ -54,7 +54,7 @@ void Inspector::Draw()
 
 		if (editor->dev_tools == true)
 		{
-			float* ptr = selected->transform.matrix.Ptr();
+			float* ptr = selected->transform.local_m.Ptr();
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 0, 1));
 
 			for (uint i = 0; i < 9; ++i)

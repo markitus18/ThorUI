@@ -1,6 +1,15 @@
 #include "Mat3x3.h"
 #include "Math.h"
 
+const Mat3x3 Mat3x3::identity = Mat3x3(1, 0, 0, 0, 1, 0, 0, 0, 1);
+
+Mat3x3::Mat3x3(float _00, float _01, float _02,
+				float _10, float _11, float _12,
+				float _20, float _21, float _22)
+{
+	Set(_00, _01, _02, _10, _11, _12, _20, _21, _22);
+}
+
 void Mat3x3::Set(float _00, float _01, float _02,
 	float _10, float _11, float _12,
 	float _20, float _21, float _22)
@@ -102,5 +111,26 @@ void Mat3x3::RotateDeg(float angle)
 	m[1][0] = c*m[1][0] + s*m[1][1]; 	m[1][1] = -s*m[1][0] + c*m[1][1];
 }
 
+Mat3x3 Mat3x3::Inverted() const
+{
+	float det = Determinant();
+	Mat3x3 ret;
+
+	for (int c = 0; c < 3; ++c)
+		for (int r = 0; r < 3; ++r)
+			ret[c][r] = (m[(r + 1) % 3][(c + 1) % 3] * m[(r + 2) % 3][(c + 2) % 3] - m[(r + 1) % 3][(c + 2) % 3] * m[(r + 2) % 3][(c + 1) % 3]) / det;
+
+	return ret;
+}
+
+float Mat3x3::Determinant() const
+{
+	float det = 0;
+	for (int i = 0; i < 3; ++i)
+	{
+		det += m[0][i] * (m[1][(i + 1) % 3] * m[2][(i + 2) % 3] - m[1][(i + 2) % 3] * m[2][(i + 1) % 3]);
+	}
+	return det;
+}
 
 

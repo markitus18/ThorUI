@@ -9,8 +9,13 @@ struct Vec2;
 class Mat3x3
 {
 public:
-	Mat3x3() {};
 
+	static const Mat3x3 identity;
+
+	Mat3x3() {};
+	Mat3x3(float _00, float _01, float _02,
+			float _10, float _11, float _12,
+			float _20, float _21, float _22);
 	~Mat3x3() {};
 
 	void Set(float _00, float _01, float _02,
@@ -31,11 +36,11 @@ public:
 
 	void Translate(Vec2 tr);
 	void SetTranslation(Vec2 tr);
-
 	void Scale(Vec2 scale);
 	void RotateDeg(float angle);
 
-
+	Mat3x3 Inverted() const;
+	float Determinant() const;
 
 private:
 	float m[3][3];

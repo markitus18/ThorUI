@@ -3,6 +3,8 @@
 #include "ThorUI.h"
 #include "Config.h"
 
+#include "glew-2.1.0\include\GL\glew.h" //TODO
+
 UI_Text::UI_Text() : color(Color::White())
 {
 	name = "Text";
@@ -82,7 +84,15 @@ Vec2 UI_Text::GetTexSize() const
 void UI_Text::Draw()
 {
 	if (IsParentActive() == true && texture_id != 0)
-		ThorUI::DrawImage(global_rect.pos - (texture_size * rect.pivot * global_scale), texture_size * global_scale, texture_id, color);
+	{
+		glPushMatrix();
+		glMultMatrixf(transform.global_m.ToOpenGL());
+
+		rect.pos = rect.size / -2;
+		ThorUI::DrawImage(rect.pos, rect.size, texture_id, color);
+
+		glPopMatrix();
+	}
 }
 
 void UI_Text::InternalSave(Config& config)

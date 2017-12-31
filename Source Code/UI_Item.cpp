@@ -103,6 +103,8 @@ void UI_Item::SetParent(UI_Item* parent, bool keep_global)
 	if (this->parent != nullptr) this->parent->RemoveChild(this);
 
 	this->parent = parent;
+	transform.SetParent(&parent->transform, keep_global);
+
 	parent->children.push_back(this);
 
 	//Keeping global pos coordinates
@@ -112,7 +114,10 @@ void UI_Item::SetParent(UI_Item* parent, bool keep_global)
 		scale = global_scale / (parent ? parent->GetGlobalPos() : Vec2());
 	}
 	else
+	{
+		transform.UpdateGlobalTransform();
 		UpdateGlobalTransform();
+	}
 }
 
 void UI_Item::RemoveChild(UI_Item* child)

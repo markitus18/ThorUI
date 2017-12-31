@@ -28,15 +28,13 @@ void UI_Button::Draw()
 	if (IsParentActive() == true)
 	{
 		glPushMatrix();
-		glMultMatrixf(transform.matrix.ToOpenGL());
-		Vec2 half_size = rect.size / 2;
-		Vec2 corners[4] = { Vec2() - half_size, Vec2(half_size.x, -half_size.y),
-							half_size, Vec2(-half_size.x, half_size.y) };
-		ThorUI::DrawQuad(corners, color, true, 5.0f);
+		glMultMatrixf(transform.global_m.ToOpenGL());
+		
+		rect.pos = rect.size / -2;
+		ThorUI::DrawQuad(rect.pos, rect.size, color, true, 5.0f);
+
 		glPopMatrix();
 	}
-
-
 }
 
 void UI_Button::OnItemEvent(Item_Event event)
