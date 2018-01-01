@@ -21,11 +21,15 @@ void Transform::SetPos(Vec2 pos)
 
 void Transform::SetScale(Vec2 scale)
 {
+	this->scale = scale;
+	local_m.FromTRS(pos, scale, rotation); //TODO: only change scale and rotation part
 	UpdateGlobalTransform();
 }
 
-void Transform::SetRotation(float rotation)
+void Transform::SetRotationDeg(float rotation)
 {
+	this->rotation = rotation;
+	local_m.FromTRS(pos, scale, rotation);  //TODO: only change scale and rotation part
 	UpdateGlobalTransform();
 }
 

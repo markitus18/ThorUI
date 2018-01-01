@@ -2,6 +2,8 @@
 #include "ThorUI.h"
 #include "Config.h"
 
+#include "glew-2.1.0\include\GL\glew.h" //TODO
+
 UI_Image::UI_Image(Vec2 pos, Vec2 size, int texture_id) : UI_Item(pos, size)
 {
 	name = "Image";
@@ -13,14 +15,19 @@ void UI_Image::Draw()
 {
 	if (IsParentActive() == false) return;
 
+	glPushMatrix();
+	glMultMatrixf(transform.global_m.ToOpenGL());
+
 	if (texture_id != 0)
 	{
-		ThorUI::DrawImage(global_rect.pos - (rect.size * rect.pivot), rect.size * global_scale, texture_id, color);
+		ThorUI::DrawImage(-size/2, size, texture_id, color);
 	}
 	else
 	{
-		ThorUI::DrawQuad(global_rect.pos - (rect.size * rect.pivot * global_scale), rect.size * global_scale, color, true);
+		ThorUI::DrawQuad(-size/2, size, color, true);
 	}
+
+	glPopMatrix();
 }
 
 void UI_Image::InternalSave(Config& config)
@@ -58,12 +65,12 @@ void UI_Image::SetTexture(uint texture_id)
 	ThorUI::OnSetTexture(texture_id);
 
 	//Adjust size to texture size
-	if (rect.size.x == -1 && rect.size.y == -1)
+	if (size.x == -1 && size.y == -1)
 	{
 		ThorUI::Texture* tex = ThorUI::GetTexture(texture_id);
 		if (tex != nullptr)
 		{
-			rect.size.Set(tex->original_size.x, tex->original_size.y);
+			size.Set(tex->original_size.x, tex->original_size.y);
 		}
 	}
 }

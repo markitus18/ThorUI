@@ -27,6 +27,8 @@ public:
 	const float* Ptr() const;
 	const float* ToOpenGL();
 
+	Vec2 GetTranslation() const;
+
 	MToV<4>& operator[] (int row);
 	const MToV<4>& operator[] (int row) const;
 

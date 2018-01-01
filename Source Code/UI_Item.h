@@ -30,31 +30,25 @@ class Config;
 class UI_Item
 {
 public:
-	UI_Item() { global_rect.pivot.Set(0.5, 0.5); rect.pivot.Set(0.5, 0.5); };
-	UI_Item(float x, float y) : rect(Vec2(x, y), Vec2::zero()) { global_rect.pivot.Set(0.5, 0.5); rect.pivot.Set(0.5, 0.5); UpdateGlobalTransform(); };
-	UI_Item(Vec2 pos, Vec2 size) : rect(pos, size) { global_rect.pivot.Set(0.5, 0.5); rect.pivot.Set(0.5, 0.5); UpdateGlobalTransform(); transform.SetPos(pos);};
+	UI_Item() {};
+	UI_Item(float x, float y) { transform.SetPos(Vec2(x, y)); }
+	UI_Item(Vec2 pos, Vec2 size) : size(size) { transform.SetPos(pos);}
 	~UI_Item();
 
 	void SetPos(float x, float y);
 	void SetPos(Vec2 pos);
-	void SetGlobalPos(float x, float y);
-	void SetGlobalPos(Vec2 pos);
 	void SetSize(float w, float h);
 	virtual void SetSize(Vec2 size);
 	void SetScale(float x, float y);
 	void SetScale(Vec2 scale);
-	void SetGlobalScale(Vec2 scale);
 	void SetRotation(float rotation);
 
 	void SetID(int id);
 	void SetName(const char* name);
-	void SetPivot(Vec2 pivot);
 	void SetActive(bool active);
 	void SetParent(UI_Item* parent, bool keep_global = true);
 	void RemoveChild(UI_Item* child);
 	void DeleteChildren();
-
-	void UpdateGlobalTransform();
 
 	virtual void Draw() {}; //TODO: draw here, or in ThorUI?
 	virtual void OnItemEvent(Item_Event event) { last_event = event; };
@@ -66,10 +60,6 @@ public:
 	Vec2 GetGlobalPos() const;
 	Vec2 GetSize() const;
 	Vec2 GetScale() const;
-	Vec2 GetGlobalScale() const;
-	Vec2 GetPivot() const;
-	Rect& GetRect();
-	Rect& GetGlobalRect();
 
 	int GetID() const;
 
@@ -93,12 +83,6 @@ protected:
 	std::string name;
 	Item_Type type;
 
-	Rect rect;
-	Rect global_rect;
-
-	Vec2 scale = Vec2(1.0, 1.0);
-	Vec2 global_scale = Vec2(1.0, 1.0);
-
 	Item_Event last_event = Mouse_Exit;
 
 	UI_Item* parent = nullptr;
@@ -108,6 +92,7 @@ protected:
 	int id = -1;
 
 public: //TODO: just by now
+	Vec2 size;
 	Transform transform;
 
 };

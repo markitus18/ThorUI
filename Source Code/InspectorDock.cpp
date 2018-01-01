@@ -28,10 +28,10 @@ void Inspector::Draw()
 		DisplayItemName(selected);
 		ImGui::Separator();
 
-		Vec2 pos = selected->GetPos();
+		Vec2 pos = selected->transform.pos;
 		if (ImGui::DragFloat2("Position", &pos))
 		{
-			selected->SetPos(pos);
+			selected->transform.SetPos(pos);
 		}
 
 		Vec2 size = selected->GetSize();
@@ -39,13 +39,13 @@ void Inspector::Draw()
 		{
 			selected->SetSize(size);
 		}
-
+		/*
 		Vec2 pivot = selected->GetPivot();
 		if (ImGui::DragFloat2("Pivot", &pivot, 0.03f))
 		{
 			selected->SetPivot(pivot);
 		}
-
+		*/
 		Vec2 scale = selected->GetScale();
 		if (ImGui::DragFloat2("Scale", &scale, 0.03f))
 		{
@@ -161,10 +161,9 @@ void Inspector::DrawButtonItem(UI_Button* button)
 		button->SetColor(color);
 	}
 
-	float angle = button->GetGlobalRect().angle * 180 / 3.1415;
+	float angle = button->transform.rotation * 180 / 3.1415;
 	if (ImGui::DragFloat("Angle", &angle))
 	{
-		button->GetGlobalRect().SetAngle(angle / 180 * 3.1415);
-		button->UpdateGlobalTransform();
+		button->transform.SetRotationDeg(angle);
 	}
 }

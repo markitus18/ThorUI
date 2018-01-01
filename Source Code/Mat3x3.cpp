@@ -45,6 +45,11 @@ const float* Mat3x3::ToOpenGL()
 	return &gl_m[0][0];
 }
 
+Vec2 Mat3x3::GetTranslation() const
+{
+	return Vec2(m[0][2], m[1][2]);
+}
+
 MToV<4>& Mat3x3::operator[] (int row)
 {
 	return *reinterpret_cast<MToV<4>*>(m[row]);
@@ -76,9 +81,10 @@ Mat3x3 Mat3x3::operator*(const Mat3x3& mat) const
 void Mat3x3::FromTRS(Vec2 tr, Vec2 scale, float angle)
 {
 	SetIdentity();
-	Scale(scale);
-	RotateDeg(angle);
+
 	Translate(tr);
+	RotateDeg(angle);
+	Scale(scale);
 }
 
 void Mat3x3::Translate(Vec2 tr)
@@ -106,9 +112,12 @@ void Mat3x3::RotateDeg(float angle)
 	float rad_angle = angle * DEGTORAD;
 	float s = sin(rad_angle);
 	float c = cos(rad_angle);
+	
+	Mat3x3 r = *this; //TODO: kinda dirty
+	r[0][0] = c*m[0][0] + s*m[0][1]; 	r[0][1] = -s*m[0][0] + c*m[0][1];
+	r[1][0] = c*m[1][0] + s*m[1][1]; 	r[1][1] = -s*m[1][0] + c*m[1][1];
 
-	m[0][0] = c*m[0][0] + s*m[0][1]; 	m[0][1] = -s*m[0][0] + c*m[0][1];
-	m[1][0] = c*m[1][0] + s*m[1][1]; 	m[1][1] = -s*m[1][0] + c*m[1][1];
+	*this = r;
 }
 
 Mat3x3 Mat3x3::Inverted() const

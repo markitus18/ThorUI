@@ -30,8 +30,7 @@ void UI_Button::Draw()
 		glPushMatrix();
 		glMultMatrixf(transform.global_m.ToOpenGL());
 		
-		rect.pos = rect.size / -2;
-		ThorUI::DrawQuad(rect.pos, rect.size, color, true, 5.0f);
+		ThorUI::DrawQuad(-size/2, size, color, true, 5.0f);
 
 		glPopMatrix();
 	}

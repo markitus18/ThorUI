@@ -13,7 +13,7 @@ public:
 
 	void SetPos(Vec2 pos);
 	void SetScale(Vec2 scale);
-	void SetRotation(float rotation);
+	void SetRotationDeg(float rotation);
 
 	void SetGlobalTransform(Mat3x3 mat);
 	void UpdateGlobalTransform();
