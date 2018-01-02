@@ -112,7 +112,7 @@ void Scene::HandleGizmoActivation(Vec2 mouse_pos)
 		if (rot_button.Contains(mouse_pos) && ThorUI::GetMouseState(1) == KEY_DOWN)
 		{
 			drag = Drag_Type::XY;
-			init_drag_val.x = editor->selected->transform.rotation;
+			init_drag_val.x = editor->selected->GetTransform().GetRotation();
 		}
 	}
 	else
@@ -156,7 +156,7 @@ void Scene::HandleDrag(Vec2 mouse_pos, Vec2 image_size)
 		{
 			Vec2 final_pos = Vec2(drag != Drag_Type::Y ? init_drag_val.x + delta.x : init_drag_val.x,
 				drag != Drag_Type::X ? init_drag_val.y + delta.y : init_drag_val.y);
-			editor->selected->transform.SetGlobalPos(final_pos);
+			editor->selected->GetTransform().SetGlobalPos(final_pos);
 		}
 		else if (gizmo_op == Gizmo_Op::SCALE)
 		{
@@ -188,7 +188,7 @@ void Scene::SetGizmoOp(Gizmo_Op op)
 
 void Scene::DrawTranslationGizmo()
 {
-	Vec2 relative_pos = editor->selected->transform.global_m.GetTranslation() / editor->window_size;
+	Vec2 relative_pos = editor->selected->GetTransform().Global().GetTranslation() / editor->window_size;
 	Vec2 pos_on_image = relative_pos * img_size;
 
 	Vec2 initial_pos = img_corner + pos_on_image;

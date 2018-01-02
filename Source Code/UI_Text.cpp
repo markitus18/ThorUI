@@ -87,7 +87,7 @@ void UI_Text::Draw()
 	if (IsParentActive() == true && texture_id != 0)
 	{
 		glPushMatrix();
-		glMultMatrixf(transform.center_m.ToOpenGL());
+		glMultMatrixf(transform.Center().OpenGLPtr());
 
 		ThorUI::DrawImage(-size/2, size, texture_id, color);
 

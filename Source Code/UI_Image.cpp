@@ -16,7 +16,7 @@ void UI_Image::Draw()
 	if (IsParentActive() == false) return;
 
 	glPushMatrix();
-	glMultMatrixf(transform.center_m.ToOpenGL());
+	glMultMatrixf(transform.Center().OpenGLPtr());
 
 	if (texture_id != 0)
 	{

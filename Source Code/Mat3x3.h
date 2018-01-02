@@ -23,15 +23,13 @@ public:
 			float _20, float _21, float _22);
 	void SetIdentity();
 
-	float* Ptr();
 	const float* Ptr() const;
-	const float* ToOpenGL();
+	const float* OpenGLPtr() const;
 
 	Vec2 GetTranslation() const;
 	Vec2 GetScale() const;
 	float GetRotation() const;
 
-	MToV<4>& operator[] (int row);
 	const MToV<4>& operator[] (int row) const;
 
 	Mat3x3 operator*(const Mat3x3& mat) const;
@@ -45,6 +43,10 @@ public:
 
 	Mat3x3 Inverted() const;
 	float Determinant() const;
+
+private:
+	MToV<4>& operator[] (int row);
+	void ToOpenGL();
 
 private:
 	float m[3][3];

@@ -17,6 +17,7 @@ void Mat3x3::Set(float _00, float _01, float _02,
 	m[0][0] = _00; m[0][1] = _01; m[0][2] = _02;
 	m[1][0] = _10; m[1][1] = _11; m[1][2] = _12;
 	m[2][0] = _20; m[2][1] = _21; m[2][2] = _22;
+	ToOpenGL();
 }
 
 void Mat3x3::SetIdentity()
@@ -24,25 +25,25 @@ void Mat3x3::SetIdentity()
 	Set(1, 0, 0,
 		0, 1, 0,
 		0, 0, 1);
+	ToOpenGL();
 }
 
-float* Mat3x3::Ptr()
-{
-	return &m[0][0];
-}
 const float* Mat3x3::Ptr() const
 {
 	return &m[0][0];
 }
 
-const float* Mat3x3::ToOpenGL()
+const float* Mat3x3::OpenGLPtr() const
+{
+	return &gl_m[0][0];
+}
+
+void Mat3x3::ToOpenGL()
 {
 	gl_m[0][0] = m[0][0]; gl_m[0][1] = m[1][0]; gl_m[0][2] = 0;			gl_m[0][3] = 0;
 	gl_m[1][0] = m[0][1]; gl_m[1][1] = m[1][1]; gl_m[1][2] = 0;			gl_m[1][3] = 0;
 	gl_m[2][0] = 0;		  gl_m[2][1] = 0;		gl_m[2][2] = 1;			gl_m[2][3] = 0;
 	gl_m[3][0] = m[0][2]; gl_m[3][1] = m[1][2];	gl_m[3][2] = 0;			gl_m[3][3] = 1;
-
-	return &gl_m[0][0];
 }
 
 Vec2 Mat3x3::GetTranslation() const
@@ -86,7 +87,7 @@ Mat3x3 Mat3x3::operator*(const Mat3x3& mat) const
 	res[2][0] = DOT3_STRIDED(m[2], mat.Ptr() + 0, 3);
 	res[2][1] = DOT3_STRIDED(m[2], mat.Ptr() + 1, 3);
 	res[2][2] = DOT3_STRIDED(m[2], mat.Ptr() + 2, 3);
-
+	res.ToOpenGL();
 	return res;
 }
 
@@ -102,21 +103,24 @@ void Mat3x3::FromTRS(Vec2 tr, Vec2 scale, float angle)
 void Mat3x3::Translate(Vec2 tr)
 {
 	float vec[3] = { tr.x, tr.y, 1 };
-
 	m[0][2] = DOT3(m[0], vec);
 	m[1][2] = DOT3(m[1], vec);
+
+	ToOpenGL();
 }
 
 void Mat3x3::SetTranslation(Vec2 tr)
 {
 	m[0][2] = tr.x;
 	m[1][2] = tr.y;
+	ToOpenGL();
 }
 
 void Mat3x3::Scale(Vec2 scale)
 {
 	m[0][0] *= scale.x; m[0][1] *= scale.y;
 	m[1][0] *= scale.x; m[1][1] *= scale.y;
+	ToOpenGL();
 }
 
 void Mat3x3::RotateDeg(float angle)
@@ -125,11 +129,16 @@ void Mat3x3::RotateDeg(float angle)
 	float s = sin(rad_angle);
 	float c = cos(rad_angle);
 	
+	float final_angle = GetRotation() + angle;
+	Vec2 sc = GetScale();
+
 	float _00 = m[0][0];
 	float _10 = m[1][0];
 
 	m[0][0] = c*m[0][0] + s*m[0][1]; 	m[0][1] = -s*_00 + c*m[0][1];
 	m[1][0] = c*m[1][0] + s*m[1][1]; 	m[1][1] = -s*_10 + c*m[1][1];
+
+	ToOpenGL();
 }
 
 Mat3x3 Mat3x3::Inverted() const

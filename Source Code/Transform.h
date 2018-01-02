@@ -24,10 +24,16 @@ public:
 	void AddChild(Transform* child);
 	void RemoveChild(Transform* child);
 
+	Vec2 GetPos() const;
+	Vec2 GetScale() const;
+	float GetRotation() const;
 	Vec2 GetPivot() const;
 
-public: //TODO: switch to private
+	const Mat3x3& Local() const;
+	const Mat3x3& Global() const;
+	const Mat3x3& Center() const;
 
+private:
 	//Local position, rotation and scale
 	Vec2 pos;
 	Vec2 scale;
@@ -36,10 +42,12 @@ public: //TODO: switch to private
 
 	//Resulting matrix from pos, scale and rotation
 	Mat3x3 local_m;
+	//Transformation of the pivot in global_space
 	Mat3x3 global_m;
+	//Transformation of the center of the item in global_space
 	Mat3x3 center_m;
 
-	Transform* parent;
+	Transform* parent; //TODO: clean transform-item parenting
 	std::vector<Transform*> children;
 };
 #endif // !__TRANSFORM_H__

@@ -61,6 +61,8 @@ public:
 	Vec2 GetGlobalPos() const;
 	Vec2 GetSize() const;
 	Vec2 GetScale() const;
+	Vec2 GetPivot() const;
+	Transform& GetTransform();
 
 	int GetID() const;
 
@@ -92,7 +94,6 @@ protected:
 	bool active = true;
 	int id = -1;
 
-public: //TODO: just by now
 	Vec2 size;
 	Vec2 pivot;
 	Transform transform;

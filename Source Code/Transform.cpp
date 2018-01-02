@@ -1,4 +1,5 @@
 #include "Transform.h"
+#include <math.h>
 #include "Math.h"
 
 Transform::Transform()
@@ -28,36 +29,34 @@ void Transform::SetGlobalPos(Vec2 pos)
 
 void Transform::SetScale(Vec2 scale)
 {
+	Vec2 delta = scale / this->scale;
+
+	local_m.Scale(scale / this->scale);
 	this->scale = scale;
-	local_m.FromTRS(pos, scale, rotation); //TODO: only change scale and rotation part
 	UpdateGlobalTransform();
 }
 
 void Transform::SetRotationDeg(float rotation)
 {
+	//float delta = Math::AngleDegDelta(rotation, this->rotation);
+	//local_m.RotateDeg(delta);
 	this->rotation = rotation;
-	local_m.FromTRS(pos, scale, rotation);  //TODO: only change scale and rotation part
+	local_m.FromTRS(pos, scale, rotation);
 	UpdateGlobalTransform();
 }
 
 void Transform::SetPivot(Vec2 position, bool pivotStays)
 {
 	Vec2 piv_delta = pivot_offset - position;
+	pivot_offset = position;
 
 	if (pivotStays == false)
 	{
 		local_m.Translate(piv_delta);
 		pos = local_m.GetTranslation();
-		scale = local_m.GetScale();
-		rotation = local_m.GetRotation() * RADTODEG;
-
+		global_m = (parent ? parent->center_m : Mat3x3::identity) * local_m;
 	}
-	UpdateGlobalTransform();
-	pivot_offset = position;
 
-	Mat3x3 pivot_tr = Mat3x3::identity;
-	pivot_tr.SetTranslation(pivot_offset);
-	center_m = global_m * pivot_tr;
 	UpdateGlobalTransform();
 }
 
@@ -70,14 +69,7 @@ void Transform::SetGlobalTransform(Mat3x3 mat)
 	scale = local_m.GetScale();
 	rotation = local_m.GetRotation() * RADTODEG;
 
-	Mat3x3 pivot_tr = Mat3x3::identity;
-	pivot_tr.SetTranslation(pivot_offset);
-	center_m = global_m * pivot_tr;
-
-	for (std::vector<Transform*>::iterator it = children.begin(); it != children.end(); ++it)
-	{
-		(*it)->UpdateGlobalTransform();
-	}
+	UpdateGlobalTransform();
 }
 
 void Transform::UpdateGlobalTransform()
@@ -122,7 +114,37 @@ void Transform::RemoveChild(Transform* child)
 	}
 }
 
+Vec2 Transform::GetPos() const
+{
+	return pos;
+}
+
+Vec2 Transform::GetScale() const
+{
+	return scale;
+}
+
+float Transform::GetRotation() const
+{
+	return rotation;
+}
+
 Vec2 Transform::GetPivot() const
 {
 	return pivot_offset;
+}
+
+const Mat3x3& Transform::Local() const
+{
+	return local_m;
+}
+
+const Mat3x3& Transform::Global() const
+{
+	return global_m;
+}
+
+const Mat3x3& Transform::Center() const
+{
+	return center_m;
 }

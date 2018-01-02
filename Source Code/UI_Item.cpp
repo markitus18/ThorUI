@@ -103,7 +103,7 @@ void UI_Item::Save(Config& config)
 {
 	config.SetString("Name", name.c_str());
 	config.SetNumber("Type", (int)type);
-	config.SetArray("Position").AddVec2(transform.pos);
+	config.SetArray("Position").AddVec2(transform.GetPos());
 	config.SetArray("Size").AddVec2(size);
 	config.SetNumber("ID", id);
 	config.SetNumber("Parent ID", parent ? parent->GetID() : -1);
@@ -113,7 +113,7 @@ void UI_Item::Save(Config& config)
 void UI_Item::Load(Config& config)
 {
 	name = config.GetString("Name", "Undefined");
-	transform.pos = config.GetArray("Position").GetVec2(0);
+	transform.GetPos() = config.GetArray("Position").GetVec2(0);
 	size = config.GetArray("Size").GetVec2(0);
 	id = config.GetNumber("ID", -1);
 
@@ -123,12 +123,12 @@ void UI_Item::Load(Config& config)
 
 Vec2 UI_Item::GetPos() const
 {
-	return transform.local_m.GetTranslation();
+	return transform.Local().GetTranslation();
 }
 
 Vec2 UI_Item::GetGlobalPos() const
 {
-	return transform.global_m.GetTranslation();
+	return transform.Global().GetTranslation();
 }
 
 Vec2 UI_Item::GetSize() const
@@ -138,7 +138,17 @@ Vec2 UI_Item::GetSize() const
 
 Vec2 UI_Item::GetScale() const
 {
-	return transform.scale;
+	return transform.GetScale();
+}
+
+Vec2 UI_Item::GetPivot() const
+{
+	return pivot;
+}
+
+Transform& UI_Item::GetTransform()
+{
+	return transform;
 }
 
 int UI_Item::GetID() const
