@@ -11,7 +11,7 @@
 namespace Math
 {
 	//Returns angle in range (-360, 360)
-	void NormalizeAngle(float& a);
+	void NormalizeAngle360(float& a);
 	//Returns the shortest distance to two angles in degrees
 	float AngleDegDelta(float a1, float a2);
 }

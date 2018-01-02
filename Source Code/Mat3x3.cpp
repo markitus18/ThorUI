@@ -125,19 +125,13 @@ void Mat3x3::Scale(Vec2 scale)
 
 void Mat3x3::RotateDeg(float angle)
 {
-	float rad_angle = angle * DEGTORAD;
-	float s = sin(rad_angle);
-	float c = cos(rad_angle);
-	
-	float final_angle = GetRotation() + angle;
+	float r_angle = (GetRotation() + angle * DEGTORAD) ;
+	float s = sin(r_angle);
+	float c = cos(r_angle);
 	Vec2 sc = GetScale();
 
-	float _00 = m[0][0];
-	float _10 = m[1][0];
-
-	m[0][0] = c*m[0][0] + s*m[0][1]; 	m[0][1] = -s*_00 + c*m[0][1];
-	m[1][0] = c*m[1][0] + s*m[1][1]; 	m[1][1] = -s*_10 + c*m[1][1];
-
+	m[0][0] = c*sc.x; 	m[0][1] = -s*sc.y;
+	m[1][0] = s*sc.x; 	m[1][1] = c*sc.y;
 	ToOpenGL();
 }
 

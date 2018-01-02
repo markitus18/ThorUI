@@ -90,12 +90,9 @@ void UI_Item::RemoveChild(UI_Item* child)
 
 void UI_Item::DeleteChildren()
 {
-	std::vector<UI_Item*>::iterator it = children.begin();
-	while (it != children.end())
+	while (!children.empty())
 	{
-		(*it)->DeleteChildren();
-		delete (*it);
-		it = children.erase(it);
+		delete children[0];
 	}
 }
 

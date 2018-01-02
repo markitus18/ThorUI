@@ -2,16 +2,19 @@
 
 namespace Math
 {
-	void NormalizeAngle(float& a)
+	void NormalizeAngle360(float& a)
 	{
 		while (a >= 360) a -= 360;
-		while (a <= -360) a += 360;
+		while (a < 0) a += 360;
 	}
 
 	float AngleDegDelta(float a1, float a2)
 	{
-		float d = a1 - a2;
-		NormalizeAngle(d);
-		return d < -180 || d > 180 ? a1 - a2 : a2 - a1;
+		NormalizeAngle360(a1);
+		NormalizeAngle360(a2);
+		float d = a2 - a1;
+		while (d > 180) d -= 360;
+		while (d < -180) d += 360;
+		return d;
 	}
 }

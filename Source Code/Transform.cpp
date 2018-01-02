@@ -29,8 +29,6 @@ void Transform::SetGlobalPos(Vec2 pos)
 
 void Transform::SetScale(Vec2 scale)
 {
-	Vec2 delta = scale / this->scale;
-
 	local_m.Scale(scale / this->scale);
 	this->scale = scale;
 	UpdateGlobalTransform();
@@ -38,10 +36,9 @@ void Transform::SetScale(Vec2 scale)
 
 void Transform::SetRotationDeg(float rotation)
 {
-	//float delta = Math::AngleDegDelta(rotation, this->rotation);
-	//local_m.RotateDeg(delta);
+	float delta = Math::AngleDegDelta(this->rotation, rotation);
+	local_m.RotateDeg(delta);
 	this->rotation = rotation;
-	local_m.FromTRS(pos, scale, rotation);
 	UpdateGlobalTransform();
 }
 
