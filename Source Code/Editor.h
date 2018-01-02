@@ -49,8 +49,10 @@ public:
 	Vec2 ToVec2(ImVec2 point);
 
 private:
+	void HandleInput();
 	void DrawMainMenuBar();
 	void DrawIconBar();
+	void DrawGrid();
 
 public:
 	UI_Item* selected = nullptr;
@@ -66,6 +68,7 @@ private:
 	ImFont* bold_font = nullptr;
 
 	bool canvas_win = false;
+	bool grid = true;
 
 	std::vector<Dock*> docks;
 
@@ -74,7 +77,7 @@ private:
 	Resources* resources = nullptr;
 
 	Dock* dock_focus = nullptr;
-		//delete marc;
+	//delete marc;
 };
 
 extern UI_Editor* editor;

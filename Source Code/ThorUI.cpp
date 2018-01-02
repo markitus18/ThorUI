@@ -51,6 +51,7 @@ namespace ThorUI
 		SDL_GetWindowSize(window, &w, &h);
 		screen_size.Set(w, h);
 		gluOrtho2D(0.0f, screen_size.x, 0.0f, screen_size.y);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		//Sets the mouse to trigger "OnMouseDown" event when gaining focus
 		SDL_SetHint(SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");
@@ -383,7 +384,7 @@ namespace ThorUI
 		glVertex2f(corners[2].x, corners[2].y);
 		glVertex2f(corners[3].x, corners[3].y);
 		glEnd();
-		filled ? 0 : glLineWidth(1.0f);
+		glLineWidth(1.0f);
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
@@ -393,7 +394,6 @@ namespace ThorUI
 		glEnable(GL_TEXTURE_2D);
 
 		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		glBegin(GL_QUADS);
 		glColor4fv(color.ptr());

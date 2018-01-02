@@ -94,18 +94,23 @@ bool UI_Editor::Init(SDL_Window* window)
 void UI_Editor::Draw()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, scene->frameBuffer);
-	glClearColor(0.f, 0.f, 0.f, 1.f);
+	glClearColor(0.7f, 0.7f, 0.7f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	ThorUI::StartFrame(); //TODO: Careful, we are updating items too
 	ThorUI::Draw();
 
+	if (grid)
+	{
+		DrawGrid();
+	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glClearColor(0.f, 0.f, 0.f, 1.f);
+	glClearColor(0.7f, 0.7f, 0.7f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	ImGui_ImplSdlGL3_NewFrame(window);
 	
+	HandleInput();
 	for (uint i = 0; i < docks.size(); ++i)
 	{
 		if (docks[i]->root) docks[i]->Draw();
@@ -121,6 +126,14 @@ void UI_Editor::Draw()
 			ThorUI::DeleteItem(selected);
 			selected = nullptr;
 		}
+	}
+}
+
+void UI_Editor::HandleInput()
+{
+	if (ThorUI::GetKeyState(SDL_SCANCODE_G) == KEY_DOWN)
+	{
+		grid = !grid;
 	}
 }
 
@@ -215,6 +228,29 @@ void UI_Editor::DrawMainMenuBar()
 void UI_Editor::DrawIconBar()
 {
 
+}
+
+void UI_Editor::DrawGrid()
+{
+	glEnable(GL_BLEND);
+	glColor4f(0.5f, 0.5f, 0.5f, 0.2f);
+
+	glBegin(GL_LINES);
+
+	for (int i = 0; i < window_size.x; i += 60)
+	{
+		glVertex2f(i, 0);
+		glVertex2f(i, window_size.y);
+	}
+	for (int i = 0; i < window_size.y; i += 60)
+	{
+		glVertex2f(0, i);
+		glVertex2f(window_size.x, i);
+	}
+
+	glEnd();
+	glDisable(GL_BLEND);
+	glColor4f(1, 1, 1, 1);
 }
 
 void UI_Editor::ProcessEvent(SDL_Event* event)
