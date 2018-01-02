@@ -32,31 +32,33 @@ struct Vec2
 	float* operator&() { return (float*)this; }
 
 	//Operators
-	Vec2 operator+(const Vec2& other) { return Vec2(x + other.x, y + other.y); }
+	Vec2 operator+(const Vec2& other) const { return Vec2(x + other.x, y + other.y); }
 	Vec2 operator+=(const Vec2& other) { return *this = Vec2(x + other.x, y + other.y); }
 
-	Vec2 operator-(const Vec2& other) { return Vec2(x - other.x, y - other.y); }
+	Vec2 operator-(const Vec2& other) const { return Vec2(x - other.x, y - other.y); }
 	Vec2 operator-=(const Vec2& other) { return *this = Vec2(x - other.x, y - other.y); }
-	Vec2 operator-() { return Vec2(-x, -y); }
+	Vec2 operator-() const { return Vec2(-x, -y); }
 
-	Vec2 operator*(const Vec2& other) { return Vec2(x * other.x, y * other.y); }
+	Vec2 operator*(const Vec2& other) const { return Vec2(x * other.x, y * other.y); }
 	Vec2 operator*=(const Vec2& other) { return *this = Vec2(x * other.x, y * other.y); }
 
-	Vec2 operator*(const float& factor) { return Vec2(x * factor, y * factor); }
+	Vec2 operator*(const float& factor) const { return Vec2(x * factor, y * factor); }
 	Vec2 operator*=(const float& factor) { return *this = Vec2(x * factor, y * factor); }
 
-	Vec2 operator/(const Vec2& other) { return Vec2(x / other.x, y / other.y); }
+	Vec2 operator/(const Vec2& other) const { return Vec2(x / other.x, y / other.y); }
 	Vec2 operator/=(const Vec2& other) { return *this = Vec2(x / other.x, y / other.y); }
 
-	Vec2 operator/(const float& factor) { return Vec2(x / factor, y / factor); }
+	Vec2 operator/(const float& factor) const { return Vec2(x / factor, y / factor); }
 	Vec2 operator/=(const float& factor) { return *this = Vec2(x / factor, y / factor); }
 
 	static Vec2 zero() { return Vec2(0, 0); };
 	static Vec2 one() { return Vec2(1, 1); };
 
-	float Lenght() { return sqrt(x * x + y * y); };
-	float Angle() { return atan2(y, x); }
+	float Lenght() const { return sqrt(x * x + y * y); }
+	float Angle() const { return atan2(y, x); }
 
+	void Normalize() { *this /= Lenght(); }
+	Vec2 Normalized() const { return (*this / Lenght()); }
 	//*Perform a rotation of the current point
 	//		*pivot - center of rotation
 	//		*angle - angle of the rotation in radians

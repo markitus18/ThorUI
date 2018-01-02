@@ -28,6 +28,8 @@ public:
 	const float* ToOpenGL();
 
 	Vec2 GetTranslation() const;
+	Vec2 GetScale() const;
+	float GetRotation() const;
 
 	MToV<4>& operator[] (int row);
 	const MToV<4>& operator[] (int row) const;

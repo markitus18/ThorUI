@@ -28,7 +28,7 @@ void UI_Button::Draw()
 	if (IsParentActive() == true)
 	{
 		glPushMatrix();
-		glMultMatrixf(transform.global_m.ToOpenGL());
+		glMultMatrixf(transform.center_m.ToOpenGL());
 		
 		ThorUI::DrawQuad(-size/2, size, color, true, 5.0f);
 

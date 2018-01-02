@@ -1,4 +1,5 @@
 #include "Transform.h"
+#include "Math.h"
 
 Transform::Transform()
 {
@@ -19,6 +20,12 @@ void Transform::SetPos(Vec2 pos)
 	UpdateGlobalTransform();
 }
 
+void Transform::SetGlobalPos(Vec2 pos)
+{
+	global_m.SetTranslation(pos);
+	SetGlobalTransform(global_m);
+}
+
 void Transform::SetScale(Vec2 scale)
 {
 	this->scale = scale;
@@ -33,15 +40,54 @@ void Transform::SetRotationDeg(float rotation)
 	UpdateGlobalTransform();
 }
 
+void Transform::SetPivot(Vec2 position, bool pivotStays)
+{
+	Vec2 piv_delta = pivot_offset - position;
+
+	if (pivotStays == false)
+	{
+		local_m.Translate(piv_delta);
+		pos = local_m.GetTranslation();
+		scale = local_m.GetScale();
+		rotation = local_m.GetRotation() * RADTODEG;
+
+	}
+	UpdateGlobalTransform();
+	pivot_offset = position;
+
+	Mat3x3 pivot_tr = Mat3x3::identity;
+	pivot_tr.SetTranslation(pivot_offset);
+	center_m = global_m * pivot_tr;
+	UpdateGlobalTransform();
+}
+
 void Transform::SetGlobalTransform(Mat3x3 mat)
 {
 	global_m = mat;
-	local_m = parent->global_m.Inverted() * mat;
+	local_m = parent->center_m.Inverted() * mat;
+
+	pos = local_m.GetTranslation();
+	scale = local_m.GetScale();
+	rotation = local_m.GetRotation() * RADTODEG;
+
+	Mat3x3 pivot_tr = Mat3x3::identity;
+	pivot_tr.SetTranslation(pivot_offset);
+	center_m = global_m * pivot_tr;
+
+	for (std::vector<Transform*>::iterator it = children.begin(); it != children.end(); ++it)
+	{
+		(*it)->UpdateGlobalTransform();
+	}
 }
 
 void Transform::UpdateGlobalTransform()
 {
-	global_m = (parent ? parent->global_m : Mat3x3::identity) * local_m;
+	global_m = (parent ? parent->center_m : Mat3x3::identity) * local_m;
+	
+	Mat3x3 pivot_tr = Mat3x3::identity;
+	pivot_tr.SetTranslation(pivot_offset);
+	center_m = global_m * pivot_tr;
+
 	for (std::vector<Transform*>::iterator it = children.begin(); it != children.end(); ++it)
 	{
 		(*it)->UpdateGlobalTransform();
@@ -74,4 +120,9 @@ void Transform::RemoveChild(Transform* child)
 			return;
 		}
 	}
+}
+
+Vec2 Transform::GetPivot() const
+{
+	return pivot_offset;
 }

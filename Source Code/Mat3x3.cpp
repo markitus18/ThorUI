@@ -50,6 +50,18 @@ Vec2 Mat3x3::GetTranslation() const
 	return Vec2(m[0][2], m[1][2]);
 }
 
+Vec2 Mat3x3::GetScale() const
+{
+	return Vec2(Vec2(m[0][0], m[1][0]).Lenght(), Vec2(m[0][1], m[1][1]).Lenght());
+}
+
+float Mat3x3::GetRotation() const
+{
+	Vec2 v(m[0][0], m[1][0]);
+	v.Normalize();
+	return atan2(v.y, v.x);
+}
+
 MToV<4>& Mat3x3::operator[] (int row)
 {
 	return *reinterpret_cast<MToV<4>*>(m[row]);
@@ -113,11 +125,11 @@ void Mat3x3::RotateDeg(float angle)
 	float s = sin(rad_angle);
 	float c = cos(rad_angle);
 	
-	Mat3x3 r = *this; //TODO: kinda dirty
-	r[0][0] = c*m[0][0] + s*m[0][1]; 	r[0][1] = -s*m[0][0] + c*m[0][1];
-	r[1][0] = c*m[1][0] + s*m[1][1]; 	r[1][1] = -s*m[1][0] + c*m[1][1];
+	float _00 = m[0][0];
+	float _10 = m[1][0];
 
-	*this = r;
+	m[0][0] = c*m[0][0] + s*m[0][1]; 	m[0][1] = -s*_00 + c*m[0][1];
+	m[1][0] = c*m[1][0] + s*m[1][1]; 	m[1][1] = -s*_10 + c*m[1][1];
 }
 
 Mat3x3 Mat3x3::Inverted() const

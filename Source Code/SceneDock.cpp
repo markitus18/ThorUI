@@ -134,7 +134,7 @@ void Scene::HandleGizmoActivation(Vec2 mouse_pos)
 	{
 		start_drag = mouse_pos;
 		if (gizmo_op == Gizmo_Op::TRANSLATION)
-			init_drag_val = editor->selected->GetPos();
+			init_drag_val = editor->selected->GetGlobalPos();
 		else if (gizmo_op == Gizmo_Op::SCALE)
 			init_drag_val = editor->selected->GetScale();
 	}
@@ -156,7 +156,7 @@ void Scene::HandleDrag(Vec2 mouse_pos, Vec2 image_size)
 		{
 			Vec2 final_pos = Vec2(drag != Drag_Type::Y ? init_drag_val.x + delta.x : init_drag_val.x,
 				drag != Drag_Type::X ? init_drag_val.y + delta.y : init_drag_val.y);
-			editor->selected->transform.SetPos(final_pos);
+			editor->selected->transform.SetGlobalPos(final_pos);
 		}
 		else if (gizmo_op == Gizmo_Op::SCALE)
 		{
@@ -172,6 +172,11 @@ void Scene::HandleDrag(Vec2 mouse_pos, Vec2 image_size)
 				final_scale = init_drag_val * delta_v;
 			}
 			editor->selected->SetScale(final_scale);
+		}
+		else if (gizmo_op == Gizmo_Op::ROTATION)
+		{
+			float final_rot = init_drag_val.x - delta.x;
+			editor->selected->SetRotation(final_rot);
 		}
 	}
 }

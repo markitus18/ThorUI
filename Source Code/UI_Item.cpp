@@ -21,11 +21,13 @@ void UI_Item::SetPos(Vec2 pos)
 void UI_Item::SetSize(float w, float h)
 {
 	size.Set(w, h);
+	transform.SetPivot((Vec2(0.5f, 0.5f) - pivot) * size, true);
 }
 
 void UI_Item::SetSize(Vec2 size)
 {
 	this->size = size;
+	transform.SetPivot((Vec2(0.5f, 0.5f) - pivot) * size, true);
 }
 
 void UI_Item::SetID(int id)
@@ -46,6 +48,12 @@ void UI_Item::SetScale(Vec2 scale)
 void UI_Item::SetRotation(float rotation)
 {
 	transform.SetRotationDeg(rotation);
+}
+
+void UI_Item::SetPivot(Vec2 pivot)
+{
+	this->pivot = pivot;
+	transform.SetPivot((Vec2(0.5f, 0.5f) - pivot) * size);
 }
 
 void UI_Item::SetName(const char* name)

@@ -39,35 +39,75 @@ void Inspector::Draw()
 		{
 			selected->SetSize(size);
 		}
-		/*
-		Vec2 pivot = selected->GetPivot();
-		if (ImGui::DragFloat2("Pivot", &pivot, 0.03f))
-		{
-			selected->SetPivot(pivot);
-		}
-		*/
 		Vec2 scale = selected->GetScale();
 		if (ImGui::DragFloat2("Scale", &scale, 0.03f))
 		{
 			selected->SetScale(scale);
 		}
+		float angle = selected->transform.rotation;
+		if (ImGui::DragFloat("Angle", &angle))
+		{
+			selected->transform.SetRotationDeg(angle);
+		}
+		
+		Vec2 pivot = selected->pivot;
+		if (ImGui::DragFloat2("Pivot", &pivot, 0.03f))
+		{
+			selected->SetPivot(pivot);
+		}
+		
 
 		if (editor->dev_tools == true)
 		{
-			float* ptr = selected->transform.local_m.Ptr();
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 0, 1));
-
-			for (uint i = 0; i < 9; ++i)
+			if (ImGui::CollapsingHeader("Local Matrix"))
 			{
-				ImGui::Text("%.2f  ", ptr[i]);
-				if ((i + 1) % 3 != 0)
-				{
-					ImGui::SameLine(((i + 1) % 3) * 60);
-				}
+				float* ptr = selected->transform.local_m.Ptr();
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 0, 1));
 
+				for (uint i = 0; i < 9; ++i)
+				{
+					ImGui::Text("%.2f  ", ptr[i]);
+					if ((i + 1) % 3 != 0)
+					{
+						ImGui::SameLine(((i + 1) % 3) * 60);
+					}
+
+				}
+				ImGui::PopStyleColor();
+			}
+			if (ImGui::CollapsingHeader("Center Matrix"))
+			{
+				float* ptr = selected->transform.center_m.Ptr();
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 0, 1));
+
+				for (uint i = 0; i < 9; ++i)
+				{
+					ImGui::Text("%.2f  ", ptr[i]);
+					if ((i + 1) % 3 != 0)
+					{
+						ImGui::SameLine(((i + 1) % 3) * 60);
+					}
+
+				}
+				ImGui::PopStyleColor();
+			}
+			if (ImGui::CollapsingHeader("Global Matrix"))
+			{
+				float* ptr = selected->transform.global_m.Ptr();
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 0, 1));
+
+				for (uint i = 0; i < 9; ++i)
+				{
+					ImGui::Text("%.2f  ", ptr[i]);
+					if ((i + 1) % 3 != 0)
+					{
+						ImGui::SameLine(((i + 1) % 3) * 60);
+					}
+
+				}
+				ImGui::PopStyleColor();
 			}
 
-			ImGui::PopStyleColor();
 		}
 
 		ImGui::Separator();
@@ -159,11 +199,5 @@ void Inspector::DrawButtonItem(UI_Button* button)
 	if (ImGui::ColorEdit3("Color", color.ptr()))
 	{
 		button->SetColor(color);
-	}
-
-	float angle = button->transform.rotation * 180 / 3.1415;
-	if (ImGui::DragFloat("Angle", &angle))
-	{
-		button->transform.SetRotationDeg(angle);
 	}
 }

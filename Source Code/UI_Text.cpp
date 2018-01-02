@@ -63,6 +63,7 @@ void UI_Text::SetFont(uint font_id)
 void UI_Text::SetSize(Vec2 size)
 {
 	this->size = size;
+	transform.SetPivot((Vec2(0.5f, 0.5f) - pivot) * size);
 	LoadTexture();
 }
 
@@ -86,7 +87,7 @@ void UI_Text::Draw()
 	if (IsParentActive() == true && texture_id != 0)
 	{
 		glPushMatrix();
-		glMultMatrixf(transform.global_m.ToOpenGL());
+		glMultMatrixf(transform.center_m.ToOpenGL());
 
 		ThorUI::DrawImage(-size/2, size, texture_id, color);
 

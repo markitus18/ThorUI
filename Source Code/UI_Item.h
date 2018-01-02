@@ -30,9 +30,9 @@ class Config;
 class UI_Item
 {
 public:
-	UI_Item() {};
-	UI_Item(float x, float y) { transform.SetPos(Vec2(x, y)); }
-	UI_Item(Vec2 pos, Vec2 size) : size(size) { transform.SetPos(pos);}
+	UI_Item() { SetPivot(Vec2(0.5, 0.5)); };
+	UI_Item(float x, float y) { transform.SetPos(Vec2(x, y)); SetPivot(Vec2(0.5, 0.5)); }
+	UI_Item(Vec2 pos, Vec2 size) : size(size) { transform.SetPos(pos); SetPivot(Vec2(0.5, 0.5)); }
 	~UI_Item();
 
 	void SetPos(float x, float y);
@@ -42,6 +42,7 @@ public:
 	void SetScale(float x, float y);
 	void SetScale(Vec2 scale);
 	void SetRotation(float rotation);
+	void SetPivot(Vec2 pivot);
 
 	void SetID(int id);
 	void SetName(const char* name);
@@ -93,6 +94,7 @@ protected:
 
 public: //TODO: just by now
 	Vec2 size;
+	Vec2 pivot;
 	Transform transform;
 
 };
