@@ -54,6 +54,9 @@ private:
 	void DrawIconBar();
 	void DrawGrid();
 
+	void DrawCanvasWindow();
+	void DrawGridWindow();
+
 public:
 	UI_Item* selected = nullptr;
 	Scene* scene = nullptr;
@@ -61,14 +64,19 @@ public:
 	bool dev_tools = false;
 
 private:
-
 	SDL_Window* window = nullptr;
 	Vec2 default_img_size_ratio = Vec2(0.3, 0.3f);
 
 	ImFont* bold_font = nullptr;
 
 	bool canvas_win = false;
+	bool grid_win = false;
+
+	//Grid edition variables
 	bool grid = true;
+	Vec2 grid_separation = Vec2(60, 60);
+	Vec2 grid_div;
+	bool block_grid = true;
 
 	std::vector<Dock*> docks;
 

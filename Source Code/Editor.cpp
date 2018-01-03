@@ -50,6 +50,7 @@ bool UI_Editor::Init(SDL_Window* window)
 	SDL_GetWindowSize(window, &w, &h);
 	window_size.Set(w, h);
 
+	grid_div = window_size / grid_separation;
 	if (ImGui_ImplSdlGL3_Init(window) == true)
 	{
 		ret = true;
@@ -167,6 +168,10 @@ void UI_Editor::DrawMainMenuBar()
 			{
 				canvas_win = true;
 			}
+			if (ImGui::MenuItem("Edit Grid"))
+			{
+				grid_win = true;
+			}
 			ImGui::EndMenu();
 		}
 
@@ -209,19 +214,10 @@ void UI_Editor::DrawMainMenuBar()
 		}
 		ImGui::EndMainMenuBar();
 
-		if (canvas_win && ImGui::Begin("Canvas_Popup", &canvas_win))
-		{
-			Vec2 size = ThorUI::window_item->GetSize();
-			if (ImGui::InputFloat("Size X: ", &size.x))
-			{
-				ThorUI::SetCanvasSize(size);
-			}
-			if (ImGui::InputFloat("Size Y: ", &size.y))
-			{
-				ThorUI::SetCanvasSize(size);
-			}
-			ImGui::End();
-		}
+		if (canvas_win)
+			DrawCanvasWindow();
+		if (grid_win)
+			DrawGridWindow();
 	}
 }
 
@@ -237,12 +233,12 @@ void UI_Editor::DrawGrid()
 
 	glBegin(GL_LINES);
 
-	for (int i = 0; i < window_size.x; i += 60)
+	for (float i = 0; i < window_size.x; i += grid_separation.x)
 	{
 		glVertex2f(i, 0);
 		glVertex2f(i, window_size.y);
 	}
-	for (int i = 0; i < window_size.y; i += 60)
+	for (float i = 0; i < window_size.y; i += grid_separation.y)
 	{
 		glVertex2f(0, i);
 		glVertex2f(window_size.x, i);
@@ -251,6 +247,81 @@ void UI_Editor::DrawGrid()
 	glEnd();
 	glDisable(GL_BLEND);
 	glColor4f(1, 1, 1, 1);
+}
+
+void UI_Editor::DrawCanvasWindow()
+{
+	if (ImGui::Begin("Canvas_Popup", &canvas_win))
+	{
+		Vec2 size = ThorUI::window_item->GetSize();
+		if (ImGui::InputFloat("Size X: ", &size.x))
+		{
+			ThorUI::SetCanvasSize(size);
+		}
+		if (ImGui::InputFloat("Size Y: ", &size.y))
+		{
+			ThorUI::SetCanvasSize(size);
+		}
+		ImGui::End();
+	}
+}
+
+void UI_Editor::DrawGridWindow()
+{
+	if (ImGui::Begin("Grid Edit", &grid_win))
+	{
+		ImGui::Checkbox("Link axis", &block_grid);
+		int divX = grid_div.x;
+		if (ImGui::InputInt("Divisions X", &divX))
+		{
+			grid_div.x = divX;
+			grid_separation.x = window_size.x / divX;
+			if (block_grid)
+			{
+				grid_separation.y = grid_separation.x;
+				grid_div.y = window_size.y / grid_separation.y;
+
+			}
+
+		}
+		int divY = grid_div.y;
+		if (ImGui::InputInt("Divisions Y", &divY))
+		{
+			grid_div.y = divY;
+			grid_separation.y = window_size.y / divY;
+			if (block_grid)
+			{
+				grid_separation.x = grid_separation.y;
+				grid_div.x = window_size.x / grid_separation.x;
+			}
+
+		}
+		ImGui::Separator();
+		int sep_x = grid_separation.x;
+		if (ImGui::InputInt("Pixel size X", &sep_x))
+		{
+			grid_separation.x = sep_x;
+			grid_div.x = window_size.x / grid_separation.x;
+			if (block_grid)
+			{
+				grid_separation.y = grid_separation.x;
+				grid_div.y = window_size.y / grid_separation.y;
+			}
+		}
+
+		int sep_y = grid_separation.y;
+		if (ImGui::InputInt("Pixel size Y", &sep_y))
+		{
+			grid_separation.y = sep_y;
+			grid_div.y = window_size.y / grid_separation.y;
+			if (block_grid)
+			{
+				grid_div.x = window_size.x / grid_separation.x;
+				grid_separation.x = grid_separation.y;
+			}
+		}
+		ImGui::End();
+	}
 }
 
 void UI_Editor::ProcessEvent(SDL_Event* event)

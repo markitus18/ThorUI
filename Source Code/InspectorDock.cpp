@@ -44,8 +44,10 @@ void Inspector::Draw()
 		{
 			selected->SetScale(scale);
 		}
+		ImGui::Text("Angle");
+		ImGui::SameLine(0, 100 - ImGui::CalcTextSize("Angle").x);
 		float angle = selected->GetTransform().GetRotation();
-		if (ImGui::DragFloat("Angle", &angle))
+		if (ImGui::DragFloat("", &angle))
 		{
 			selected->GetTransform().SetRotationDeg(angle);
 		}
