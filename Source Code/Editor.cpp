@@ -168,9 +168,13 @@ void UI_Editor::DrawMainMenuBar()
 			{
 				canvas_win = true;
 			}
-			if (ImGui::MenuItem("Edit Grid"))
+			if (ImGui::MenuItem("Grid"))
 			{
 				grid_win = true;
+			}
+			if (ImGui::MenuItem("Snap"))
+			{
+				snap_win = true;
 			}
 			ImGui::EndMenu();
 		}
@@ -218,6 +222,8 @@ void UI_Editor::DrawMainMenuBar()
 			DrawCanvasWindow();
 		if (grid_win)
 			DrawGridWindow();
+		if (snap_win)
+			DrawSnapWindow();
 	}
 }
 
@@ -262,8 +268,8 @@ void UI_Editor::DrawCanvasWindow()
 		{
 			ThorUI::SetCanvasSize(size);
 		}
-		ImGui::End();
 	}
+	ImGui::End();
 }
 
 void UI_Editor::DrawGridWindow()
@@ -320,8 +326,22 @@ void UI_Editor::DrawGridWindow()
 				grid_separation.x = grid_separation.y;
 			}
 		}
-		ImGui::End();
 	}
+	ImGui::End();
+}
+
+void UI_Editor::DrawSnapWindow()
+{
+	if (ImGui::Begin("Snap Edit", &snap_win))
+	{
+		ImGui::Text("Angle Interval");
+		ImGui::InputInt("##angle_snap", &angle_interval);
+		ImGui::Separator();
+
+		ImGui::Text("Scale Interval");
+		ImGui::InputFloat("##scale_snap", &scale_interval);
+	}
+	ImGui::End();
 }
 
 void UI_Editor::ProcessEvent(SDL_Event* event)
@@ -409,4 +429,10 @@ ImVec2 UI_Editor::ToImVec2(Vec2 point)
 Vec2 UI_Editor::ToVec2(ImVec2 point)
 {
 	return Vec2(point.x, window_size.y - point.y);
+}
+
+Vec2 UI_Editor::GetClosestGridPoint(int x, int y)
+{
+	Vec2 ret(round(x / grid_separation.x), round(y / grid_separation.y));
+	return ret * grid_separation;
 }

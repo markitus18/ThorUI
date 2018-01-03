@@ -48,7 +48,10 @@ void Scene::Draw()
 		}
 
 		Vec2 mouse_pos = editor->ToVec2(ImGui::GetMousePos());
-
+		if (ThorUI::GetKeyState(SDL_SCANCODE_W) == KEY_DOWN)
+		{
+			int k = 1;
+		}
 		if (drag == Drag_Type::NONE)
 		{
 			HandleGizmoActivation(mouse_pos);
@@ -156,6 +159,14 @@ void Scene::HandleDrag(Vec2 mouse_pos, Vec2 image_size)
 		{
 			Vec2 final_pos = Vec2(drag != Drag_Type::Y ? init_drag_val.x + delta.x : init_drag_val.x,
 				drag != Drag_Type::X ? init_drag_val.y + delta.y : init_drag_val.y);
+
+			if (ThorUI::GetKeyState(SDL_SCANCODE_LCTRL) == KEY_REPEAT || ThorUI::GetKeyState(SDL_SCANCODE_RCTRL) == KEY_REPEAT)
+			{
+				Vec2 grid_snap = editor->GetClosestGridPoint(final_pos.x, final_pos.y);
+				final_pos = Vec2(drag != Drag_Type::Y ? grid_snap.x : final_pos.x,
+					drag != Drag_Type::X ? grid_snap.y : final_pos.y);
+			}
+
 			editor->selected->GetTransform().SetGlobalPos(final_pos);
 		}
 		else if (gizmo_op == Gizmo_Op::SCALE)
@@ -163,19 +174,33 @@ void Scene::HandleDrag(Vec2 mouse_pos, Vec2 image_size)
 			Vec2 final_scale;
 			delta = delta * scale / 40;
 			if (drag == Drag_Type::Y)
+			{
 				final_scale.Set(init_drag_val.x, init_drag_val.y + delta.y);
-			if (drag==Drag_Type::X)
+				if (ThorUI::GetKeyState(SDL_SCANCODE_LCTRL) == KEY_REPEAT || ThorUI::GetKeyState(SDL_SCANCODE_RCTRL) == KEY_REPEAT)
+					final_scale.y = round(final_scale.y / editor->scale_interval) * editor->scale_interval;
+			}
+
+			if (drag == Drag_Type::X)
+			{
 				final_scale.Set(init_drag_val.x + delta.x, init_drag_val.y);
+				if (ThorUI::GetKeyState(SDL_SCANCODE_LCTRL) == KEY_REPEAT || ThorUI::GetKeyState(SDL_SCANCODE_RCTRL) == KEY_REPEAT)
+					final_scale.x = round(final_scale.x / editor->scale_interval) * editor->scale_interval;
+			}
+
 			if (drag == Drag_Type::XY)
 			{
 				float delta_v = 1 + (delta.x + delta.y);
 				final_scale = init_drag_val * delta_v;
+				if (ThorUI::GetKeyState(SDL_SCANCODE_LCTRL) == KEY_REPEAT || ThorUI::GetKeyState(SDL_SCANCODE_RCTRL) == KEY_REPEAT)
+					final_scale = Vec2(round(final_scale.x / editor->scale_interval) * editor->scale_interval, round(final_scale.y / editor->scale_interval) * editor->scale_interval);
 			}
 			editor->selected->SetScale(final_scale);
 		}
 		else if (gizmo_op == Gizmo_Op::ROTATION)
 		{
 			float final_rot = init_drag_val.x - delta.x;
+			if (ThorUI::GetKeyState(SDL_SCANCODE_LCTRL) == KEY_REPEAT || ThorUI::GetKeyState(SDL_SCANCODE_RCTRL) == KEY_REPEAT)
+				final_rot = round(final_rot / editor->angle_interval) * editor->angle_interval;
 			editor->selected->SetRotation(final_rot);
 		}
 	}

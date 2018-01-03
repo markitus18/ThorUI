@@ -48,6 +48,8 @@ public:
 	ImVec2 ToImVec2(Vec2 point);
 	Vec2 ToVec2(ImVec2 point);
 
+	Vec2 GetClosestGridPoint(int x, int y);
+
 private:
 	void HandleInput();
 	void DrawMainMenuBar();
@@ -56,12 +58,17 @@ private:
 
 	void DrawCanvasWindow();
 	void DrawGridWindow();
+	void DrawSnapWindow();
 
 public:
 	UI_Item* selected = nullptr;
 	Scene* scene = nullptr;
 	Vec2 window_size;
 	bool dev_tools = false;
+
+	//Snap settings
+	int angle_interval = 15;
+	float scale_interval = 0.5;
 
 private:
 	SDL_Window* window = nullptr;
@@ -71,12 +78,15 @@ private:
 
 	bool canvas_win = false;
 	bool grid_win = false;
+	bool snap_win = false;
 
 	//Grid edition variables
 	bool grid = true;
 	Vec2 grid_separation = Vec2(60, 60);
 	Vec2 grid_div;
 	bool block_grid = true;
+
+
 
 	std::vector<Dock*> docks;
 
