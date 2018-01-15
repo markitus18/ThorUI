@@ -30,9 +30,9 @@ class Config;
 class UI_Item
 {
 public:
-	UI_Item() { SetPivot(Vec2(0.5, 0.5)); };
-	UI_Item(float x, float y) { transform.SetPos(Vec2(x, y)); SetPivot(Vec2(0.5, 0.5)); }
-	UI_Item(Vec2 pos, Vec2 size) : size(size) { transform.SetPos(pos); SetPivot(Vec2(0.5, 0.5)); }
+	UI_Item();
+	UI_Item(float x, float y);
+	UI_Item(Vec2 pos, Vec2 size);
 	~UI_Item();
 
 	void SetPos(float x, float y);
@@ -47,9 +47,15 @@ public:
 	void SetID(int id);
 	void SetName(const char* name);
 	void SetActive(bool active);
+
 	void SetParent(UI_Item* parent, bool keep_global = true);
 	void RemoveChild(UI_Item* child);
 	void DeleteChildren();
+
+	UI_Item* GetParent() const;
+	UI_Item* GetChild(uint index) const;
+	uint ChildCount() const;
+	void CollectChildren(std::vector<UI_Item*>& vector);
 
 	virtual void Draw() {}; //TODO: draw here, or in ThorUI?
 	virtual void OnItemEvent(Item_Event event) { last_event = event; };
@@ -62,17 +68,12 @@ public:
 	Vec2 GetSize() const;
 	Vec2 GetScale() const;
 	Vec2 GetPivot() const;
-	Transform& GetTransform();
+	Transform* GetTransform();
 
 	int GetID() const;
 
 	Item_Event GetLastEvent() const;
-	UI_Item* GetParent() const;
 	const char* GetName() const;
-	uint GetChildCount() const;
-	UI_Item* GetChild(uint index) const;
-	const std::vector<UI_Item*> GetChildren() const;
-	void CollectAllChildren(std::vector<UI_Item*>& vector) const;
 	Item_Type GetType() const;
 
 	bool IsActive() const;
@@ -82,16 +83,18 @@ protected:
 	virtual void InternalSave(Config& config) = 0;
 	virtual void InternalLoad(Config& config) = 0;
 
+private:
+	void SetHierarchyActive(bool active);
+
 protected:
 	std::string name;
 	Item_Type type;
 
 	Item_Event last_event = Mouse_Exit;
 
-	UI_Item* parent = nullptr;
-	std::vector<UI_Item*> children;
-
 	bool active = true;
+	bool hierarchyActive = true;
+
 	int id = -1;
 
 	Vec2 size;

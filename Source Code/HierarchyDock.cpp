@@ -15,7 +15,7 @@ void Hierarchy::Draw()
 void Hierarchy::DrawChild(UI_Item* item)
 {
 	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
-	if (item->GetChildCount() == 0)
+	if (item->ChildCount() == 0)
 		flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
 	if (item == editor->selected)
 		flags |= ImGuiTreeNodeFlags_Selected;
@@ -31,7 +31,7 @@ void Hierarchy::DrawChild(UI_Item* item)
 
 	if (node_open == true)
 	{
-		if (item->GetChildCount() > 0)
+		if (item->ChildCount() > 0)
 		{
 			DrawItemChilds(item);
 			ImGui::TreePop();
@@ -41,9 +41,9 @@ void Hierarchy::DrawChild(UI_Item* item)
 
 void Hierarchy::DrawItemChilds(UI_Item* item)
 {
-	const std::vector<UI_Item*> children = item->GetChildren();
-	for (std::vector<UI_Item*>::const_iterator it = children.begin(); it != children.end(); ++it)
+	uint child_count = item->ChildCount();
+	for (uint i = 0; i < child_count; ++i)
 	{
-		DrawChild(*it);
+		DrawChild(item->GetChild(i));
 	}
 }

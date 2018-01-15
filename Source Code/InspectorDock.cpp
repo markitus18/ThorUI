@@ -28,10 +28,10 @@ void Inspector::Draw()
 		DisplayItemName(selected);
 		ImGui::Separator();
 
-		Vec2 pos = selected->GetTransform().GetPos();
+		Vec2 pos = selected->GetTransform()->GetPos();
 		if (ImGui::DragFloat2("Position", &pos))
 		{
-			selected->GetTransform().SetPos(pos);
+			selected->GetTransform()->SetPos(pos);
 		}
 
 		Vec2 size = selected->GetSize();
@@ -46,10 +46,10 @@ void Inspector::Draw()
 		}
 		ImGui::Text("Angle");
 		ImGui::SameLine(0, 100 - ImGui::CalcTextSize("Angle").x);
-		float angle = selected->GetTransform().GetRotation();
+		float angle = selected->GetTransform()->GetRotation();
 		if (ImGui::DragFloat("##angle_transform", &angle))
 		{
-			selected->GetTransform().SetRotationDeg(angle);
+			selected->GetTransform()->SetRotationDeg(angle);
 		}
 		
 		Vec2 pivot = selected->GetPivot();;
@@ -62,7 +62,7 @@ void Inspector::Draw()
 		{
 			if (ImGui::CollapsingHeader("Local Matrix"))
 			{
-				const float* ptr = selected->GetTransform().Local().Ptr();
+				const float* ptr = selected->GetTransform()->Local().Ptr();
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 0, 1));
 
 				for (uint i = 0; i < 9; ++i)
@@ -78,7 +78,7 @@ void Inspector::Draw()
 			}
 			if (ImGui::CollapsingHeader("Center Matrix"))
 			{
-				const float* ptr = selected->GetTransform().Center().Ptr();
+				const float* ptr = selected->GetTransform()->Center().Ptr();
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 0, 1));
 
 				for (uint i = 0; i < 9; ++i)
@@ -94,7 +94,7 @@ void Inspector::Draw()
 			}
 			if (ImGui::CollapsingHeader("Global Matrix"))
 			{
-				const float* ptr = selected->GetTransform().Global().Ptr();
+				const float* ptr = selected->GetTransform()->Global().Ptr();
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 0, 1));
 
 				for (uint i = 0; i < 9; ++i)

@@ -455,7 +455,7 @@ namespace ThorUI
 		while (dup_found == true)
 		{
 			dup_found = false;
-			for (uint i = 0; i < parent->GetChildren().size(); ++i)
+			for (uint i = 0; i < parent->ChildCount(); ++i)
 			{
 				if (parent->GetChild(i)->GetName() == current_name)
 				{
@@ -494,7 +494,7 @@ namespace ThorUI
 	void DeleteItem(UI_Item* item)
 	{
 		std::vector<UI_Item*> children;
-		item->CollectAllChildren(children);
+		item->CollectChildren(children);
 		children.push_back(item);
 
 		std::vector<UI_Item*>::iterator it = children.begin();
@@ -611,8 +611,8 @@ namespace ThorUI
 
 	void ClearScene()
 	{
-		while (window_item->GetChildCount() > 0)
-			window_item->RemoveChild(window_item->GetChildren()[0]);
+		while (window_item->ChildCount() > 0)
+			window_item->RemoveChild(window_item->GetChild(0));
 		items.clear();
 		items.push_back(window_item);
 	}

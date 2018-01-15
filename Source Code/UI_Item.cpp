@@ -1,11 +1,33 @@
 #include "UI_Item.h"
 #include "Config.h"
 
+UI_Item::UI_Item() : transform(this)
+{
+	SetPivot(Vec2(0.5, 0.5));
+}
+
+UI_Item::UI_Item(float x, float y) : transform(this)
+{
+	transform.SetPos(Vec2(x, y));
+	SetPivot(Vec2(0.5, 0.5));
+}
+
+UI_Item::UI_Item(Vec2 pos, Vec2 size) : transform(this), size(size)
+{
+	transform.SetPos(pos);
+	SetPivot(Vec2(0.5, 0.5));
+}
+
 UI_Item::~UI_Item()
 {
-	if (parent)
-		parent->RemoveChild(this);
-	DeleteChildren();
+	//TODO: remove from transform parent. SetParent calls non-necessary functions
+	transform.SetParent(nullptr);
+	std::vector<Transform*> children = transform.GetChildren();
+	while (!children.empty())
+	{
+		delete children[0]->Container<UI_Item>();
+		children.erase(children.begin());
+	}
 }
 
 void UI_Item::SetPos(float x, float y)
@@ -64,35 +86,66 @@ void UI_Item::SetName(const char* name)
 void UI_Item::SetActive(bool active)
 {
 	this->active = active;
+	if (hierarchyActive == true)
+	{
+		SetHierarchyActive(true);
+	}
 }
 
 void UI_Item::SetParent(UI_Item* parent, bool keep_global)
 {
-	if (this->parent != nullptr) this->parent->RemoveChild(this);
-
-	this->parent = parent;
-	transform.SetParent(&parent->transform, keep_global);
-
-	parent->children.push_back(this);
+	transform.SetParent(parent->GetTransform(), keep_global);
 }
 
 void UI_Item::RemoveChild(UI_Item* child)
 {
-	for (std::vector<UI_Item*>::iterator it = children.begin(); it != children.end(); ++it)
-	{
-		if ((*it) == child)
-		{
-			children.erase(it);
-			return;
-		}
-	}
+	transform.RemoveChild(child->GetTransform());
 }
 
 void UI_Item::DeleteChildren()
 {
-	while (!children.empty())
+	std::vector<Transform*> children = transform.GetChildren();
+	while (children.size() != 0)
 	{
-		delete children[0];
+		delete children[0]->Container<UI_Item>();
+		children.erase(children.begin());
+	}
+}
+
+UI_Item* UI_Item::GetParent() const
+{
+	return transform.GetParent() ? transform.GetParent()->Container<UI_Item>() : nullptr;
+}
+
+UI_Item* UI_Item::GetChild(uint index) const
+{
+	if (index < 0 || index >= transform.GetChildren().size())
+		return nullptr;
+	return transform.GetChildren()[index]->Container<UI_Item>();
+}
+
+uint UI_Item::ChildCount() const
+{
+	return transform.GetChildren().size();
+}
+
+void UI_Item::CollectChildren(std::vector<UI_Item*>& vector)
+{
+	std::vector<Transform*> children = transform.GetChildren();
+	for (uint i = 0; i < children.size(); ++i)
+	{
+		vector.push_back(children[i]->Container<UI_Item>());
+		children[i]->Container<UI_Item>()->CollectChildren(vector);
+	}
+}
+
+void UI_Item::SetHierarchyActive(bool active)
+{
+	hierarchyActive = active;
+	std::vector<Transform*> children = transform.GetChildren();
+	for (std::vector<Transform*>::iterator it = children.begin(); it != children.end(); ++it)
+	{
+		(*it)->Container<UI_Item>()->SetHierarchyActive(this->active && hierarchyActive);
 	}
 }
 
@@ -103,14 +156,14 @@ void UI_Item::Save(Config& config)
 	config.SetArray("Position").AddVec2(transform.GetPos());
 	config.SetArray("Size").AddVec2(size);
 	config.SetNumber("ID", id);
-	config.SetNumber("Parent ID", parent ? parent->GetID() : -1);
+	config.SetNumber("Parent ID", transform.GetParent() ? transform.GetParent()->Container<UI_Item>()->GetID() : -1);
 	InternalSave(config);
 }
 
 void UI_Item::Load(Config& config)
 {
 	name = config.GetString("Name", "Undefined");
-	transform.GetPos() = config.GetArray("Position").GetVec2(0);
+	transform.SetPos(config.GetArray("Position").GetVec2(0));
 	size = config.GetArray("Size").GetVec2(0);
 	id = config.GetNumber("ID", -1);
 
@@ -143,9 +196,9 @@ Vec2 UI_Item::GetPivot() const
 	return pivot;
 }
 
-Transform& UI_Item::GetTransform()
+Transform* UI_Item::GetTransform()
 {
-	return transform;
+	return &transform;
 }
 
 int UI_Item::GetID() const
@@ -158,39 +211,9 @@ Item_Event UI_Item::GetLastEvent() const
 	return last_event;
 }
 
-UI_Item* UI_Item::GetParent() const
-{
-	return parent;
-}
-
 const char* UI_Item::GetName() const
 {
 	return name.c_str();
-}
-
-uint UI_Item::GetChildCount() const
-{
-	return children.size();
-}
-
-UI_Item* UI_Item::GetChild(uint index) const
-{
-	if (index >= children.size()) return nullptr;
-	return children[index];
-}
-
-const std::vector<UI_Item*> UI_Item::GetChildren() const
-{
-	return children;
-}
-
-void UI_Item::CollectAllChildren(std::vector<UI_Item*>& vector) const
-{
-	for (std::vector<UI_Item*>::const_iterator it = children.begin(); it != children.end(); ++it)
-	{
-		vector.push_back(*it);
-		(*it)->CollectAllChildren(vector);
-	}
 }
 
 Item_Type UI_Item::GetType() const
@@ -205,7 +228,5 @@ bool UI_Item::IsActive() const
 
 bool UI_Item::IsParentActive() const
 {
-	if (active == false)
-		return false;
-	return (parent == nullptr ? true : parent->IsParentActive());
+	return active && hierarchyActive; //TODO: change function name
 }

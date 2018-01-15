@@ -2,14 +2,14 @@
 #include <math.h>
 #include "Math.h"
 
-Transform::Transform()
+Transform::Transform(void* container) : container(container)
 {
 	local_m.SetIdentity();
 	global_m.SetIdentity();
 	scale.Set(1, 1);
 }
 
-Transform::Transform(Vec2 pos, Vec2 scale, float rotation): pos(pos), scale(scale), rotation(rotation)
+Transform::Transform(void* container, Vec2 pos, Vec2 scale, float rotation): container(container), pos(pos), scale(scale), rotation(rotation)
 {
 	local_m.FromTRS(pos, scale, rotation);
 }
@@ -60,7 +60,7 @@ void Transform::SetPivot(Vec2 position, bool pivotStays)
 void Transform::SetGlobalTransform(Mat3x3 mat)
 {
 	global_m = mat;
-	local_m = parent->center_m.Inverted() * mat;
+	local_m = parent ? parent->center_m.Inverted() * mat : mat;
 
 	pos = local_m.GetTranslation();
 	scale = local_m.GetScale();
@@ -89,7 +89,7 @@ void Transform::SetParent(Transform* parent, bool worldPosStays)
 		this->parent->RemoveChild(this);
 
 	this->parent = parent;
-	parent->AddChild(this);
+	if (parent) parent->AddChild(this);
 
 	worldPosStays ? SetGlobalTransform(global_m) : UpdateGlobalTransform();
 }
@@ -97,6 +97,11 @@ void Transform::SetParent(Transform* parent, bool worldPosStays)
 void Transform::AddChild(Transform* child)
 {
 	children.push_back(child);
+}
+
+Transform* Transform::GetParent() const
+{
+	return parent;
 }
 
 void Transform::RemoveChild(Transform* child)
@@ -109,6 +114,11 @@ void Transform::RemoveChild(Transform* child)
 			return;
 		}
 	}
+}
+
+const std::vector<Transform*>& Transform::GetChildren() const
+{
+	return children;
 }
 
 Vec2 Transform::GetPos() const
