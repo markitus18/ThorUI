@@ -45,6 +45,7 @@
     <ClCompile Include="Source Code\UI_Button.cpp" />
     <ClCompile Include="Source Code\UI_Item.cpp" />
     <ClCompile Include="Source Code\UI_Text.cpp" />
+    <ClCompile Include="Source Code\Vec2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\Circle.h" />

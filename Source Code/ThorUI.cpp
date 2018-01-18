@@ -435,6 +435,22 @@ namespace ThorUI
 			mouse_pos.y > pos.y && mouse_pos.y < pos.y + size.y);
 	}
 
+	bool IsMouseHoveringItem(UI_Item* item)
+	{
+		if (GetKeyState(SDL_SCANCODE_SPACE) == KEY_DOWN)
+		{
+			int k = 1;
+		}
+		Vec2 tr_mouse = mouse_pos;
+		tr_mouse.Transform(item->GetTransform()->Center().Inverted());
+
+		Vec2 pos = item->GetSize() / -2;
+		Vec2 size = item->GetSize() / 2;
+
+		return (tr_mouse.x > pos.x && tr_mouse.x < pos.x + size.x &&
+			tr_mouse.y > pos.y && tr_mouse.y < pos.y + size.y);
+	}
+
 	void AddItem(UI_Item* item)
 	{
 		items.push_back(item);
@@ -474,7 +490,7 @@ namespace ThorUI
 		for (it = items.begin(); it != items.end(); ++it)
 		{
 			Item_Event last_event = (*it)->GetLastEvent();
-			if (IsMouseHovering((*it)->GetPos(), (*it)->GetSize())) //Mouse is hovering item
+			if (IsMouseHoveringItem(*it))
 			{
 				if (last_event == Mouse_Exit)
 					(*it)->OnItemEvent(Mouse_Enter);

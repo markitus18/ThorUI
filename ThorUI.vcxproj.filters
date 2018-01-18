@@ -107,6 +107,9 @@
     <ClCompile Include="Source Code\Math.cpp">
       <Filter>Utilities</Filter>
     </ClCompile>
+    <ClCompile Include="Source Code\Vec2.cpp">
+      <Filter>Containers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\UI_Item.h">

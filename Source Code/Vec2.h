@@ -3,6 +3,8 @@
 
 #include <math.h>
 
+class Mat3x3;
+
 struct Vec2
 {
 	//Methods
@@ -13,21 +15,7 @@ struct Vec2
 	void Set(float x, float y) { this->x = x; this->y = y; }
 	float* Ptr() { return &x; }
 
-	Vec2 FitInRect(const Vec2& rect)
-	{
-		Vec2 ret(*this);
-		if (ret.x > rect.x)
-		{
-			float ratio = ret.x / rect.x;
-			ret /= ratio;
-		}
-		if (ret.y > rect.y)
-		{
-			float ratio = ret.y / rect.y;
-			ret /= ratio;
-		}
-		return ret;
-	}
+	Vec2 FitInRect(const Vec2& rect);
 
 	float* operator&() { return (float*)this; }
 
@@ -62,16 +50,8 @@ struct Vec2
 	//*Perform a rotation of the current point
 	//		*pivot - center of rotation
 	//		*angle - angle of the rotation in radians
-	void Rotate(Vec2 pivot, float angle)
-	{
-		Vec2 rot_vec = *this - pivot;
-
-		float new_angle = rot_vec.Angle() + angle;
-		float lenght = rot_vec.Lenght();
-
-		x = pivot.x + cos(new_angle) * lenght;
-		y = pivot.y + sin(new_angle) * lenght;
-	}
+	void Rotate(Vec2 pivot, float angle);
+	void Transform(const Mat3x3& mat);
 
 	//Variables
 	float x = 0, y = 0;

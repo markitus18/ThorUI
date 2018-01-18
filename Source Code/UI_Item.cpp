@@ -173,7 +173,7 @@ void UI_Item::Load(Config& config)
 
 Vec2 UI_Item::GetPos() const
 {
-	return transform.Local().GetTranslation();
+	return transform.GetPos();
 }
 
 Vec2 UI_Item::GetGlobalPos() const
