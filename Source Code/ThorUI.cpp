@@ -155,6 +155,12 @@ namespace ThorUI
 		memset(mouse_button_event, 0, 3);
 	}
 
+	bool IsMouseHovering(Vec2 pos, Vec2 size)
+	{
+		return (mouse_pos.x > pos.x && mouse_pos.x < pos.x + size.x &&
+			mouse_pos.y > pos.y && mouse_pos.y < pos.y + size.y);
+	}
+
 	Key_State GetMouseState(int id)
 	{
 		return mouse_buttons[id - 1];
@@ -168,6 +174,24 @@ namespace ThorUI
 	bool IsMouseIdle(int id)
 	{
 		return (mouse_buttons[id - 1] == KEY_UP || mouse_buttons[id - 1] == KEY_IDLE);
+	}
+
+
+	bool IsMouseHoveringItem(UI_Item* item)
+	{
+		return IsPointOnItem(item, mouse_pos);
+	}
+
+	bool IsPointOnItem(UI_Item* item, Vec2 p)
+	{
+		//Transforming the point into item axis
+		p.Transform(item->GetTransform()->Center().Inverted());
+
+		Vec2 pos = item->GetSize() / -2;
+		Vec2 size = item->GetSize();
+
+		return (p.x > pos.x && p.x < pos.x + size.x &&
+			p.y > pos.y && p.y < pos.y + size.y);
 	}
 
 	uint LoadTexture(const char* path)
@@ -427,28 +451,6 @@ namespace ThorUI
 		glDisable(GL_BLEND);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_TEXTURE_2D);
-	}
-
-	bool IsMouseHovering(Vec2 pos, Vec2 size)
-	{
-		return (mouse_pos.x > pos.x && mouse_pos.x < pos.x + size.x &&
-			mouse_pos.y > pos.y && mouse_pos.y < pos.y + size.y);
-	}
-
-	bool IsMouseHoveringItem(UI_Item* item)
-	{
-		if (GetKeyState(SDL_SCANCODE_SPACE) == KEY_DOWN)
-		{
-			int k = 1;
-		}
-		Vec2 tr_mouse = mouse_pos;
-		tr_mouse.Transform(item->GetTransform()->Center().Inverted());
-
-		Vec2 pos = item->GetSize() / -2;
-		Vec2 size = item->GetSize() / 2;
-
-		return (tr_mouse.x > pos.x && tr_mouse.x < pos.x + size.x &&
-			tr_mouse.y > pos.y && tr_mouse.y < pos.y + size.y);
 	}
 
 	void AddItem(UI_Item* item)

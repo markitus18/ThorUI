@@ -37,6 +37,9 @@ public:
 	void Draw();
 	void OnResize();
 
+	Vec2 ScreenToWorld(Vec2 p) const;
+	Vec2 WorldToScreen(Vec2 p) const;
+
 private:
 	void GenScreenBuffers();
 

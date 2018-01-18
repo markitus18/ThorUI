@@ -7,6 +7,7 @@
 #include "UI_Item.h"
 #include "Rect.h"
 #include "SDL2-2.0.6\include\SDL_scancode.h"
+#include "SDL2-2.0.6\include\SDL_mouse.h"
 
 //External Libraries include
 #include "ImGui\imgui.h"
@@ -25,33 +26,27 @@ Scene::Scene(UI_Editor* editor) : DockData(editor)
 
 void Scene::Draw()
 {
-	HandleInput();
-
 	ImGui::SetCursorPos(img_offset);
 	img_corner = editor->ToVec2(ImGui::GetCursorScreenPos()) - Vec2(0, img_size.y);
 
 	ImGui::Image((ImTextureID)renderTexture, ImVec2(img_size.x, img_size.y), ImVec2(0, 1), ImVec2(1, 0));
-	
+
 	if (editor->selected != nullptr)
 	{
 		switch (gizmo_op)
 		{
-			case Gizmo_Op::TRANSLATION:
-				DrawTranslationGizmo();
-				break;
-			case Gizmo_Op::ROTATION:
-				DrawRotationGizmo();
-				break;
-			case Gizmo_Op::SCALE:
-				DrawScaleGizmo();
-				break;
+		case Gizmo_Op::TRANSLATION:
+			DrawTranslationGizmo();
+			break;
+		case Gizmo_Op::ROTATION:
+			DrawRotationGizmo();
+			break;
+		case Gizmo_Op::SCALE:
+			DrawScaleGizmo();
+			break;
 		}
 
-		Vec2 mouse_pos = editor->ToVec2(ImGui::GetMousePos());
-		if (ThorUI::GetKeyState(SDL_SCANCODE_W) == KEY_DOWN)
-		{
-			int k = 1;
-		}
+		Vec2 mouse_pos = ThorUI::mouse_pos;
 		if (drag == Drag_Type::NONE)
 		{
 			HandleGizmoActivation(mouse_pos);
@@ -61,7 +56,7 @@ void Scene::Draw()
 			HandleDrag(mouse_pos, img_size);
 		}
 	}
-	
+	HandleInput();
 }
 
 void Scene::OnResize()
@@ -69,6 +64,20 @@ void Scene::OnResize()
 	win_size = Vec2(parent->size.x, parent->size.y) - Vec2(10, 10);
 	img_size = ThorUI::screen_size.FitInRect(win_size);
 	img_offset = ImVec2(win_size.x - img_size.x, win_size.y - img_size.y) / 2 + ImVec2(0, 25);
+}
+
+Vec2 Scene::ScreenToWorld(Vec2 p) const
+{
+	Vec2 ret = p - img_corner;
+	ret = ret / img_size * editor->window_size;
+	return ret;
+}
+
+Vec2 Scene::WorldToScreen(Vec2 p) const
+{
+	Vec2 ret = p / editor->window_size * img_size;
+	ret += img_corner;
+	return ret;
 }
 
 void Scene::GenScreenBuffers()
@@ -106,6 +115,23 @@ void Scene::HandleInput()
 		SetGizmoOp(Gizmo_Op::ROTATION);
 	if (ThorUI::GetKeyState(SDL_SCANCODE_R) == KEY_DOWN)
 		SetGizmoOp(Gizmo_Op::SCALE);
+
+	if (ImGui::IsItemHovered() && drag == Drag_Type::NONE && ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_DOWN)
+	{
+		bool selected = false;
+		std::vector<UI_Item*>::iterator it;
+		for (it = ThorUI::items.begin() + 1; it != ThorUI::items.end(); ++it)
+		{
+			Vec2 mouse_world = ScreenToWorld(ThorUI::mouse_pos);
+			if (ThorUI::IsPointOnItem(*it, mouse_world))
+			{
+				editor->selected = *it;
+				selected = true;
+			}
+		}
+		if (!selected) editor->selected = nullptr;
+	}
+
 }
 
 void Scene::HandleGizmoActivation(Vec2 mouse_pos)
@@ -213,25 +239,22 @@ void Scene::SetGizmoOp(Gizmo_Op op)
 
 void Scene::DrawTranslationGizmo()
 {
-	Vec2 relative_pos = editor->selected->GetTransform()->Global().GetTranslation() / editor->window_size;
-	Vec2 pos_on_image = relative_pos * img_size;
+	Vec2 init_pos = WorldToScreen(editor->selected->GetTransform()->Global().GetTranslation());
 
-	Vec2 initial_pos = img_corner + pos_on_image;
-
-	Rect x_axis = Rect(initial_pos + Vec2(0, -1), Vec2(80, 3));
-	Rect y_axis = Rect(initial_pos + Vec2(-1, 0), Vec2(3, 80));
+	Rect x_axis = Rect(init_pos + Vec2(0, -1), Vec2(80, 3));
+	Rect y_axis = Rect(init_pos + Vec2(-1, 0), Vec2(3, 80));
 
 	editor->DrawRect(x_axis, drag == Drag_Type::X ? 0xFF42F1F4 : 0xFFFF0000);
 	editor->DrawRect(y_axis, drag == Drag_Type::Y ? 0xFF42F1F4 : 0xFF0000FF);
 
-	Vec2 final_x = initial_pos + Vec2(70, 0);
-	Vec2 final_y = initial_pos + Vec2(0, 70);
+	Vec2 final_x = init_pos + Vec2(70, 0);
+	Vec2 final_y = init_pos + Vec2(0, 70);
 	editor->DrawTriangle(final_x + Vec2(0, 10), final_x + Vec2(15, 0), final_x + Vec2(0, -10), drag == Drag_Type::X ? 0xFF42F1F4 : 0xFFFF0000);
 	editor->DrawTriangle(final_y + Vec2(10, 0), final_y + Vec2(0, 15), final_y + Vec2(-10, 0), drag == Drag_Type::Y ? 0xFF42F1F4 : 0xFF0000FF);
 
-	trans_buttons[0] = Rect(initial_pos + Vec2(15, -8), Vec2(69, 16));
-	trans_buttons[1] = Rect(initial_pos + Vec2(-8, 15), Vec2(16, 69));
-	trans_buttons[2] = Rect(initial_pos + Vec2(-1, -1), Vec2(16, 16));
+	trans_buttons[0] = Rect(init_pos + Vec2(15, -8), Vec2(69, 16));
+	trans_buttons[1] = Rect(init_pos + Vec2(-8, 15), Vec2(16, 69));
+	trans_buttons[2] = Rect(init_pos + Vec2(-1, -1), Vec2(16, 16));
 
 	editor->DrawRect(trans_buttons[2], drag == Drag_Type::XY ? 0xFF42F1F4 : 0xFF00AA00);
 }

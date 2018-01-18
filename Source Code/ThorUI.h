@@ -71,11 +71,13 @@ namespace ThorUI
 	//-------------------------------------------------
 
 	//Mouse event handling ----------------------------
-	bool IsMouseHovering(Vec2 pos, Vec2 size);
-	bool IsMouseHoveringItem(UI_Item* item);
 	Key_State GetMouseState(int id);
 	bool IsMouseDown(int id);
 	bool IsMouseIdle(int id);
+
+	bool IsMouseHovering(Vec2 pos, Vec2 size);
+	bool IsMouseHoveringItem(UI_Item* item);
+	bool IsPointOnItem(UI_Item* item, Vec2 p);
 	//-------------------------------------------------
 
 	//Texture and text handling -----------------------
