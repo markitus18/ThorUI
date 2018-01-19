@@ -397,7 +397,7 @@ namespace ThorUI
 		filled ? 0 : glLineWidth(1.0f);
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
-
+	/*
 	void DrawQuad(Vec2* corners, Color color, bool filled, float lineWidth)
 	{
 		glColor4fv(color.ptr());
@@ -411,7 +411,7 @@ namespace ThorUI
 		glLineWidth(1.0f);
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
-
+	*/
 	void DrawImage(Vec2 pos, Vec2 size, int texture_id, Color color)
 	{
 		glBindTexture(GL_TEXTURE_2D, texture_id);
@@ -431,7 +431,7 @@ namespace ThorUI
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_TEXTURE_2D);
 	}
-
+	/*
 	void DrawImage(Vec2* corners, int texture_id, Color  color)
 	{
 		glBindTexture(GL_TEXTURE_2D, texture_id);
@@ -452,7 +452,7 @@ namespace ThorUI
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_TEXTURE_2D);
 	}
-
+	*/
 	void AddItem(UI_Item* item)
 	{
 		items.push_back(item);
