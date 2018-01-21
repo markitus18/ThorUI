@@ -98,7 +98,9 @@ void UI_Editor::Draw()
 	glClearColor(0.7f, 0.7f, 0.7f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	ThorUI::StartFrame(); //TODO: Careful, we are updating items too
+	ThorUI::UpdateKeyboardState();
+	ThorUI::UpdateMouseState(); //Just to use ThorUI keyboard and mouse input
+
 	ThorUI::Draw();
 
 	if (grid)

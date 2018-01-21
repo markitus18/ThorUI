@@ -37,7 +37,6 @@ struct Rect : public Shape
 	{
 		this->angle = angle;
 		CalcRotCorners();
-
 	}
 
 	void CalcCorners()
