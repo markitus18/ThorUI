@@ -31,6 +31,9 @@
     <Filter Include="External Libraries\ImGui\ImGuizmo">
       <UniqueIdentifier>{97284067-5319-4c66-8c3a-5b6bd32a470e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Editor\Trees">
+      <UniqueIdentifier>{246a7feb-4d0a-4404-b8f1-6c7307f4b6a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\UI_Item.cpp">
@@ -109,6 +112,12 @@
     </ClCompile>
     <ClCompile Include="Source Code\Vec2.cpp">
       <Filter>Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\TreeNode.cpp">
+      <Filter>Editor\Trees</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\TreeDisplay.cpp">
+      <Filter>Editor\Trees</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -211,6 +220,12 @@
     </ClInclude>
     <ClInclude Include="Source Code\Transform.h">
       <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\TreeNode.h">
+      <Filter>Editor\Trees</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\TreeDisplay.h">
+      <Filter>Editor\Trees</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
