@@ -77,7 +77,7 @@ public:
 	Item_Type GetType() const;
 
 	bool IsActive() const;
-	bool IsParentActive() const;
+	bool IsActiveHierarchy() const;
 
 protected:
 	virtual void InternalSave(Config& config) = 0;

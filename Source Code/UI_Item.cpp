@@ -226,7 +226,7 @@ bool UI_Item::IsActive() const
 	return active;
 }
 
-bool UI_Item::IsParentActive() const
+bool UI_Item::IsActiveHierarchy() const
 {
-	return active && hierarchyActive; //TODO: change function name
+	return active && hierarchyActive;
 }

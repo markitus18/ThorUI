@@ -10,6 +10,7 @@ class TreeDisplay
 public:
 	TreeNode<T>* GetNode(T* c) const
 	{
+		if (!c) return nullptr;
 		std::vector<TreeNode<T>*>::iterator it;
 		for (it = nodes.begin(); it != nodes.end(); ++it)
 		{
@@ -18,8 +19,24 @@ public:
 		}
 	}
 
-public:
-	std::vector<TreeNode<T>*> nodes;
+	void AddNode(T* c) const
+	{
+		//Checking if already added
+		for (int i = 0; i < nodes.size(); ++i)
+		{
+			if (nodes[i].GetContainer() == c)
+				return;
+		}
+		nodes.push_back(TreeNode<T>(c));
+	}
+
+	void DrawTree();
+	void DrawNode(TreeNode<T>* node);
+	void DisplayNode(TreeNode<T>* node);
+	void DrawNodeChilds(TreeNode<T>* node);
+
+private:
+	std::vector<TreeNode<T>> nodes;
 };
 
 #endif
