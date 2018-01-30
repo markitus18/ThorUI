@@ -30,6 +30,7 @@ namespace ThorUI
 
 	UI_Item* window_item = nullptr;
 	std::vector<UI_Item*> items;
+	std::vector<UI_Item*> to_remove_items;
 	std::map<uint, Texture> textures;
 	std::vector<Font> fonts;
 
@@ -65,7 +66,7 @@ namespace ThorUI
 			LoadFont("Times_New_Roman_Normal.ttf", 36);
 		}
 
-		window_item = new UI_Text(Vec2(0, 0), screen_size, ""); //Hehe
+		window_item = new UI_Text(Vec2(0, 0), screen_size, ""); //TODO Hehe
 		window_item->SetName("Window");
 		window_item->SetID(0);
 		items.push_back(window_item);
@@ -73,6 +74,7 @@ namespace ThorUI
 
 	void StartFrame()
 	{
+		RemoveToDeleteItems();
 		UpdateKeyboardState();
 		UpdateMouseState();
 		UpdateItems();
@@ -511,28 +513,41 @@ namespace ThorUI
 
 	void DeleteItem(UI_Item* item)
 	{
-		std::vector<UI_Item*> children;
-		item->CollectChildren(children);
-		children.push_back(item);
-
-		std::vector<UI_Item*>::iterator it = children.begin();
-		while (it != children.end())
+		for (uint i = 0; i < to_remove_items.size(); ++i)
 		{
-			std::vector<UI_Item*>::iterator item = items.begin();
-			while (item != items.end())
+			if (to_remove_items[i] == item)
+				return;
+		}
+
+		to_remove_items.push_back(item);
+		item->GetParent()->RemoveChild(item); //TODO: set parent item to nullptr?
+
+		while (item->ChildCount() > 0)
+		{
+			DeleteItem(item->GetChild(0));
+		}
+	}
+
+	void RemoveToDeleteItems()
+	{
+		while (to_remove_items.size() > 0)
+		{
+			UI_Item* item = *to_remove_items.begin();
+			std::vector<UI_Item*>::iterator it = items.begin();
+			while (it != items.end())
 			{
-				if (*item == *it)
+				if (*it == *to_remove_items.begin())
 				{
-					items.erase(item);
+					items.erase(it);
+					to_remove_items.erase(to_remove_items.begin());
 					break;
 				}
 				else
-					++item;
+					++it;
 			}
-			it = children.erase(it);
+			delete item;
+			item = nullptr;
 		}
-		delete item;
-		item = nullptr;
 	}
 
 	void SaveScene(const char* path)

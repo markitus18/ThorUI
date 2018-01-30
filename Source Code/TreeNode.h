@@ -8,12 +8,12 @@ template<typename T>
 class TreeNode
 {
 public:
-	TreeNode(T* container) : container(container)
+	TreeNode(T* container, TreeDisplay<T>* tree) : container(container), tree(tree)
 	{}
 
 	const char* GetName() const { return container->GetName(); }
 	bool IsActive() const { return container->IsActiveHierarchy(); }
-	T* GetContainer() const { return container };
+	T* GetContainer() const { return container; }
 
 	int ChildCount() const { return container->ChildCount(); }
 	TreeNode<T>* GetChild(int index) const;
@@ -22,8 +22,8 @@ public:
 	TreeNode<T>* GetPrevOpenNode() const;
 	TreeNode<T>* GetParent() const;
 
-	void Select() { selected = true; }
-	void Unselect() { selected = false; }
+	void Select() { selected = true; };
+	void Unselect() { selected = false;}
 	bool IsParentSelected() const;
 
 public:

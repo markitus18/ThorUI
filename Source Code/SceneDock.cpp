@@ -4,6 +4,8 @@
 #include "ThorUI.h"
 #include "Log.h"
 #include "Editor.h"
+#include "HierarchyDock.h"
+
 #include "UI_Item.h"
 #include "Rect.h"
 #include "SDL2-2.0.6\include\SDL_scancode.h"
@@ -31,7 +33,7 @@ void Scene::Draw()
 
 	ImGui::Image((ImTextureID)renderTexture, ImVec2(img_size.x, img_size.y), ImVec2(0, 1), ImVec2(1, 0));
 
-	if (editor->selected != nullptr)
+	if (editor->hierarchy->selected.size() > 0)
 	{
 		switch (gizmo_op)
 		{
@@ -125,23 +127,23 @@ void Scene::HandleInput()
 			Vec2 mouse_world = ScreenToWorld(ThorUI::mouse_pos);
 			if (ThorUI::IsPointOnItem(*it, mouse_world))
 			{
-				editor->selected = *it;
+				editor->hierarchy->SelectSingle(*it);
 				selected = true;
 			}
 		}
-		if (!selected) editor->selected = nullptr;
+		if (!selected) editor->hierarchy->UnselectAll();
 	}
-
 }
 
 void Scene::HandleGizmoActivation(Vec2 mouse_pos)
 {
+	UI_Item* selected = editor->hierarchy->selected[0]->GetContainer();
 	if (gizmo_op == Gizmo_Op::ROTATION)
 	{
 		if (rot_button.Contains(mouse_pos) && ThorUI::GetMouseState(1) == KEY_DOWN)
 		{
 			drag = Drag_Type::XY;
-			init_drag_val.x = editor->selected->GetTransform()->GetRotation();
+			init_drag_val.x = selected->GetTransform()->GetRotation();
 		}
 	}
 	else
@@ -163,9 +165,9 @@ void Scene::HandleGizmoActivation(Vec2 mouse_pos)
 	{
 		start_drag = mouse_pos;
 		if (gizmo_op == Gizmo_Op::TRANSLATION)
-			init_drag_val = editor->selected->GetGlobalPos();
+			init_drag_val = selected->GetGlobalPos();
 		else if (gizmo_op == Gizmo_Op::SCALE)
-			init_drag_val = editor->selected->GetScale();
+			init_drag_val = selected->GetScale();
 	}
 }
 
@@ -177,6 +179,8 @@ void Scene::HandleDrag(Vec2 mouse_pos, Vec2 image_size)
 	}
 	else
 	{
+		UI_Item* selected = editor->hierarchy->selected[0]->GetContainer();
+
 		Vec2 delta = mouse_pos - start_drag;
 		Vec2 scale = image_size / editor->window_size;
 		delta /= scale;
@@ -193,7 +197,7 @@ void Scene::HandleDrag(Vec2 mouse_pos, Vec2 image_size)
 					drag != Drag_Type::X ? grid_snap.y : final_pos.y);
 			}
 
-			editor->selected->GetTransform()->SetGlobalPos(final_pos);
+			selected->GetTransform()->SetGlobalPos(final_pos);
 		}
 		else if (gizmo_op == Gizmo_Op::SCALE)
 		{
@@ -220,14 +224,14 @@ void Scene::HandleDrag(Vec2 mouse_pos, Vec2 image_size)
 				if (ThorUI::GetKeyState(SDL_SCANCODE_LCTRL) == KEY_REPEAT || ThorUI::GetKeyState(SDL_SCANCODE_RCTRL) == KEY_REPEAT)
 					final_scale = Vec2(round(final_scale.x / editor->scale_interval) * editor->scale_interval, round(final_scale.y / editor->scale_interval) * editor->scale_interval);
 			}
-			editor->selected->SetScale(final_scale);
+			selected->SetScale(final_scale);
 		}
 		else if (gizmo_op == Gizmo_Op::ROTATION)
 		{
 			float final_rot = init_drag_val.x - delta.x;
 			if (ThorUI::GetKeyState(SDL_SCANCODE_LCTRL) == KEY_REPEAT || ThorUI::GetKeyState(SDL_SCANCODE_RCTRL) == KEY_REPEAT)
 				final_rot = round(final_rot / editor->angle_interval) * editor->angle_interval;
-			editor->selected->SetRotation(final_rot);
+			selected->SetRotation(final_rot);
 		}
 	}
 }
@@ -239,7 +243,8 @@ void Scene::SetGizmoOp(Gizmo_Op op)
 
 void Scene::DrawTranslationGizmo()
 {
-	Vec2 init_pos = WorldToScreen(editor->selected->GetTransform()->Global().GetTranslation());
+	UI_Item* selected = editor->hierarchy->selected[0]->GetContainer();
+	Vec2 init_pos = WorldToScreen(selected->GetTransform()->Global().GetTranslation());
 
 	Rect x_axis = Rect(init_pos + Vec2(0, -1), Vec2(80, 3));
 	Rect y_axis = Rect(init_pos + Vec2(-1, 0), Vec2(3, 80));
@@ -261,7 +266,9 @@ void Scene::DrawTranslationGizmo()
 
 void Scene::DrawScaleGizmo()
 {
-	Vec2 relative_pos = editor->selected->GetGlobalPos() / editor->window_size;
+	UI_Item* selected = editor->hierarchy->selected[0]->GetContainer();
+
+	Vec2 relative_pos = selected->GetGlobalPos() / editor->window_size;
 	Vec2 pos_on_image = relative_pos * img_size;
 
 	Vec2 initial_pos = img_corner + pos_on_image;
@@ -290,7 +297,9 @@ void Scene::DrawScaleGizmo()
 
 void Scene::DrawRotationGizmo()
 {
-	Vec2 relative_pos = editor->selected->GetGlobalPos() / editor->window_size;
+	UI_Item* selected = editor->hierarchy->selected[0]->GetContainer();
+
+	Vec2 relative_pos = selected->GetGlobalPos() / editor->window_size;
 	Vec2 pos_on_image = relative_pos * img_size;
 
 	Vec2 initial_pos = img_corner + pos_on_image;

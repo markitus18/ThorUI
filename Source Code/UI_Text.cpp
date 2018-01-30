@@ -84,7 +84,7 @@ Vec2 UI_Text::GetTexSize() const
 
 void UI_Text::Draw()
 {
-	if (IsParentActive() == true && texture_id != 0)
+	if (IsActiveHierarchy() == true && texture_id != 0)
 	{
 		glPushMatrix();
 		glMultMatrixf(transform.Center().OpenGLPtr());

@@ -13,7 +13,7 @@ UI_Image::UI_Image(Vec2 pos, Vec2 size, int texture_id) : UI_Item(pos, size)
 
 void UI_Image::Draw()
 {
-	if (IsParentActive() == false) return;
+	if (IsActiveHierarchy() == false) return;
 
 	glPushMatrix();
 	glMultMatrixf(transform.Center().OpenGLPtr());

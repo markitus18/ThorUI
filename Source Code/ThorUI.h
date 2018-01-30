@@ -55,6 +55,7 @@ namespace ThorUI
 
 	extern UI_Item* window_item;
 	extern std::vector<UI_Item*> items;
+	extern std::vector<UI_Item*> to_remove_items;
 	extern std::map<uint, Texture> textures; //TODO: sort textures by ID or by path?
 	extern std::vector<Font> fonts;
 
@@ -143,6 +144,7 @@ namespace ThorUI
 	std::string GenUniqueName(UI_Item* parent, const char* name);
 	void UpdateItems();
 	void DeleteItem(UI_Item* item);
+	void RemoveToDeleteItems();
 	//-------------------------------------------------
 
 	//Secen management --------------------------------

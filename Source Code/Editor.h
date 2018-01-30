@@ -61,7 +61,6 @@ private:
 	void DrawSnapWindow();
 
 public:
-	UI_Item* selected = nullptr;
 	Scene* scene = nullptr;
 	Vec2 window_size;
 	bool dev_tools = false;
@@ -70,6 +69,7 @@ public:
 	int angle_interval = 15;
 	float scale_interval = 0.5;
 
+	Hierarchy* hierarchy = nullptr;
 private:
 	SDL_Window* window = nullptr;
 	Vec2 default_img_size_ratio = Vec2(0.3, 0.3f);
@@ -86,14 +86,10 @@ private:
 	Vec2 grid_div;
 	bool block_grid = true;
 
-
-
 	std::vector<Dock*> docks;
 
 	Inspector* inspector = nullptr;
-	Hierarchy* hierarchy = nullptr;
 	Resources* resources = nullptr;
-
 	Dock* dock_focus = nullptr;
 	//delete marc;
 };

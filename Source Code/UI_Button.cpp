@@ -25,7 +25,7 @@ UI_Button::UI_Button(Vec2 pos, Vec2 size) : UI_Item(pos, size)
 
 void UI_Button::Draw()
 {
-	if (IsParentActive() == true)
+	if (IsActiveHierarchy() == true)
 	{
 		glPushMatrix();
 		glMultMatrixf(transform.Center().OpenGLPtr());

@@ -10,14 +10,16 @@
 
 #include "ThorUI.h"
 #include "Editor.h"
+#include "HierarchyDock.h"
+
 #include "Dock.h"
 #include "FileSystem.h"
 
 void Inspector::Draw()
 {
-	if (editor->selected != nullptr)
+	if (editor->hierarchy->selected.size() > 0)
 	{
-		UI_Item* selected = editor->selected;
+		UI_Item* selected = editor->hierarchy->selected[0]->GetContainer();
 
 		bool active = selected->IsActive();
 		if (ImGui::Checkbox("", &active))

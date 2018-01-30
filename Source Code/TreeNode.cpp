@@ -1,5 +1,8 @@
 #include "TreeNode.h"
 #include "TreeDisplay.h"
+#include "UI_Item.h"
+
+template class TreeNode<UI_Item>;
 
 template <typename T>
 TreeNode<T>* TreeNode<T>::GetChild(int index) const
@@ -47,7 +50,7 @@ TreeNode<T>* TreeNode<T>::GetPrevOpenNode() const
 	{
 		TreeNode<T>* prev = GetParent()->GetChild(--childIndex);
 		while (prev->hierarchyOpen == true)
-			prev = prev->GetChildIndex(--prev->ChildCount());
+			prev = prev->GetChild(prev->ChildCount() - 1);
 		return prev;
 	}
 	else

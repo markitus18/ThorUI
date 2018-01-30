@@ -2,19 +2,18 @@
 #define __HIERARCHY_D_H__
 
 #include "DockData.h"
+#include "TreeDisplay.h"
 
 class UI_Item;
 class UI_Editor;
 
-class Hierarchy : public DockData
+class Hierarchy : public DockData, public TreeDisplay<UI_Item>
 {
 public:
-	Hierarchy(UI_Editor* editor) : DockData(editor) { name = "Hierarchy"; };
+	Hierarchy(UI_Editor* editor) : DockData(editor), TreeDisplay<UI_Item>() { name = "Hierarchy"; };
 	~Hierarchy() {};
 
 	void Draw();
-	void DrawChild(UI_Item* item);
-	void DrawItemChilds(UI_Item* item);
 };
 
 #endif

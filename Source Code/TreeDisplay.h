@@ -8,18 +8,19 @@ template <typename T>
 class TreeDisplay
 {
 public:
-	TreeNode<T>* GetNode(T* c) const
+
+	TreeNode<T>* GetNode(T* c)
 	{
 		if (!c) return nullptr;
-		std::vector<TreeNode<T>*>::iterator it;
+		std::vector<TreeNode<T>>::iterator it;
 		for (it = nodes.begin(); it != nodes.end(); ++it)
 		{
-			if ((*it)->GetContainer() == c)
-				return *it;
+			if ((*it).GetContainer() == c)
+				return &(*it);
 		}
 	}
 
-	void AddNode(T* c) const
+	void AddNode(T* c)
 	{
 		//Checking if already added
 		for (int i = 0; i < nodes.size(); ++i)
@@ -27,16 +28,26 @@ public:
 			if (nodes[i].GetContainer() == c)
 				return;
 		}
-		nodes.push_back(TreeNode<T>(c));
+		nodes.push_back(TreeNode<T>(c, this));
 	}
+
+	void RemoveNode(T* node);
+
+	void UnselectAll();
+	void SelectSingle(T* node, bool openTree = true);
 
 	void DrawTree();
 	void DrawNode(TreeNode<T>* node);
 	void DisplayNode(TreeNode<T>* node);
 	void DrawNodeChilds(TreeNode<T>* node);
 
-private:
+	void HandleUserInput(TreeNode<T>* node);
+	void HandleArrows();
+
+public:
 	std::vector<TreeNode<T>> nodes;
+	std::vector<TreeNode<T>*> selected;
+	TreeNode<T>* last_selected = nullptr;
 };
 
 #endif

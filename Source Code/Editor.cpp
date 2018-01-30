@@ -79,6 +79,7 @@ bool UI_Editor::Init(SDL_Window* window)
 	
 	hierarchy = new Hierarchy(this);
 	dock->GetDockChildren()[0]->GetDockChildren()[0]->GetDockChildren()[0]->AddChildData(hierarchy);
+	hierarchy->AddNode(ThorUI::window_item);
 
 	scene = new Scene(this);
 	dock->GetDockChildren()[0]->GetDockChildren()[0]->GetDockChildren()[1]->AddChildData(scene);
@@ -98,8 +99,7 @@ void UI_Editor::Draw()
 	glClearColor(0.7f, 0.7f, 0.7f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	ThorUI::UpdateKeyboardState();
-	ThorUI::UpdateMouseState(); //Just to use ThorUI keyboard and mouse input
+	ThorUI::StartFrame(); //Just to use ThorUI keyboard and mouse input
 
 	ThorUI::Draw();
 
@@ -122,13 +122,21 @@ void UI_Editor::Draw()
 	DrawIconBar();
 
 	ImGui::Render();
+
 	if (ThorUI::GetKeyState(SDL_SCANCODE_DELETE) == KEY_DOWN)
 	{
-		if (selected)
+		for (uint i = 0; i < hierarchy->selected.size(); ++i)
 		{
-			ThorUI::DeleteItem(selected);
-			selected = nullptr;
+			std::vector<UI_Item*> to_remove;
+			hierarchy->selected[i]->GetContainer()->CollectChildren(to_remove);
+			to_remove.push_back(hierarchy->selected[i]->GetContainer());
+
+			for (uint i = 0; i < to_remove.size(); ++i)
+				hierarchy->RemoveNode(to_remove[i]);
+
+			ThorUI::DeleteItem(hierarchy->selected[i]->GetContainer());
 		}
+		hierarchy->selected.clear();
 	}
 }
 
@@ -153,12 +161,10 @@ void UI_Editor::DrawMainMenuBar()
 			if (ImGui::MenuItem("Load"))
 			{
 				ThorUI::LoadScene("scene_save.thor");
-				selected = nullptr;
 			}
 			if (ImGui::MenuItem("New Scene"))
 			{
 				ThorUI::ClearScene();
-				selected = nullptr;
 			}
 
 			ImGui::EndMenu();
@@ -188,10 +194,12 @@ void UI_Editor::DrawMainMenuBar()
 				UI_Button* button = new UI_Button(window_size / 2, Vec2(150, 60));
 				button->SetName(ThorUI::GenUniqueName(ThorUI::window_item, "Button").c_str());
 				ThorUI::AddItem(button);
-
 				UI_Text* text = new UI_Text(Vec2(0, 0), Vec2(0, 0), "Button");
 				text->SetParent(button, false);
 				ThorUI::AddItem(text);
+
+				hierarchy->AddNode(text);
+				hierarchy->AddNode(button);
 			}
 			if (ImGui::MenuItem("Image"))
 			{
@@ -201,12 +209,14 @@ void UI_Editor::DrawMainMenuBar()
 				UI_Image* image = new UI_Image(image_pos, image_size);
 				image->SetName(ThorUI::GenUniqueName(ThorUI::window_item, "Image").c_str());
 				ThorUI::AddItem(image);
+				hierarchy->AddNode(image);
 			}
 			if (ImGui::MenuItem("Text"))
 			{
 				UI_Text* text = new UI_Text(window_size / 2, Vec2(0, 0), "New Text");
 				text->SetName(ThorUI::GenUniqueName(ThorUI::window_item, "Text").c_str());
 				ThorUI::AddItem(text);
+				hierarchy->AddNode(text);
 			}
 			ImGui::EndMenu();
 		}
