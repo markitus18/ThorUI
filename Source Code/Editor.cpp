@@ -125,16 +125,17 @@ void UI_Editor::Draw()
 
 	if (ThorUI::GetKeyState(SDL_SCANCODE_DELETE) == KEY_DOWN)
 	{
-		for (uint i = 0; i < hierarchy->selected.size(); ++i)
+		std::list<TreeNode<UI_Item>*>::iterator it;
+		for (it = hierarchy->selected.begin(); it != hierarchy->selected.end(); ++it)
 		{
+			ThorUI::DeleteItem((*it)->GetContainer());
+
 			std::vector<UI_Item*> to_remove;
-			hierarchy->selected[i]->GetContainer()->CollectChildren(to_remove);
-			to_remove.push_back(hierarchy->selected[i]->GetContainer());
+			(*it)->GetContainer()->CollectChildren(to_remove);
+			to_remove.push_back((*it)->GetContainer());
 
 			for (uint i = 0; i < to_remove.size(); ++i)
 				hierarchy->RemoveNode(to_remove[i]);
-
-			ThorUI::DeleteItem(hierarchy->selected[i]->GetContainer());
 		}
 		hierarchy->selected.clear();
 	}

@@ -137,7 +137,7 @@ void Scene::HandleInput()
 
 void Scene::HandleGizmoActivation(Vec2 mouse_pos)
 {
-	UI_Item* selected = editor->hierarchy->selected[0]->GetContainer();
+	UI_Item* selected = editor->hierarchy->selected.front()->GetContainer();
 	if (gizmo_op == Gizmo_Op::ROTATION)
 	{
 		if (rot_button.Contains(mouse_pos) && ThorUI::GetMouseState(1) == KEY_DOWN)
@@ -179,7 +179,7 @@ void Scene::HandleDrag(Vec2 mouse_pos, Vec2 image_size)
 	}
 	else
 	{
-		UI_Item* selected = editor->hierarchy->selected[0]->GetContainer();
+		UI_Item* selected = editor->hierarchy->selected.front()->GetContainer();
 
 		Vec2 delta = mouse_pos - start_drag;
 		Vec2 scale = image_size / editor->window_size;
@@ -243,7 +243,7 @@ void Scene::SetGizmoOp(Gizmo_Op op)
 
 void Scene::DrawTranslationGizmo()
 {
-	UI_Item* selected = editor->hierarchy->selected[0]->GetContainer();
+	UI_Item* selected = editor->hierarchy->selected.front()->GetContainer();
 	Vec2 init_pos = WorldToScreen(selected->GetTransform()->Global().GetTranslation());
 
 	Rect x_axis = Rect(init_pos + Vec2(0, -1), Vec2(80, 3));
@@ -266,7 +266,7 @@ void Scene::DrawTranslationGizmo()
 
 void Scene::DrawScaleGizmo()
 {
-	UI_Item* selected = editor->hierarchy->selected[0]->GetContainer();
+	UI_Item* selected = editor->hierarchy->selected.front()->GetContainer();
 
 	Vec2 relative_pos = selected->GetGlobalPos() / editor->window_size;
 	Vec2 pos_on_image = relative_pos * img_size;
@@ -297,7 +297,7 @@ void Scene::DrawScaleGizmo()
 
 void Scene::DrawRotationGizmo()
 {
-	UI_Item* selected = editor->hierarchy->selected[0]->GetContainer();
+	UI_Item* selected = editor->hierarchy->selected.front()->GetContainer();
 
 	Vec2 relative_pos = selected->GetGlobalPos() / editor->window_size;
 	Vec2 pos_on_image = relative_pos * img_size;

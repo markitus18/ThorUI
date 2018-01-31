@@ -19,7 +19,7 @@ void Inspector::Draw()
 {
 	if (editor->hierarchy->selected.size() > 0)
 	{
-		UI_Item* selected = editor->hierarchy->selected[0]->GetContainer();
+		UI_Item* selected = editor->hierarchy->selected.front()->GetContainer();
 
 		bool active = selected->IsActive();
 		if (ImGui::Checkbox("", &active))

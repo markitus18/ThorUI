@@ -1,7 +1,7 @@
 #ifndef __TREE_DISPLAY_H__
 #define __TRE__DISPLAY_H__
 
-#include <vector>
+#include <list>
 #include "TreeNode.h"
 
 template <typename T>
@@ -12,7 +12,7 @@ public:
 	TreeNode<T>* GetNode(T* c)
 	{
 		if (!c) return nullptr;
-		std::vector<TreeNode<T>>::iterator it;
+		std::list<TreeNode<T>>::iterator it;
 		for (it = nodes.begin(); it != nodes.end(); ++it)
 		{
 			if ((*it).GetContainer() == c)
@@ -23,9 +23,10 @@ public:
 	void AddNode(T* c)
 	{
 		//Checking if already added
-		for (int i = 0; i < nodes.size(); ++i)
+		std::list<TreeNode<T>>::iterator it;
+		for (it = nodes.begin(); it != nodes.end(); ++it)
 		{
-			if (nodes[i].GetContainer() == c)
+			if ((*it).GetContainer() == c)
 				return;
 		}
 		nodes.push_back(TreeNode<T>(c, this));
@@ -45,8 +46,8 @@ public:
 	void HandleArrows();
 
 public:
-	std::vector<TreeNode<T>> nodes;
-	std::vector<TreeNode<T>*> selected;
+	std::list<TreeNode<T>> nodes;
+	std::list<TreeNode<T>*> selected;
 	TreeNode<T>* last_selected = nullptr;
 };
 

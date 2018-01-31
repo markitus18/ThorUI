@@ -11,7 +11,7 @@ template class TreeDisplay<UI_Item>;
 template <typename T>
 void TreeDisplay<T>::RemoveNode(T* node)
 {
-	std::vector<TreeNode<T>>::iterator it;
+	std::list<TreeNode<T>>::iterator it;
 	for (it = nodes.begin(); it != nodes.end(); ++it)
 	{
 		if ((*it).GetContainer() == node)
@@ -25,9 +25,10 @@ void TreeDisplay<T>::RemoveNode(T* node)
 template <typename T>
 void TreeDisplay<T>::UnselectAll()
 {
-	for (uint i = 0; i < selected.size(); ++i)
+	std::list<TreeNode<T>*>::iterator it;
+	for (it = selected.begin(); it != selected.end(); ++it)
 	{
-		selected[i]->Unselect();
+		(*it)->Unselect();
 	}
 	selected.clear();
 }
@@ -59,7 +60,7 @@ template <typename T>
 void TreeDisplay<T>::DrawTree()
 {
 	if (nodes.size() > 0)
-		DrawNodeChilds(&nodes[0]);
+		DrawNodeChilds(&nodes.front());
 	HandleArrows();
 }
 
