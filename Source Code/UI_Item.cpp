@@ -30,16 +30,6 @@ UI_Item::~UI_Item()
 	}
 }
 
-void UI_Item::SetPos(float x, float y)
-{
-	transform.SetPos(Vec2(x, y));
-}
-
-void UI_Item::SetPos(Vec2 pos)
-{
-	transform.SetPos(pos);
-}
-
 void UI_Item::SetSize(float w, float h)
 {
 	size.Set(w, h);
@@ -52,36 +42,6 @@ void UI_Item::SetSize(Vec2 size)
 	transform.SetPivot((Vec2(0.5f, 0.5f) - pivot) * size, true);
 }
 
-void UI_Item::SetID(int id)
-{
-	this->id = id;
-}
-
-void UI_Item::SetScale(float x, float y)
-{
-	transform.SetScale(Vec2(x, y));
-}
-
-void UI_Item::SetScale(Vec2 scale)
-{
-	transform.SetScale(scale);
-}
-
-void UI_Item::SetRotation(float rotation)
-{
-	transform.SetRotationDeg(rotation);
-}
-
-void UI_Item::SetPivot(Vec2 pivot)
-{
-	this->pivot = pivot;
-	transform.SetPivot((Vec2(0.5f, 0.5f) - pivot) * size);
-}
-
-void UI_Item::SetName(const char* name)
-{
-	this->name = name;
-}
 
 void UI_Item::SetActive(bool active)
 {
@@ -94,12 +54,14 @@ void UI_Item::SetActive(bool active)
 
 void UI_Item::SetParent(UI_Item* parent, bool keep_global)
 {
-	transform.SetParent(parent->GetTransform(), keep_global);
+	if (parent != nullptr)
+		transform.SetParent(parent->GetTransform(), keep_global);
 }
 
 void UI_Item::RemoveChild(UI_Item* child)
 {
-	transform.RemoveChild(child->GetTransform());
+	if (child != nullptr)
+		transform.RemoveChild(child->GetTransform());
 }
 
 void UI_Item::DeleteChildren()
@@ -112,11 +74,6 @@ void UI_Item::DeleteChildren()
 	}
 }
 
-UI_Item* UI_Item::GetParent() const
-{
-	return transform.GetParent() ? transform.GetParent()->Container<UI_Item>() : nullptr;
-}
-
 UI_Item* UI_Item::GetChild(uint index) const
 {
 	if (index < 0 || index >= transform.GetChildren().size())
@@ -124,10 +81,6 @@ UI_Item* UI_Item::GetChild(uint index) const
 	return transform.GetChildren()[index]->Container<UI_Item>();
 }
 
-uint UI_Item::ChildCount() const
-{
-	return transform.GetChildren().size();
-}
 
 void UI_Item::CollectChildren(std::vector<UI_Item*>& vector)
 {
@@ -169,64 +122,4 @@ void UI_Item::Load(Config& config)
 
 	InternalLoad(config); //TODO: consider if updating pos before or after
 	transform.UpdateGlobalTransform();
-}
-
-Vec2 UI_Item::GetPos() const
-{
-	return transform.GetPos();
-}
-
-Vec2 UI_Item::GetGlobalPos() const
-{
-	return transform.Global().GetTranslation();
-}
-
-Vec2 UI_Item::GetSize() const
-{
-	return size;
-}
-
-Vec2 UI_Item::GetScale() const
-{
-	return transform.GetScale();
-}
-
-Vec2 UI_Item::GetPivot() const
-{
-	return pivot;
-}
-
-Transform* UI_Item::GetTransform()
-{
-	return &transform;
-}
-
-int UI_Item::GetID() const
-{
-	return id;
-}
-
-Item_Event UI_Item::GetLastEvent() const
-{
-	return last_event;
-}
-
-const char* UI_Item::GetName() const
-{
-	return name.c_str();
-}
-
-Item_Type UI_Item::GetType() const
-{
-	return type;
-}
-
-bool UI_Item::IsActive() const
-{
-	return active;
-}
-
-bool UI_Item::IsActiveHierarchy() const
-{
-	return active && hierarchyActive;
 }
