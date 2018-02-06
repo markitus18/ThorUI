@@ -59,7 +59,7 @@ private:
 	Transform* parent;
 	std::vector<Transform*> children;
 
-	void* container = nullptr;
+	void* container = nullptr; //TODO: void* or Transform<T> ?
 };
 #endif // !__TRANSFORM_H__
 
