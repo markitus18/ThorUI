@@ -37,15 +37,18 @@ void TreeDisplay<T>::UnselectAll()
 }
 
 template <typename T>
-void TreeDisplay<T>::SelectSingle(T* c, bool openTree)
+void TreeDisplay<T>::Select(T* c, bool single, bool openTree)
 {
-	UnselectAll();
 	if (TreeNode<T>* node = GetNode(c->GetID()))
 	{
-		selected.push_back(node->Get());
-		last_selected = c;
-		node->Select();
+		if (single == true)
+		{
+			UnselectAll();
+			last_selected = c;
+		}
 
+		selected.push_back(node->Get());
+		node->Select();
 		if (openTree)
 		{
 			TreeNode<T>* it = GetNode(node->GetParentID());
@@ -81,6 +84,11 @@ void TreeDisplay<T>::DrawTree()
 {
 	DrawNodeChilds(root);
 	HandleArrows();
+
+	if (selection_started == true && (ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_IDLE || ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_UP))
+	{
+		FinishSelection();
+	}
 }
 
 template <typename T>
@@ -146,7 +154,6 @@ template <typename T>
 void TreeDisplay<T>::HandleUserInput(TreeNode<T>& node)
 {
 	//TODO: dragging
-	//TODO: multiple selection
 	if (ImGui::IsItemHovered())
 	{
 		if (ThorUI::GetMouseState(SDL_BUTTON_RIGHT) == KEY_DOWN)
@@ -156,16 +163,49 @@ void TreeDisplay<T>::HandleUserInput(TreeNode<T>& node)
 		if (ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_DOWN)
 		{
 			selection_started = true;
+
 			//Pressing Ctrl: add single selection
 			if (ThorUI::GetKeyState(SDL_SCANCODE_LCTRL) == KEY_REPEAT || ThorUI::GetKeyState(SDL_SCANCODE_RCTRL) == KEY_REPEAT)
 			{
-				if (node.selected == true)
+				to_drag.push_back(&node);
+				last_selected = node.Get();
+				node.selected == true ? UnselectSingle(node.Get()) : to_select.push_back(&node); //TODO: add to unselect?
+
+				for (std::list<T*>::iterator it = selected.begin(); it != selected.end(); ++it)
 				{
-					UnselectSingle(node.Get());
-					last_selected = node.Get();
+					to_drag.push_back(GetNode((*it)->GetID()));
 				}
 			}
-			SelectSingle(node.Get());
+			//Pressing shift: multiple seletion
+			else if (ThorUI::GetKeyState(SDL_SCANCODE_LSHIFT) == KEY_REPEAT || ThorUI::GetKeyState(SDL_SCANCODE_RSHIFT) == KEY_REPEAT)
+			{
+				if (selected.size() == 0)
+				{
+					to_select.push_back(&node);
+					to_drag.push_back(&node);
+				}
+				else
+				{
+					ShiftSelection(node, !node.selected);
+				}
+			}
+			//Normal single selection
+			else
+			{
+				for (std::list<T*>::iterator it = selected.begin(); it != selected.end(); ++it)
+				{
+					if ((*it)->GetID() != node.GetID())
+						to_unselect.push_back(GetNode((*it)->GetID()));
+					if (node.selected == true)
+						to_drag.push_back(GetNode((*it)->GetID()));
+				}
+				if (node.selected == false)
+				{
+					to_select.push_back(&node);
+					to_drag.push_back(&node); //If selected = true it will be added to drag in the first loop
+				}
+			}
+			last_selected = node.Get();
 		}
 	}
 }
@@ -177,10 +217,10 @@ void TreeDisplay<T>::HandleArrows()
 	{
 		if (last_selected != nullptr)
 		{
-			if (TreeNode<T>* next = GetNextOpenNode(*GetNode(last_selected->GetID())))
+			if (TreeNode<T>* next = GetNextVisibleNode(*GetNode(last_selected->GetID())))
 			{
 				//TODO: handle multiple selection
-				SelectSingle(next->Get());
+				Select(next->Get(), true);
 			}
 		}
 	}
@@ -188,17 +228,86 @@ void TreeDisplay<T>::HandleArrows()
 	{
 		if (last_selected != nullptr)
 		{
-			if (TreeNode<T>* prev = GetPrevOpenNode(*GetNode(last_selected->GetID())))
+			if (TreeNode<T>* prev = GetPrevVisibleNode(*GetNode(last_selected->GetID())))
 			{
 				//TODO: handle multiple selection
-				SelectSingle(prev->Get());
+				Select(prev->Get(), true);
 			}
 		}
 	}
 }
 
 template <typename T>
-TreeNode<T>* TreeDisplay<T>::GetNextOpenNode(const TreeNode<T>& node)
+void TreeDisplay<T>::ShiftSelection(TreeNode<T>& node, bool select)
+{
+	if (last_selected->GetID() != node.GetID())
+	{
+		TreeNode<T>* next = GetFirstVisibleNode(*GetNode(last_selected->GetID()), node); //The starting node
+		TreeNode<T>* last = (&node == next ? GetNode(last_selected->GetID()) : &node); //The finishing node
+
+		while (next != nullptr)
+		{
+			if (select == true)
+			{
+				if (next->selected == false)
+				{
+					to_select.push_back(next);
+					to_drag.push_back(next);
+				}
+			}
+			else if (next != &node)
+			{
+				UnselectSingle(next->Get());
+			}
+			if (next == last)
+			{
+				last_selected = node.Get();
+				break;
+			}
+			next = GetNextVisibleNode(*next);
+		}
+	}
+	for (std::list<T*>::iterator it = selected.begin(); it != selected.end(); ++it)
+		to_drag.push_back(GetNode((*it)->GetID()));
+}
+
+template <typename T>
+void TreeDisplay<T>::FinishSelection()
+{
+	std::vector<TreeNode<T>*>::iterator it;
+	for (it = to_select.begin(); it != to_select.end(); ++it)
+	{
+		Select((*it)->Get(), false);
+	}
+
+	for (it = to_unselect.begin(); it != to_unselect.end(); ++it)
+	{
+		UnselectSingle((*it)->Get());
+	}
+
+	to_select.clear();
+	to_unselect.clear();
+	to_drag.clear();
+	selection_started = false;
+}
+
+template <typename T>
+TreeNode<T>* TreeDisplay<T>::GetFirstVisibleNode(TreeNode<T>& n1, TreeNode<T>& n2)
+{
+	if (n1.Get() == n2.Get()) return &n1;
+
+	TreeNode<T>* toEvaluate = GetNextVisibleNode(root);
+	while (toEvaluate != nullptr)
+	{
+		if (n1.GetID() == toEvaluate->GetID()) return &n1;
+		if (n2.GetID() == toEvaluate->GetID()) return &n2;
+		toEvaluate = GetNextVisibleNode(*toEvaluate);
+	}
+	return nullptr;
+}
+
+template <typename T>
+TreeNode<T>* TreeDisplay<T>::GetNextVisibleNode(const TreeNode<T>& node)
 {
 	if (node.ChildCount() > 0 && node.hierarchyOpen == true)
 		return GetNode(node.GetChildID(0));
@@ -220,7 +329,7 @@ TreeNode<T>* TreeDisplay<T>::GetNextOpenNode(const TreeNode<T>& node)
 }
 
 template <typename T>
-TreeNode<T>* TreeDisplay<T>::GetPrevOpenNode(const TreeNode<T>& node)
+TreeNode<T>* TreeDisplay<T>::GetPrevVisibleNode(const TreeNode<T>& node)
 {
 	TreeNode<T>* parent = GetNode(node.GetParentID());
 	int childIndex = parent->GetChildIndex(node);
