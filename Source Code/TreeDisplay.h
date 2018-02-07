@@ -3,6 +3,8 @@
 
 #include <map>
 #include <list>
+#include <vector>
+
 #include "TreeNode.h"
 
 template <typename T>
@@ -58,6 +60,8 @@ public:
 
 private:
 	bool selection_started = false;
+	std::vector<TreeNode<T>*> to_select;
+	std::vector<TreeNode<T>*> to_unselect;
 };
 
 #endif

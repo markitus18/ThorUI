@@ -42,7 +42,7 @@ void TreeDisplay<T>::SelectSingle(T* c, bool openTree)
 	UnselectAll();
 	if (TreeNode<T>* node = GetNode(c->GetID()))
 	{
-		selected.push_back(node->GetContainer());
+		selected.push_back(node->Get());
 		last_selected = c;
 		node->Select();
 
@@ -155,7 +155,17 @@ void TreeDisplay<T>::HandleUserInput(TreeNode<T>& node)
 		}
 		if (ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_DOWN)
 		{
-			SelectSingle(node.GetContainer());
+			selection_started = true;
+			//Pressing Ctrl: add single selection
+			if (ThorUI::GetKeyState(SDL_SCANCODE_LCTRL) == KEY_REPEAT || ThorUI::GetKeyState(SDL_SCANCODE_RCTRL) == KEY_REPEAT)
+			{
+				if (node.selected == true)
+				{
+					UnselectSingle(node.Get());
+					last_selected = node.Get();
+				}
+			}
+			SelectSingle(node.Get());
 		}
 	}
 }
@@ -170,7 +180,7 @@ void TreeDisplay<T>::HandleArrows()
 			if (TreeNode<T>* next = GetNextOpenNode(*GetNode(last_selected->GetID())))
 			{
 				//TODO: handle multiple selection
-				SelectSingle(next->GetContainer());
+				SelectSingle(next->Get());
 			}
 		}
 	}
@@ -181,7 +191,7 @@ void TreeDisplay<T>::HandleArrows()
 			if (TreeNode<T>* prev = GetPrevOpenNode(*GetNode(last_selected->GetID())))
 			{
 				//TODO: handle multiple selection
-				SelectSingle(prev->GetContainer());
+				SelectSingle(prev->Get());
 			}
 		}
 	}

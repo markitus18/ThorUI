@@ -15,7 +15,7 @@ public:
 	inline const char* GetName() const { return container->GetName(); }
 	inline int GetID() const { return container->GetID(); }
 	inline bool IsActive() const { return container->IsActiveHierarchy(); }
-	inline T* GetContainer() const { return container; }
+	inline T* Get() const { return container; }
 
 	inline int ChildCount() const { return container->ChildCount(); }
 	int GetChildID(int index) const;
