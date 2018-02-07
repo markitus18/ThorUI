@@ -11,14 +11,14 @@ template class TreeDisplay<UI_Item>;
 template <typename T>
 void TreeDisplay<T>::RemoveNode(T* node)
 {
-	if (nodes.find(node->GetID()) != nodes.end())
+	typename std::map<int, TreeNode<T>>::iterator it = nodes.find(node->GetID());
+	if (it != nodes.end())
 	{
-		TreeNode<T> n = nodes[node->GetID()];
-		if (n.selected == true)
+		if (it->second.selected == true)
 		{
 			UnselectSingle(node);
 		}
-		nodes.erase(nodes.find(node->GetID())); //TODO: simplify searches (too much find)
+		nodes.erase(it);
 	}
 }
 
@@ -36,13 +36,11 @@ void TreeDisplay<T>::UnselectAll()
 	selected.clear();
 }
 
-
 template <typename T>
 void TreeDisplay<T>::SelectSingle(T* c, bool openTree)
 {
 	UnselectAll();
-	TreeNode<T>* node = GetNode(c->GetID());
-	if (node)
+	if (TreeNode<T>* node = GetNode(c->GetID()))
 	{
 		selected.push_back(node->GetContainer());
 		last_selected = c;
@@ -81,18 +79,17 @@ void TreeDisplay<T>::UnselectSingle(T* node)
 template <typename T>
 void TreeDisplay<T>::DrawTree()
 {
-	if (nodes.size() > 0)
-		DrawNodeChilds(&nodes[0]); //Node with id 0 is root node
+	DrawNodeChilds(root);
 	HandleArrows();
 }
 
 template <typename T>
-void TreeDisplay<T>::DrawNode(TreeNode<T>* node)
+void TreeDisplay<T>::DrawNode(TreeNode<T>& node)
 {
 	DisplayNode(node);
 	HandleUserInput(node);
 
-	if (ImGui::BeginPopup(node->GetName()))
+	if (ImGui::BeginPopup(node.GetName()))
 	{
 		if (ImGui::Button("delete"))
 		{
@@ -103,7 +100,7 @@ void TreeDisplay<T>::DrawNode(TreeNode<T>* node)
 
 	//TODO: dragging
 
-	if (node->hierarchyOpen == true)
+	if (node.hierarchyOpen == true)
 	{
 		DrawNodeChilds(node);
 		ImGui::TreePop();
@@ -111,42 +108,42 @@ void TreeDisplay<T>::DrawNode(TreeNode<T>* node)
 }
 
 template <typename T>
-void TreeDisplay<T>::DisplayNode(TreeNode<T>* node)
+void TreeDisplay<T>::DisplayNode(TreeNode<T>& node)
 {
 	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
-	if (node->ChildCount() == 0)
+	if (node.ChildCount() == 0)
 		flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
-	if (node->selected == true) //TODO: check if it is "ToSelect"
+	if (node.selected == true) //TODO: check if it is "ToSelect"
 		flags |= ImGuiTreeNodeFlags_Selected;
 
 	//TODO: control dragging (line 106)
 
-	if (node->IsActive() == false)
+	if (node.IsActive() == false)
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 1, 0.4));
 
-	if (node->beenSelected == true && node->ChildCount() > 0)
+	if (node.beenSelected == true && node.ChildCount() > 0)
 	{
 		ImGui::SetNextTreeNodeOpen(true);
-		node->beenSelected = false;
+		node.beenSelected = false;
 	}
 
-	bool nodeOpen = ImGui::TreeNodeEx(node, flags, node->GetName());
-	node->hierarchyOpen = node->ChildCount() == 0 ? false : nodeOpen;
+	bool nodeOpen = ImGui::TreeNodeEx(&node, flags, node.GetName());
+	node.hierarchyOpen = node.ChildCount() == 0 ? false : nodeOpen;
 
-	if (node->IsActive() == false)
+	if (node.IsActive() == false)
 		ImGui::PopStyleColor();
 }
 
 template <typename T>
-void TreeDisplay<T>::DrawNodeChilds(TreeNode<T>* node)
+void TreeDisplay<T>::DrawNodeChilds(TreeNode<T>& node)
 {
-	int childs = node->ChildCount();
+	int childs = node.ChildCount();
 	for (int i = 0; i < childs; ++i)
-		DrawNode(GetNode(node->GetChildID(i)));
+		DrawNode(*GetNode(node.GetChildID(i)));
 }
 
 template <typename T>
-void TreeDisplay<T>::HandleUserInput(TreeNode<T>* node)
+void TreeDisplay<T>::HandleUserInput(TreeNode<T>& node)
 {
 	//TODO: dragging
 	//TODO: multiple selection
@@ -154,11 +151,11 @@ void TreeDisplay<T>::HandleUserInput(TreeNode<T>* node)
 	{
 		if (ThorUI::GetMouseState(SDL_BUTTON_RIGHT) == KEY_DOWN)
 		{
-			ImGui::OpenPopup(node->GetName());
+			ImGui::OpenPopup(node.GetName());
 		}
 		if (ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_DOWN)
 		{
-			SelectSingle(node->GetContainer());
+			SelectSingle(node.GetContainer());
 		}
 	}
 }
@@ -170,7 +167,7 @@ void TreeDisplay<T>::HandleArrows()
 	{
 		if (last_selected != nullptr)
 		{
-			if (TreeNode<T>* next = GetNextOpenNode(GetNode(last_selected->GetID())))
+			if (TreeNode<T>* next = GetNextOpenNode(*GetNode(last_selected->GetID())))
 			{
 				//TODO: handle multiple selection
 				SelectSingle(next->GetContainer());
@@ -181,7 +178,7 @@ void TreeDisplay<T>::HandleArrows()
 	{
 		if (last_selected != nullptr)
 		{
-			if (TreeNode<T>* prev = GetPrevOpenNode(GetNode(last_selected->GetID())))
+			if (TreeNode<T>* prev = GetPrevOpenNode(*GetNode(last_selected->GetID())))
 			{
 				//TODO: handle multiple selection
 				SelectSingle(prev->GetContainer());
@@ -191,18 +188,18 @@ void TreeDisplay<T>::HandleArrows()
 }
 
 template <typename T>
-TreeNode<T>* TreeDisplay<T>::GetNextOpenNode(const TreeNode<T>* node)
+TreeNode<T>* TreeDisplay<T>::GetNextOpenNode(const TreeNode<T>& node)
 {
-	if (node->ChildCount() > 0 && node->hierarchyOpen == true)
-		return GetNode(node->GetChildID(0));
+	if (node.ChildCount() > 0 && node.hierarchyOpen == true)
+		return GetNode(node.GetChildID(0));
 
-	TreeNode<T>* parent = GetNode(node->GetParentID());
-	const TreeNode<T>* toEvaluate = node;
+	TreeNode<T>* parent = GetNode(node.GetParentID());
+	const TreeNode<T>* toEvaluate = &node;
 	while (parent != nullptr)
 	{
 		if (parent->hierarchyOpen == true)
 		{
-			int childIndex = parent->GetChildIndex(toEvaluate);
+			int childIndex = parent->GetChildIndex(*toEvaluate);
 			if (TreeNode<T>* ret = GetNode(parent->GetChildID(++childIndex)))
 				return ret;
 		}
@@ -213,9 +210,9 @@ TreeNode<T>* TreeDisplay<T>::GetNextOpenNode(const TreeNode<T>* node)
 }
 
 template <typename T>
-TreeNode<T>* TreeDisplay<T>::GetPrevOpenNode(const TreeNode<T>* node)
+TreeNode<T>* TreeDisplay<T>::GetPrevOpenNode(const TreeNode<T>& node)
 {
-	TreeNode<T>* parent = GetNode(node->GetParentID());
+	TreeNode<T>* parent = GetNode(node.GetParentID());
 	int childIndex = parent->GetChildIndex(node);
 	if (childIndex > 0)
 	{
@@ -226,13 +223,13 @@ TreeNode<T>* TreeDisplay<T>::GetPrevOpenNode(const TreeNode<T>* node)
 	}
 	else
 	{
-		return GetNode(node->GetParentID()); //TODO: don not return root parent!
+		return parent != &root ? parent : nullptr;
 	}
 }
 
 template <typename T>
-bool TreeDisplay<T>::IsParentSelected(const TreeNode<T>* node)
+bool TreeDisplay<T>::IsParentSelected(const TreeNode<T>& node)
 {
-	TreeNode<T>* parent = GetNode(node->GetParentID());
-	return (parent ? (parent->selected ? true : IsParentSelected(parent)) : false);
+	TreeNode<T>* parent = GetNode(node.GetParentID());
+	return (parent ? (parent->selected ? true : IsParentSelected(*parent)) : false);
 }

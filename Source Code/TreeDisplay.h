@@ -12,10 +12,14 @@ public:
 
 	TreeNode<T>* GetNode(int id)
 	{
-		if (nodes.find(id) != nodes.end())
-		{
-			return &nodes[id];
-		}
+		if (id == root.GetID()) return &root;
+		return nodes.find(id) != nodes.end() ? &nodes[id] : nullptr;
+	}
+
+	void SetRoot(T* c)
+	{
+		root = TreeNode<T>(c);
+		root.hierarchyOpen = true;
 	}
 
 	void AddNode(T* c)
@@ -25,7 +29,6 @@ public:
 		{
 			nodes[c->GetID()] = TreeNode<T>(c);
 		}
-		if (c->GetID() == 0) nodes[c->GetID()].hierarchyOpen = true; //TODO: fix this shit
 	}
 
 	void RemoveNode(T* node);
@@ -35,22 +38,26 @@ public:
 	void UnselectSingle(T* node);
 
 	void DrawTree();
-	void DrawNode(TreeNode<T>* node);
-	void DisplayNode(TreeNode<T>* node);
-	void DrawNodeChilds(TreeNode<T>* node);
+	void DrawNode(TreeNode<T>& node);
+	void DisplayNode(TreeNode<T>& node);
+	void DrawNodeChilds(TreeNode<T>& node);
 
-	void HandleUserInput(TreeNode<T>* node); //TODO: change into more encapsulated system
+	void HandleUserInput(TreeNode<T>& node); //TODO: change into more encapsulated system
 	void HandleArrows();					//TODO
 
-	TreeNode<T>* GetNextOpenNode(const TreeNode<T>* node); //TODO: why cant be const??
-	TreeNode<T>* GetPrevOpenNode(const TreeNode<T>* node);
+	TreeNode<T>* GetNextOpenNode(const TreeNode<T>& node);
+	TreeNode<T>* GetPrevOpenNode(const TreeNode<T>& node);
 
-	bool IsParentSelected(const TreeNode<T>* node);
+	bool IsParentSelected(const TreeNode<T>& node);
 
 public:
+	TreeNode<T> root;
 	std::map<int, TreeNode<T>> nodes;
 	std::list<T*> selected; //TODO: add to unordered map?
 	T* last_selected = nullptr;
+
+private:
+	bool selection_started = false;
 };
 
 #endif

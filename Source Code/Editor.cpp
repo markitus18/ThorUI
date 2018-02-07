@@ -79,7 +79,7 @@ bool UI_Editor::Init(SDL_Window* window)
 	
 	hierarchy = new Hierarchy(this);
 	dock->GetDockChildren()[0]->GetDockChildren()[0]->GetDockChildren()[0]->AddChildData(hierarchy);
-	hierarchy->AddNode(ThorUI::window_item);
+	hierarchy->SetRoot(ThorUI::window_item);
 
 	scene = new Scene(this);
 	dock->GetDockChildren()[0]->GetDockChildren()[0]->GetDockChildren()[1]->AddChildData(scene);

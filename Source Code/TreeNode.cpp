@@ -8,15 +8,16 @@ template <typename T>
 int TreeNode<T>::GetChildID(int index) const
 {
 	T* child = container->GetChild(index);
-	return child ? child->GetID() : 0;
+	return child ? child->GetID() : -1;
 }
 
 template <typename T>
-int TreeNode<T>::GetChildIndex(const TreeNode<T>* child) const
+int TreeNode<T>::GetChildIndex(const TreeNode<T>& child) const
 {
-	for (int i = 0; i < container->ChildCount(); ++i)
+	int childCount = container->ChildCount();
+	for (int i = 0; i < childCount; ++i)
 	{
-		if (container->GetChild(i) == child->container)
+		if (container->GetChild(i) == child.container)
 			return i;
 	}
 	return -1;
