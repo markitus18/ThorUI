@@ -127,7 +127,7 @@ void Scene::HandleInput()
 			Vec2 mouse_world = ScreenToWorld(ThorUI::mouse_pos);
 			if (ThorUI::IsPointOnItem(*it, mouse_world))
 			{
-				editor->hierarchy->Select(*it, true);
+				editor->hierarchy->SetSelect(*it, true, true);
 				selected = true;
 			}
 		}

@@ -36,8 +36,7 @@ public:
 	void RemoveNode(T* node);
 
 	void UnselectAll();
-	void Select(T* node, bool single, bool openTree = true);
-	void UnselectSingle(T* node);
+	void SetSelect(T* node, bool select, bool single = false, bool openTree = true);
 
 	void DrawTree();
 	void DrawNode(TreeNode<T>& node);
