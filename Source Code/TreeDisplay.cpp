@@ -210,41 +210,52 @@ void TreeDisplay<T>::HandleUserInput(TreeNode<T>& node)
 template <typename T>
 void TreeDisplay<T>::HandleArrows()
 {
-	if (ThorUI::GetKeyState(SDL_SCANCODE_DOWN) == KEY_DOWN)
+	if (ThorUI::GetKeyState(SDL_SCANCODE_DOWN) == KEY_DOWN && last_selected != nullptr)
 	{
-		if (last_selected != nullptr)
+		if (TreeNode<T>* next = GetNextVisibleNode(*GetNode(last_selected->GetID())))
 		{
-			if (TreeNode<T>* next = GetNextVisibleNode(*GetNode(last_selected->GetID())))
+			if (ThorUI::GetKeyState(SDL_SCANCODE_LSHIFT) == KEY_REPEAT || ThorUI::GetKeyState(SDL_SCANCODE_RSHIFT) == KEY_REPEAT ||
+				ThorUI::GetKeyState(SDL_SCANCODE_LCTRL) == KEY_REPEAT || ThorUI::GetKeyState(SDL_SCANCODE_RCTRL) == KEY_REPEAT)
 			{
-				if (ThorUI::GetKeyState(SDL_SCANCODE_LSHIFT) == KEY_REPEAT || ThorUI::GetKeyState(SDL_SCANCODE_RSHIFT) == KEY_REPEAT ||
-					ThorUI::GetKeyState(SDL_SCANCODE_LCTRL) == KEY_REPEAT || ThorUI::GetKeyState(SDL_SCANCODE_RCTRL) == KEY_REPEAT)
+				TreeNode<T>* prev = GetPrevVisibleNode(*GetNode(last_selected->GetID()));
+				if ((prev != nullptr && prev->selected == true) || next->selected == false)
 				{
-					TreeNode<T>* prev = GetPrevVisibleNode(*GetNode(last_selected->GetID()));
-					if (prev == nullptr || prev->selected == true || next->selected == false)
-					{
-						SetSelect(next->Get(), true, false);
-					}
-					else
-					{
-						SetSelect(last_selected, false);
-					}
+					SetSelect(next->Get(), true, false);
 				}
 				else
 				{
-					SetSelect(next->Get(), true, true, true);
+					SetSelect(last_selected, false);
 				}
 			}
+			else
+			{
+				SetSelect(next->Get(), true, true, true);
+			}
+			last_selected = next->Get();
 		}
 	}
-	if (ThorUI::GetKeyState(SDL_SCANCODE_UP) == KEY_DOWN)
+	if (ThorUI::GetKeyState(SDL_SCANCODE_UP) == KEY_DOWN && last_selected != nullptr)
 	{
-		if (last_selected != nullptr)
+		if (TreeNode<T>* prev = GetPrevVisibleNode(*GetNode(last_selected->GetID())))
 		{
-			if (TreeNode<T>* prev = GetPrevVisibleNode(*GetNode(last_selected->GetID())))
+			if (ThorUI::GetKeyState(SDL_SCANCODE_LSHIFT) == KEY_REPEAT || ThorUI::GetKeyState(SDL_SCANCODE_RSHIFT) == KEY_REPEAT ||
+				ThorUI::GetKeyState(SDL_SCANCODE_LCTRL) == KEY_REPEAT || ThorUI::GetKeyState(SDL_SCANCODE_RCTRL) == KEY_REPEAT)
 			{
-				//TODO: handle multiple selection
+				TreeNode<T>* next = GetNextVisibleNode(*GetNode(last_selected->GetID()));
+				if ((next != nullptr && next->selected == true) || prev->selected == false)
+				{
+					SetSelect(prev->Get(), true, false);
+				}
+				else
+				{
+					SetSelect(last_selected, false);
+				}
+			}
+			else
+			{
 				SetSelect(prev->Get(), true, true, true);
 			}
+			last_selected = prev->Get();
 		}
 	}
 }
