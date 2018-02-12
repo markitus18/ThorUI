@@ -197,6 +197,10 @@ namespace ThorUI
 
 	bool IsPointOnItem(UI_Item* item, Vec2 p)
 	{
+		if (GetKeyState(SDL_SCANCODE_SPACE) == KEY_DOWN)
+		{
+			int k = 1;
+		}
 		//Transforming the point into item axis
 		p.Transform(item->GetTransform()->Center().Inverted());
 

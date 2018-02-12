@@ -55,7 +55,8 @@ void TreeDisplay<T>::SetSelect(T* c, bool select, bool single, bool openTree)
 			node->Select();
 			if (openTree)
 			{
-				while (TreeNode<T>* it = GetNode(node->GetParentID()))
+				TreeNode<T>* it = GetNode(node->GetParentID());
+				while (it != nullptr)
 				{
 					it->beenSelected = true;
 					it = GetNode(it->GetParentID());
@@ -83,7 +84,7 @@ void TreeDisplay<T>::DrawTree()
 	}
 	if (selection_started == true && dragging == false && (ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_IDLE || ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_UP))
 	{
-		FinishSelection(false, false);
+		FinishSelection(false, true);
 	}
 	DrawNodeChilds(root);
 	HandleArrows();
@@ -195,13 +196,11 @@ void TreeDisplay<T>::HandleUserInput(TreeNode<T>& node)
 		if (ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_DOWN)
 		{
 			selection_started = true;
-			last_selected = node.Get();
 
 			//Pressing Ctrl: add single selection
 			if (ThorUI::GetKeyState(SDL_SCANCODE_LCTRL) == KEY_REPEAT || ThorUI::GetKeyState(SDL_SCANCODE_RCTRL) == KEY_REPEAT)
 			{
 				to_drag.push_back(&node);
-				last_selected = node.Get();
 				node.selected == true ? SetSelect(node.Get(), false) : to_select.push_back(&node); //TODO: add to unselect?
 
 				for (std::list<T*>::iterator it = selected.begin(); it != selected.end(); ++it)
@@ -238,6 +237,7 @@ void TreeDisplay<T>::HandleUserInput(TreeNode<T>& node)
 					to_drag.push_back(&node); //If selected = true it will be added to drag in the first loop
 				}
 			}
+			last_selected = node.Get();
 		}
 	}
 }

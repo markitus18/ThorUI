@@ -30,6 +30,7 @@ void Vec2::Rotate(Vec2 pivot, float angle)
 
 void Vec2::Transform(const Mat3x3& mat)
 {
-	x = x * mat[0][0] + x * mat[0][1] + mat[0][2];
-	y = y * mat[1][0] + y * mat[1][1] + mat[1][2];
+	int v_x = x;
+	x = x * mat[0][0] + y * mat[0][1] + mat[0][2];
+	y = v_x * mat[1][0] + y * mat[1][1] + mat[1][2];
 }
