@@ -3,13 +3,11 @@
 #include "UI_Item.h"
 
 #include "ImGui\imgui.h"
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include "ImGui\imgui_internal.h"
-#include "ImGui\imconfig.h"
 
 #include "SDL2-2.0.6\include\SDL_mouse.h"
 #include "SDL2-2.0.6\include\SDL_scancode.h"
-
-#define IMGUI_DEFINE_MATH_OPERATORS
 
 template class TreeDisplay<UI_Item>;
 
@@ -53,13 +51,11 @@ void TreeDisplay<T>::SetSelect(T* c, bool select, bool single, bool openTree)
 				UnselectAll();
 				last_selected = c;
 			}
-
 			selected.push_back(node->Get());
 			node->Select();
 			if (openTree)
 			{
-				TreeNode<T>* it = GetNode(node->GetParentID());
-				while (it != nullptr)
+				while (TreeNode<T>* it = GetNode(node->GetParentID()))
 				{
 					it->beenSelected = true;
 					it = GetNode(it->GetParentID());
@@ -72,10 +68,7 @@ void TreeDisplay<T>::SetSelect(T* c, bool select, bool single, bool openTree)
 			typename std::list<T*>::iterator it;	//TODO: change if unordered_map
 			for (it = selected.begin(); it != selected.end(); ++it)
 			{
-				if (*it == c)
-				{
-					selected.erase(it);
-				}
+				if (*it == c) selected.erase(it);
 			}
 		}
 	}
@@ -116,7 +109,7 @@ void TreeDisplay<T>::DrawNode(TreeNode<T>& node)
 		//Drawing inter-item buttons
 		ImVec2 cursor_pos = ImGui::GetCursorPos();
 		cursor_pos.y -= 5.0f;
-		ImGui::SetCursorPos(cursor_pos);
+		ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2(0, -5.0f));
 		ImGui::PushID(node.GetID());
 		ImVec2 button_size = ImVec2(ImGui::GetWindowSize().x, 6);
 		ImGui::InvisibleButton("Button", button_size);
@@ -340,21 +333,18 @@ template <typename T>
 void TreeDisplay<T>::FinishSelection(bool dragging, bool select_dragged)
 {
 	std::vector<TreeNode<T>*>::iterator it;
-	if (dragging == true)
-	{
-		if (select_dragged)
-		{
-			for (it = to_drag.begin(); it != to_drag.end(); ++it)
-			{
-				SetSelect((*it)->Get(), true);
-			}
-		}
-	}
-	else
+	if (dragging == false)
 	{
 		for (it = to_select.begin(); it != to_select.end(); ++it)
 		{
 			SetSelect((*it)->Get(), true, false);
+		}
+	}
+	else if (select_dragged)
+	{
+		for (it = to_drag.begin(); it != to_drag.end(); ++it)
+		{
+			SetSelect((*it)->Get(), true);
 		}
 	}
 	for (it = to_unselect.begin(); it != to_unselect.end(); ++it)
@@ -496,6 +486,19 @@ bool TreeDisplay<T>::SetParentByPlace(TreeNode<T>& parent, std::vector<TreeNode<
 		it = GetFirstVisibleNode(children);
 	}
 	parent.hierarchyOpen = prev_parent_hierarchy_open;
-	//TODO: recalculate open nodes
+	RecalculateOpenNodes(parent);
 	return ret;
+}
+
+template <typename T>
+void TreeDisplay<T>::RecalculateOpenNodes(TreeNode<T>& node)
+{
+	if (node.hierarchyOpen == true)
+	{
+		node.ChildCount() > 0 ? node.beenSelected = true : node.hierarchyOpen = false;
+	}
+	for (int i = 0; i < node.ChildCount(); ++i)
+	{
+		RecalculateOpenNodes(*GetNode(node.GetChildID(i)));
+	}
 }

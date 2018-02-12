@@ -59,6 +59,7 @@ public:
 	bool ExistsInChildTree(const TreeNode<T>& parent, const TreeNode<T>& node);
 
 	bool SetParentByPlace(TreeNode<T>& parent, std::vector<TreeNode<T>*>& children, TreeNode<T>* next = nullptr);
+	void RecalculateOpenNodes(TreeNode<T>& node);
 
 public:
 	TreeNode<T> root;
