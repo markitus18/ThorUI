@@ -52,7 +52,7 @@ public:
 	inline void SetName(const char* name){ this->name = name; }
 	void SetActive(bool active);
 
-	void SetParent(UI_Item* parent, bool keep_global = true);
+	void SetParent(UI_Item* parent, UI_Item* next_child = nullptr, bool keep_global = true);
 	void RemoveChild(UI_Item* child);
 	void DeleteChildren();
 

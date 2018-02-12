@@ -88,7 +88,7 @@ void TreeDisplay<T>::DrawTree()
 	{
 		dragging = true;
 	}
-	if (selection_started == true && ThorUI::mouse_dragging == true && (ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_IDLE || ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_UP))
+	if (selection_started == true && dragging == false && (ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_IDLE || ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_UP))
 	{
 		FinishSelection(false, false);
 	}
@@ -129,7 +129,7 @@ void TreeDisplay<T>::DrawNode(TreeNode<T>& node)
 			if (ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_IDLE || ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_UP)
 			{
 				TreeNode<T>* parent = node.hierarchyOpen ? &node : GetNode(node.GetParentID());
-				SetParentByPlace(*parent, to_drag, GetNextVisibleNode(node)); //TODO
+				SetParentByPlace(*parent, to_drag, GetNextVisibleNode(node));
 				FinishSelection(true, true);
 			}
 		}
@@ -175,22 +175,26 @@ void TreeDisplay<T>::DisplayNode(TreeNode<T>& node)
 template <typename T>
 void TreeDisplay<T>::DrawNodeChilds(TreeNode<T>& node)
 {
-	int childs = node.ChildCount();
-	for (int i = 0; i < childs; ++i)
+	for (int i = 0; i < node.ChildCount(); ++i)
 		DrawNode(*GetNode(node.GetChildID(i)));
 }
 
 template <typename T>
 void TreeDisplay<T>::HandleUserInput(TreeNode<T>& node)
 {
-	//TODO: dragging
 	if (ImGui::IsItemHovered())
 	{
-		if (ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_UP && selection_started == true && dragging == true)
+		if ((ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_UP || ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_IDLE) && selection_started == true && dragging == true)
 		{
+			if (to_drag.size() > 0)
+			{
+				bool parent_set = SetParentByPlace(node, to_drag);
+				if (parent_set)
+					node.beenSelected = true;
 
+				FinishSelection(true, true);
+			}
 		}
-
 		if (ThorUI::GetMouseState(SDL_BUTTON_RIGHT) == KEY_DOWN)
 		{
 			ImGui::OpenPopup(node.GetName());
@@ -483,9 +487,9 @@ bool TreeDisplay<T>::SetParentByPlace(TreeNode<T>& parent, std::vector<TreeNode<
 	std::vector<TreeNode<T>*>::iterator it = GetFirstVisibleNode(children);
 	while (it != children.end())
 	{
-		if ((next && next->GetID() != (*it)->GetID()) && parent.GetID() != (*it)->GetID() && ExistsInChildTree(parent, *(*it)) == false)
+		if ((!next || next->GetID() != (*it)->GetID()) && parent.GetID() != (*it)->GetID() && ExistsInChildTree(*(*it), parent) == false)
 		{
-			(*it)->SetParent(parent);//TODO: set by place
+			(*it)->SetParent(parent, next);
 			ret = true;
 		}
 		children.erase(it);

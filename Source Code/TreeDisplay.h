@@ -58,7 +58,7 @@ public:
 	bool IsNodeHighlighted(const TreeNode<T>& node);
 	bool ExistsInChildTree(const TreeNode<T>& parent, const TreeNode<T>& node);
 
-	bool SetParentByPlace(TreeNode<T>& parent, std::vector<TreeNode<T>*>& children, TreeNode<T>* next);
+	bool SetParentByPlace(TreeNode<T>& parent, std::vector<TreeNode<T>*>& children, TreeNode<T>* next = nullptr);
 
 public:
 	TreeNode<T> root;

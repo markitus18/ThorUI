@@ -21,8 +21,8 @@ public:
 	void UpdateGlobalTransform();
 
 	//Parenting ----
-	void SetParent(Transform* parent, bool worldPosStays = true);
-	void AddChild(Transform* child);
+	void SetParent(Transform* parent, Transform* next_child = nullptr, bool worldPosStays = true);
+	void AddChild(Transform* child, Transform* next_child);
 	void RemoveChild(Transform* child);
 
 	Transform* GetParent() const;

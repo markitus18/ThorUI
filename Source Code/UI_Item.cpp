@@ -52,10 +52,10 @@ void UI_Item::SetActive(bool active)
 	}
 }
 
-void UI_Item::SetParent(UI_Item* parent, bool keep_global)
+void UI_Item::SetParent(UI_Item* parent, UI_Item* next_child, bool keep_global)
 {
 	if (parent != nullptr)
-		transform.SetParent(parent->GetTransform(), keep_global);
+		transform.SetParent(parent->GetTransform(), next_child ? next_child->GetTransform() : nullptr, keep_global);
 }
 
 void UI_Item::RemoveChild(UI_Item* child)

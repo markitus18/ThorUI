@@ -196,7 +196,7 @@ void UI_Editor::DrawMainMenuBar()
 				button->SetName(ThorUI::GenUniqueName(ThorUI::window_item, "Button").c_str());
 				ThorUI::AddItem(button);
 				UI_Text* text = new UI_Text(Vec2(0, 0), Vec2(0, 0), "Button");
-				text->SetParent(button, false);
+				text->SetParent(button, nullptr, false);
 				ThorUI::AddItem(text);
 
 				hierarchy->AddNode(text);

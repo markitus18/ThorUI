@@ -25,7 +25,7 @@ public:
 	inline void Select() { selected = true; };
 	inline void Unselect() { selected = false;}
 
-	void SetParent(TreeNode<T>& parent);
+	void SetParent(TreeNode<T>& parent, TreeNode<T>* next_child = nullptr);
 
 public:
 	bool beenSelected = false;

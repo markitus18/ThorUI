@@ -83,20 +83,21 @@ void Transform::UpdateGlobalTransform()
 	}
 }
 
-void Transform::SetParent(Transform* parent, bool worldPosStays)
+void Transform::SetParent(Transform* parent, Transform* next_child, bool worldPosStays)
 {
 	if (this->parent)
 		this->parent->RemoveChild(this);
 
 	this->parent = parent;
-	if (parent) parent->AddChild(this);
+	if (parent) parent->AddChild(this, next_child);
 
 	worldPosStays ? SetGlobalTransform(global_m) : UpdateGlobalTransform();
 }
 
-void Transform::AddChild(Transform* child)
+void Transform::AddChild(Transform* child, Transform* next_child)
 {
-	children.push_back(child);
+	std::vector<Transform*>::iterator it = next_child ? std::find(children.begin(), children.end(), next_child) : children.end();
+	children.insert(it, child);
 }
 
 Transform* Transform::GetParent() const

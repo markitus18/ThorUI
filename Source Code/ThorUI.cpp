@@ -439,7 +439,7 @@ namespace ThorUI
 			item->SetID(items.size() - 1); //TODO: change for random double
 		if (item->GetParent() == nullptr)
 		{
-			item->SetParent(window_item, false);
+			item->SetParent(window_item, nullptr, false);
 		}
 	}
 

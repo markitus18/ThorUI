@@ -31,7 +31,7 @@ int TreeNode<T>::GetParentID() const
 }
 
 template <typename T>
-void TreeNode<T>::SetParent(TreeNode<T>& parent)
+void TreeNode<T>::SetParent(TreeNode<T>& parent, TreeNode<T>* next_child)
 {
-	container->SetParent(parent.Get()); //TODO: set by place
+	container->SetParent(parent.Get(), next_child ? next_child->Get() : nullptr);
 }
