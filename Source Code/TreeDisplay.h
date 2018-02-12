@@ -47,19 +47,25 @@ public:
 	void HandleArrows();					//TODO
 
 	void ShiftSelection(TreeNode<T>& selected, bool select);
-	void FinishSelection();
+	void FinishSelection(bool dragging, bool select_dragged);
 
 	TreeNode<T>* GetFirstVisibleNode(TreeNode<T>& n1, TreeNode<T>& n2);
+	typename std::vector<TreeNode<T>*>::iterator GetFirstVisibleNode(std::vector<TreeNode<T>*>& nodes);
 	TreeNode<T>* GetNextVisibleNode(const TreeNode<T>& node);
 	TreeNode<T>* GetPrevVisibleNode(const TreeNode<T>& node);
 
 	bool IsParentSelected(const TreeNode<T>& node);
+	bool IsNodeHighlighted(const TreeNode<T>& node);
+	bool ExistsInChildTree(const TreeNode<T>& parent, const TreeNode<T>& node);
+
+	bool SetParentByPlace(TreeNode<T>& parent, std::vector<TreeNode<T>*>& children, TreeNode<T>* next);
 
 public:
 	TreeNode<T> root;
 	std::map<int, TreeNode<T>> nodes;
 	std::list<T*> selected; //TODO: add to unordered map?
 	T* last_selected = nullptr;
+	bool dragging = false;
 
 private:
 	bool selection_started = false;

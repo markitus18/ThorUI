@@ -29,3 +29,9 @@ int TreeNode<T>::GetParentID() const
 	T* parent = container->GetParent();
 	return parent ? parent->GetID() : -1;
 }
+
+template <typename T>
+void TreeNode<T>::SetParent(TreeNode<T>& parent)
+{
+	container->SetParent(parent.Get()); //TODO: set by place
+}

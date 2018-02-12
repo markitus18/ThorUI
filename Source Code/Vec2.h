@@ -39,6 +39,9 @@ struct Vec2
 	Vec2 operator/(const float& factor) const { return Vec2(x / factor, y / factor); }
 	Vec2 operator/=(const float& factor) { return *this = Vec2(x / factor, y / factor); }
 
+	bool operator==(const Vec2& other) const { return x == other.x && y == other.y; }
+	bool operator!=(const Vec2& other) const { return x != other.x || y != other.y; }
+
 	static Vec2 zero() { return Vec2(0, 0); };
 	static Vec2 one() { return Vec2(1, 1); };
 

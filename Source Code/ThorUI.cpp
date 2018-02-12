@@ -27,6 +27,8 @@ namespace ThorUI
 	Key_State* mouse_buttons = nullptr;
 	bool* mouse_button_event = nullptr;
 	Vec2 mouse_pos = Vec2(-1000, -1000);
+	Vec2 last_mouse_click = Vec2(-1000, -1000);
+	bool mouse_dragging = false;
 
 	UI_Item* window_item = nullptr;
 	std::vector<UI_Item*> items;
@@ -149,12 +151,21 @@ namespace ThorUI
 			if (mouse_button_event[i] == false)
 			{
 				if (mouse_buttons[i] == KEY_DOWN)
+				{
 					mouse_buttons[i] = KEY_REPEAT;
+					last_mouse_click = mouse_pos;
+				}
 				if (mouse_buttons[i] == KEY_UP)
 					mouse_buttons[i] = KEY_IDLE;
 			}
 		}
 		memset(mouse_button_event, 0, 3);
+
+		mouse_dragging = false;
+		if (mouse_buttons[0] == KEY_REPEAT && mouse_pos != last_mouse_click)
+		{
+			mouse_dragging = true;
+		}
 	}
 
 	bool IsMouseHovering(Vec2 pos, Vec2 size)

@@ -3,8 +3,13 @@
 #include "UI_Item.h"
 
 #include "ImGui\imgui.h"
+#include "ImGui\imgui_internal.h"
+#include "ImGui\imconfig.h"
+
 #include "SDL2-2.0.6\include\SDL_mouse.h"
 #include "SDL2-2.0.6\include\SDL_scancode.h"
+
+#define IMGUI_DEFINE_MATH_OPERATORS
 
 template class TreeDisplay<UI_Item>;
 
@@ -79,13 +84,16 @@ void TreeDisplay<T>::SetSelect(T* c, bool select, bool single, bool openTree)
 template <typename T>
 void TreeDisplay<T>::DrawTree()
 {
+	if (selection_started == true && ThorUI::mouse_dragging == true)
+	{
+		dragging = true;
+	}
+	if (selection_started == true && ThorUI::mouse_dragging == true && (ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_IDLE || ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_UP))
+	{
+		FinishSelection(false, false);
+	}
 	DrawNodeChilds(root);
 	HandleArrows();
-
-	if (selection_started == true && (ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_IDLE || ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_UP))
-	{
-		FinishSelection();
-	}
 }
 
 template <typename T>
@@ -103,7 +111,33 @@ void TreeDisplay<T>::DrawNode(TreeNode<T>& node)
 		ImGui::EndPopup();
 	}
 
-	//TODO: dragging
+	if (selection_started == true && dragging == true)
+	{
+		//Drawing inter-item buttons
+		ImVec2 cursor_pos = ImGui::GetCursorPos();
+		cursor_pos.y -= 5.0f;
+		ImGui::SetCursorPos(cursor_pos);
+		ImGui::PushID(node.GetID());
+		ImVec2 button_size = ImVec2(ImGui::GetWindowSize().x, 6);
+		ImGui::InvisibleButton("Button", button_size);
+		if (ImGui::IsItemHoveredRect())
+		{
+			ImVec2 g_cursor_pos = ImGui::GetCursorScreenPos();
+			g_cursor_pos.y -= 10.0f;
+			ImGui::RenderFrame(ImVec2(g_cursor_pos), ImVec2(g_cursor_pos.x + ImGui::GetWindowSize().x, g_cursor_pos.y + 6), ImGui::GetColorU32(ImGuiCol_TitleBgActive)); //
+			ImGui::GetCurrentWindow()->DrawList->AddRect(ImVec2(g_cursor_pos), ImVec2(g_cursor_pos.x + ImGui::GetWindowSize().x, g_cursor_pos.y + 6), ImGui::GetColorU32(ImGuiCol_TextSelectedBg));
+			if (ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_IDLE || ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_UP)
+			{
+				TreeNode<T>* parent = node.hierarchyOpen ? &node : GetNode(node.GetParentID());
+				SetParentByPlace(*parent, to_drag, GetNextVisibleNode(node)); //TODO
+				FinishSelection(true, true);
+			}
+		}
+		cursor_pos = ImGui::GetCursorPos();
+		cursor_pos.y -= 5.0f;
+		ImGui::SetCursorPos(cursor_pos);
+		ImGui::PopID();
+	}
 
 	if (node.hierarchyOpen == true)
 	{
@@ -118,11 +152,10 @@ void TreeDisplay<T>::DisplayNode(TreeNode<T>& node)
 	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
 	if (node.ChildCount() == 0)
 		flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
-	if (node.selected == true) //TODO: check if it is "ToSelect"
+	if (IsNodeHighlighted(node) == true)
 		flags |= ImGuiTreeNodeFlags_Selected;
-
-	//TODO: control dragging (line 106)
-
+	if (selection_started == true && dragging == true)
+		flags |= ImGuiTreeNodeFlags_Fill;
 	if (node.IsActive() == false)
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 1, 0.4));
 
@@ -133,7 +166,7 @@ void TreeDisplay<T>::DisplayNode(TreeNode<T>& node)
 	}
 
 	bool nodeOpen = ImGui::TreeNodeEx(&node, flags, node.GetName());
-	node.hierarchyOpen = node.ChildCount() == 0 ? false : nodeOpen;
+	node.hierarchyOpen = (node.ChildCount() == 0 ? false : nodeOpen);
 
 	if (node.IsActive() == false)
 		ImGui::PopStyleColor();
@@ -153,6 +186,11 @@ void TreeDisplay<T>::HandleUserInput(TreeNode<T>& node)
 	//TODO: dragging
 	if (ImGui::IsItemHovered())
 	{
+		if (ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_UP && selection_started == true && dragging == true)
+		{
+
+		}
+
 		if (ThorUI::GetMouseState(SDL_BUTTON_RIGHT) == KEY_DOWN)
 		{
 			ImGui::OpenPopup(node.GetName());
@@ -160,6 +198,7 @@ void TreeDisplay<T>::HandleUserInput(TreeNode<T>& node)
 		if (ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_DOWN)
 		{
 			selection_started = true;
+			last_selected = node.Get();
 
 			//Pressing Ctrl: add single selection
 			if (ThorUI::GetKeyState(SDL_SCANCODE_LCTRL) == KEY_REPEAT || ThorUI::GetKeyState(SDL_SCANCODE_RCTRL) == KEY_REPEAT)
@@ -202,7 +241,6 @@ void TreeDisplay<T>::HandleUserInput(TreeNode<T>& node)
 					to_drag.push_back(&node); //If selected = true it will be added to drag in the first loop
 				}
 			}
-			last_selected = node.Get();
 		}
 	}
 }
@@ -295,14 +333,26 @@ void TreeDisplay<T>::ShiftSelection(TreeNode<T>& node, bool select)
 }
 
 template <typename T>
-void TreeDisplay<T>::FinishSelection()
+void TreeDisplay<T>::FinishSelection(bool dragging, bool select_dragged)
 {
 	std::vector<TreeNode<T>*>::iterator it;
-	for (it = to_select.begin(); it != to_select.end(); ++it)
+	if (dragging == true)
 	{
-		SetSelect((*it)->Get(), true, false);
+		if (select_dragged)
+		{
+			for (it = to_drag.begin(); it != to_drag.end(); ++it)
+			{
+				SetSelect((*it)->Get(), true);
+			}
+		}
 	}
-
+	else
+	{
+		for (it = to_select.begin(); it != to_select.end(); ++it)
+		{
+			SetSelect((*it)->Get(), true, false);
+		}
+	}
 	for (it = to_unselect.begin(); it != to_unselect.end(); ++it)
 	{
 		SetSelect((*it)->Get(), false);
@@ -312,6 +362,7 @@ void TreeDisplay<T>::FinishSelection()
 	to_unselect.clear();
 	to_drag.clear();
 	selection_started = false;
+	this->dragging = false;
 }
 
 template <typename T>
@@ -319,14 +370,31 @@ TreeNode<T>* TreeDisplay<T>::GetFirstVisibleNode(TreeNode<T>& n1, TreeNode<T>& n
 {
 	if (n1.Get() == n2.Get()) return &n1;
 
-	TreeNode<T>* toEvaluate = GetNextVisibleNode(root);
-	while (toEvaluate != nullptr)
+	TreeNode<T>* to_evaluate = GetNextVisibleNode(root);
+	while (to_evaluate != nullptr)
 	{
-		if (n1.GetID() == toEvaluate->GetID()) return &n1;
-		if (n2.GetID() == toEvaluate->GetID()) return &n2;
-		toEvaluate = GetNextVisibleNode(*toEvaluate);
+		if (n1.GetID() == to_evaluate->GetID()) return &n1;
+		if (n2.GetID() == to_evaluate->GetID()) return &n2;
+		to_evaluate = GetNextVisibleNode(*to_evaluate);
 	}
 	return nullptr;
+}
+
+template <typename T>
+typename std::vector<TreeNode<T>*>::iterator TreeDisplay<T>::GetFirstVisibleNode(std::vector<TreeNode<T>*>& nodes)
+{
+	TreeNode<T>* to_evaluate = GetNextVisibleNode(root);
+	while (to_evaluate != nullptr)
+	{
+		std::vector<TreeNode<T>*>::iterator it;
+		for (it = nodes.begin(); it != nodes.end(); ++it)
+		{
+			if ((*it)->GetID() == to_evaluate->GetID())
+				return it;
+		}
+		to_evaluate = GetNextVisibleNode(*to_evaluate);
+	}
+	return nodes.end();
 }
 
 template <typename T>
@@ -374,4 +442,56 @@ bool TreeDisplay<T>::IsParentSelected(const TreeNode<T>& node)
 {
 	TreeNode<T>* parent = GetNode(node.GetParentID());
 	return (parent ? (parent->selected ? true : IsParentSelected(*parent)) : false);
+}
+
+template <typename T>
+bool TreeDisplay<T>::IsNodeHighlighted(const TreeNode<T>& node)
+{
+	if (node.selected == true) return true;
+
+	for (std::vector<TreeNode<T>*>::iterator it = to_select.begin(); it != to_select.end(); ++it)
+	{
+		if ((*it)->GetID() == node.GetID())
+			return true;
+	}
+	return false;
+}
+
+template <typename T>
+bool TreeDisplay<T>::ExistsInChildTree(const TreeNode<T>& parent, const TreeNode<T>& node)
+{
+	int max_childs = parent.ChildCount();
+	for (int i = 0; i < max_childs; ++i)
+	{
+		if (GetNode(parent.GetChildID(i))->GetID() == node.GetID())
+			return true;
+	}
+	for (int i = 0; i < max_childs; ++i)
+	{
+		if (ExistsInChildTree(*GetNode(parent.GetChildID(i)), node))
+			return true;
+	}
+	return false;
+}
+
+template <typename T>
+bool TreeDisplay<T>::SetParentByPlace(TreeNode<T>& parent, std::vector<TreeNode<T>*>& children, TreeNode<T>* next)
+{
+	bool ret = false;
+	bool prev_parent_hierarchy_open = parent.hierarchyOpen;
+	parent.hierarchyOpen = true; //Little trick to add multiple childs
+	std::vector<TreeNode<T>*>::iterator it = GetFirstVisibleNode(children);
+	while (it != children.end())
+	{
+		if ((next && next->GetID() != (*it)->GetID()) && parent.GetID() != (*it)->GetID() && ExistsInChildTree(parent, *(*it)) == false)
+		{
+			(*it)->SetParent(parent);//TODO: set by place
+			ret = true;
+		}
+		children.erase(it);
+		it = GetFirstVisibleNode(children);
+	}
+	parent.hierarchyOpen = prev_parent_hierarchy_open;
+	//TODO: recalculate open nodes
+	return ret;
 }

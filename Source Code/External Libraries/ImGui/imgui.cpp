@@ -6298,6 +6298,7 @@ bool ImGui::TreeNodeBehavior(ImGuiID id, ImGuiTreeNodeFlags flags, const char* l
     if (flags & ImGuiTreeNodeFlags_OpenOnDoubleClick)
         button_flags |= ImGuiButtonFlags_PressedOnDoubleClick | ((flags & ImGuiTreeNodeFlags_OpenOnArrow) ? ImGuiButtonFlags_PressedOnClickRelease : 0);
     bool hovered, held, pressed = ButtonBehavior(interact_bb, id, &hovered, &held, button_flags);
+	bool display_fill = IsItemHoveredRect() && (flags & ImGuiTreeNodeFlags_Fill); //ThorUI modification: this line was removed in last ImGui versions
     if (pressed && !(flags & ImGuiTreeNodeFlags_Leaf))
     {
         bool toggled = !(flags & (ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick));
@@ -6315,13 +6316,21 @@ bool ImGui::TreeNodeBehavior(ImGuiID id, ImGuiTreeNodeFlags flags, const char* l
         SetItemAllowOverlap();
 
     // Render
-    const ImU32 col = GetColorU32((held && hovered) ? ImGuiCol_HeaderActive : hovered ? ImGuiCol_HeaderHovered : ImGuiCol_Header);
+    const ImU32 col = GetColorU32(display_fill ? ImGuiCol_TitleBgActive : (held && hovered) ? ImGuiCol_HeaderActive : hovered ? ImGuiCol_HeaderHovered : ImGuiCol_Header); //ThorUI modification: setting line back to previous versions (enable fill)
     const ImVec2 text_pos = bb.Min + ImVec2(text_offset_x, text_base_offset_y);
-    if (display_frame)
+    if (display_frame || display_fill) //ThorUI:: added display_fill
     {
         // Framed type
         RenderFrame(bb.Min, bb.Max, col, true, style.FrameRounding);
-        RenderTriangle(bb.Min + ImVec2(padding.x, text_base_offset_y), is_open ? ImGuiDir_Down : ImGuiDir_Right, 1.0f);
+
+		if (display_fill) //<--ThorUI
+		{
+			window->DrawList->AddRect(bb.Min, bb.Max, GetColorU32(ImGuiCol_TextSelectedBg), 0.0f, 0, 2.0f); //<--ThorUI
+		}
+		else
+		{
+			RenderTriangle(bb.Min + ImVec2(padding.x, text_base_offset_y), is_open ? ImGuiDir_Down : ImGuiDir_Right, 1.0f);
+		}
         if (g.LogEnabled)
         {
             // NB: '##' is normally used to hide text (as a library-wide feature), so we need to specify the text range to make sure the ## aren't stripped out here.

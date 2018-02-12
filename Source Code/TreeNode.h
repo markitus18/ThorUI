@@ -25,6 +25,8 @@ public:
 	inline void Select() { selected = true; };
 	inline void Unselect() { selected = false;}
 
+	void SetParent(TreeNode<T>& parent);
+
 public:
 	bool beenSelected = false;
 	bool hierarchyOpen = false;

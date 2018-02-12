@@ -49,7 +49,9 @@ namespace ThorUI
 	extern Key_State* mouse_buttons;
 	extern bool* mouse_button_event;
 	extern Vec2 mouse_pos;
+	extern Vec2 last_mouse_click;
 	extern bool mouse_out;
+	extern bool mouse_dragging;
 
 	extern Vec2 screen_size;
 
