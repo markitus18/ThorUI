@@ -105,19 +105,30 @@ void UI_Item::SetHierarchyActive(bool active)
 void UI_Item::Save(Config& config)
 {
 	config.SetString("Name", name.c_str());
-	config.SetNumber("Type", (int)type);
+	config.SetNumber("Item_Type", (int)type);
+
 	config.SetArray("Position").AddVec2(transform.GetPos());
+	config.SetArray("Scale").AddVec2(transform.GetScale());
+	config.SetNumber("Rotation", transform.GetRotation());
 	config.SetArray("Size").AddVec2(size);
+	config.SetArray("Pivot").AddVec2(pivot);
+
 	config.SetNumber("ID", id);
 	config.SetNumber("Parent ID", transform.GetParent() ? transform.GetParent()->Container<UI_Item>()->GetID() : -1);
+
 	InternalSave(config);
 }
 
 void UI_Item::Load(Config& config)
 {
 	name = config.GetString("Name", "Undefined");
+
 	transform.SetPos(config.GetArray("Position").GetVec2(0));
+	transform.SetScale(config.GetArray("Scale").GetVec2(0));
+	transform.SetRotationDeg(config.GetNumber("Rotation"));
 	size = config.GetArray("Size").GetVec2(0);
+	SetPivot(config.GetArray("Pivot").GetVec2(0));
+
 	id = config.GetNumber("ID", -1);
 
 	InternalLoad(config); //TODO: consider if updating pos before or after

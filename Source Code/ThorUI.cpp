@@ -197,10 +197,6 @@ namespace ThorUI
 
 	bool IsPointOnItem(UI_Item* item, Vec2 p)
 	{
-		if (GetKeyState(SDL_SCANCODE_SPACE) == KEY_DOWN)
-		{
-			int k = 1;
-		}
 		//Transforming the point into item axis
 		p.Transform(item->GetTransform()->Center().Inverted());
 
@@ -625,7 +621,11 @@ namespace ThorUI
 	void ClearScene()
 	{
 		while (window_item->ChildCount() > 0)
+		{
+			UI_Item* item = window_item->GetChild(0);
 			window_item->RemoveChild(window_item->GetChild(0));
+			delete item;
+		}
 		items.clear();
 		items.push_back(window_item);
 	}

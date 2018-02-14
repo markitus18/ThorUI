@@ -28,6 +28,7 @@ public:
 
 	Vec2 GetTranslation() const;
 	Vec2 GetScale() const;
+	//Returns rotation in radians
 	float GetRotation() const;
 
 	const MToV<4>& operator[] (int row) const;

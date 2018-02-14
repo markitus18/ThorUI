@@ -31,6 +31,7 @@ public:
 
 	Vec2 GetPos() const;
 	Vec2 GetScale() const;
+	//Returns rotation in degrees
 	float GetRotation() const;
 	Vec2 GetPivot() const;
 
