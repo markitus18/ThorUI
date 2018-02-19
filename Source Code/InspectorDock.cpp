@@ -28,6 +28,15 @@ void Inspector::Draw()
 		}
 		ImGui::SameLine();
 		DisplayItemName(selected);
+
+		if (editor->dev_tools == true)
+		{
+			ImGui::SameLine();
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0, 1.0, 0, 1.0));
+			ImGui::Text("ID: %i", selected->GetID());
+			ImGui::PopStyleColor();
+		}
+
 		ImGui::Separator();
 
 		Vec2 pos = selected->GetTransform()->GetPos();

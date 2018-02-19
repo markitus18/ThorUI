@@ -60,6 +60,8 @@ private:
 	void DrawGridWindow();
 	void DrawSnapWindow();
 
+	void DeleteSelected();
+	
 public:
 	Scene* scene = nullptr;
 	Vec2 window_size;

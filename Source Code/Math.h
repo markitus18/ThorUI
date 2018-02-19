@@ -14,6 +14,8 @@ namespace Math
 	void NormalizeAngle360(float& a);
 	//Returns the shortest distance to two angles in degrees
 	float AngleDegDelta(float a1, float a2);
+	//Returns a random value between min(inlcuded) and max(included)
+	int Rand(int min, int max);
 }
 
 							

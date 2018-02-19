@@ -145,6 +145,9 @@ namespace ThorUI
 	void AddItem(UI_Item* item);
 	std::string GenUniqueName(UI_Item* parent, const char* name);
 	void UpdateItems();
+
+	//* "Tags" the item (and it's children) to be safely deleted after
+	//* It removes the hole hierarchy pointers, do not try to access them after calling this function
 	void DeleteItem(UI_Item* item);
 	void RemoveToDeleteItems();
 	//-------------------------------------------------

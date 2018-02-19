@@ -125,19 +125,7 @@ void UI_Editor::Draw()
 
 	if (ThorUI::GetKeyState(SDL_SCANCODE_DELETE) == KEY_DOWN)
 	{
-		std::list<UI_Item*>::iterator it;
-		for (it = hierarchy->selected.begin(); it != hierarchy->selected.end(); ++it)
-		{
-			ThorUI::DeleteItem((*it));
-
-			std::vector<UI_Item*> to_remove;
-			(*it)->CollectChildren(to_remove);
-			to_remove.push_back((*it));
-
-			for (uint i = 0; i < to_remove.size(); ++i)
-				hierarchy->RemoveNode(to_remove[i]);
-		}
-		hierarchy->selected.clear();
+		DeleteSelected();
 	}
 }
 
@@ -355,6 +343,23 @@ void UI_Editor::DrawSnapWindow()
 		ImGui::InputFloat("##scale_snap", &scale_interval);
 	}
 	ImGui::End();
+}
+
+void UI_Editor::DeleteSelected()
+{
+	std::list<UI_Item*>::iterator it;
+	for (it = hierarchy->selected.begin(); it != hierarchy->selected.end(); ++it)
+	{
+		std::vector<UI_Item*> to_remove;
+		(*it)->CollectChildren(to_remove);
+		to_remove.push_back((*it));
+
+		ThorUI::DeleteItem((*it));
+
+		for (uint i = 0; i < to_remove.size(); ++i)
+			hierarchy->RemoveNode(to_remove[i]);
+	}
+	hierarchy->selected.clear();
 }
 
 void UI_Editor::ProcessEvent(SDL_Event* event)
