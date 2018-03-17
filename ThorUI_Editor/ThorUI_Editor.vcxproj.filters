@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="DockData">
+      <UniqueIdentifier>{be256bc0-af17-41cf-b6aa-bf0979d5de7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DockData\Base">
+      <UniqueIdentifier>{1e3679d0-6bf5-4f19-afe7-2ce0042de9a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Trees">
+      <UniqueIdentifier>{52089701-c4f6-4b67-9b4c-abf2a55bfa65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External Libraries">
+      <UniqueIdentifier>{13ee34d6-ff14-4bb7-aea1-ad5cb6427c7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External Libraries\ImGui">
+      <UniqueIdentifier>{930b34bb-a073-4eed-ac04-7575baccef7c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source_Code\HierarchyDock.cpp">
+      <Filter>DockData</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\InspectorDock.cpp">
+      <Filter>DockData</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\ResourcesDock.cpp">
+      <Filter>DockData</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\Dock.cpp">
+      <Filter>DockData\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\DockData.cpp">
+      <Filter>DockData\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\TreeDisplay.cpp">
+      <Filter>Trees</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\TreeNode.cpp">
+      <Filter>Trees</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\Editor.cpp" />
+    <ClCompile Include="Source_Code\Main.cpp" />
+    <ClCompile Include="Source_Code\External_Libraries\ImGui\Dock\imgui_dock.cpp">
+      <Filter>External Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\External_Libraries\ImGui\imgui.cpp">
+      <Filter>External Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\External_Libraries\ImGui\ImGuizmo\ImGuizmo.cpp">
+      <Filter>External Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\External_Libraries\ImGui\imgui_demo.cpp">
+      <Filter>External Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\External_Libraries\ImGui\imgui_draw.cpp">
+      <Filter>External Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\External_Libraries\ImGui\imgui_impl_sdl_gl3.cpp">
+      <Filter>External Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\SceneDock.cpp">
+      <Filter>DockData</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\FileSystem.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source_Code\ResourcesDock.h">
+      <Filter>DockData</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\HierarchyDock.h">
+      <Filter>DockData</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\InspectorDock.h">
+      <Filter>DockData</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\Dock.h">
+      <Filter>DockData\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\DockData.h">
+      <Filter>DockData\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\TreeNode.h">
+      <Filter>Trees</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\TreeDisplay.h">
+      <Filter>Trees</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\Editor.h" />
+    <ClInclude Include="Source_Code\External_Libraries\ImGui\Dock\imgui_dock.h">
+      <Filter>External Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\External_Libraries\ImGui\imconfig.h">
+      <Filter>External Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\External_Libraries\ImGui\imgui.h">
+      <Filter>External Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\External_Libraries\ImGui\ImGuizmo\ImGuizmo.h">
+      <Filter>External Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\External_Libraries\ImGui\imgui_impl_sdl_gl3.h">
+      <Filter>External Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\External_Libraries\ImGui\imgui_internal.h">
+      <Filter>External Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\External_Libraries\ImGui\stb_rect_pack.h">
+      <Filter>External Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\External_Libraries\ImGui\stb_textedit.h">
+      <Filter>External Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\External_Libraries\ImGui\stb_truetype.h">
+      <Filter>External Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\SceneDock.h">
+      <Filter>DockData</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\FileSystem.h" />
+  </ItemGroup>
+</Project>

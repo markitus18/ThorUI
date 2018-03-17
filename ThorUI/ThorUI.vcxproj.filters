@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Containers">
+      <UniqueIdentifier>{1e03f180-2ec5-4682-a941-771db9310977}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI_Items">
+      <UniqueIdentifier>{f6149aef-5a71-4473-a758-61798f2c7c24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities">
+      <UniqueIdentifier>{6eaafc49-b623-46ba-9d78-a2c7d6f6b9fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External Libraries">
+      <UniqueIdentifier>{88f3106b-b317-447a-8778-db59cbc54792}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External Libraries\parson">
+      <UniqueIdentifier>{3fadc686-1f38-4689-a133-84e2dec01d5d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source_Code\Log.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\Config.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\External_Libraries\parson\parson.h">
+      <Filter>External Libraries\parson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\ThorUI.h" />
+    <ClInclude Include="Source_Code\Transform.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\Vec2.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\Circle.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\Color.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\Mat3x3.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\MToV.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\Rect.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\Shape.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\UI_Button.h">
+      <Filter>UI_Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\UI_Image.h">
+      <Filter>UI_Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\UI_Item.h">
+      <Filter>UI_Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\UI_Text.h">
+      <Filter>UI_Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Source_Code\TMath.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source_Code\Log.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\Config.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\External_Libraries\parson\parson.c">
+      <Filter>External Libraries\parson</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\ThorUI.cpp" />
+    <ClCompile Include="Source_Code\Transform.cpp">
+      <Filter>Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\Vec2.cpp">
+      <Filter>Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\Mat3x3.cpp">
+      <Filter>Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\UI_Button.cpp">
+      <Filter>UI_Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\UI_Image.cpp">
+      <Filter>UI_Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\UI_Item.cpp">
+      <Filter>UI_Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\UI_Text.cpp">
+      <Filter>UI_Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\TMath.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
