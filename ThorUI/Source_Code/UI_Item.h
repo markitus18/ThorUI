@@ -4,6 +4,7 @@
 #include "Vec2.h"
 #include "Rect.h"
 #include "Transform.h"
+#include "Signal.h"
 
 #include <vector>
 

@@ -161,6 +161,7 @@
     <ClInclude Include="Source_Code\External_Libraries\parson\parson.h" />
     <ClInclude Include="Source_Code\Log.h" />
     <ClInclude Include="Source_Code\Mat3x3.h" />
+    <ClInclude Include="Source_Code\Signal.h" />
     <ClInclude Include="Source_Code\TMath.h" />
     <ClInclude Include="Source_Code\MToV.h" />
     <ClInclude Include="Source_Code\Rect.h" />
