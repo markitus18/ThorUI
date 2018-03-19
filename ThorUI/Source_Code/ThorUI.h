@@ -13,7 +13,7 @@
 #include "Vec2.h"
 #include <string>
 
-typedef union SDL_Event;
+union SDL_Event;
 struct _TTF_Font;
 struct SDL_Window;
 struct SDL_Surface;
@@ -69,6 +69,7 @@ namespace ThorUI
 
 	void THORUI_API Init(SDL_Window* window);
 	void THORUI_API StartFrame();
+	void THORUI_API PreStart();
 	void THORUI_API Draw();
 	void THORUI_API CleanUp();
 
@@ -150,7 +151,7 @@ namespace ThorUI
 	//Item management ---------------------------------
 	THORUI_API void AddItem(UI_Item* item);
 	THORUI_API std::string GenUniqueName(UI_Item* parent, const char* name);
-	THORUI_API void UpdateItems();
+	THORUI_API void Update();
 
 	//* "Tags" the item (and it's children) to be safely deleted after
 	//* It removes the hole hierarchy pointers, do not try to access them after calling this function

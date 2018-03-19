@@ -13,9 +13,9 @@ public:
 	Signal() {};
 	~Signal() {};
 
-	uint connect(std::function<void(Args...)>func)
+	uint connect(std::function<void(Args...)> func)
 	{
-		slots[++current_id] = std::function<void(Args...) >> (func);
+		slots.insert(std::pair<uint, std::function<void(Args...) >>(++current_id, func));
 		return current_id;
 	}
 
@@ -23,6 +23,12 @@ public:
 	uint connect(C* instance, void(C::*func)(Args...))
 	{
 		return connect([instance = instance, func = func](Args... arg) { (instance->*(func))(arg...); });
+	}
+
+	void Emit(Args... args)
+	{
+		for (auto it : slots)
+			it.second(args...);	
 	}
 
 	void disconnect(uint id)

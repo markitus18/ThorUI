@@ -56,6 +56,13 @@ void UI_Item::SetParent(UI_Item* parent, UI_Item* next_child, bool keep_global)
 {
 	if (parent != nullptr)
 		transform.SetParent(parent->GetTransform(), next_child ? next_child->GetTransform() : nullptr, keep_global);
+	else
+		RemoveFromParent();
+}
+
+void UI_Item::RemoveFromParent()
+{
+	transform.SetParent(nullptr);
 }
 
 void UI_Item::RemoveChild(UI_Item* child)

@@ -89,7 +89,7 @@ bool UI_Editor::Init(SDL_Window* window)
 
 void UI_Editor::Draw()
 {
-	ThorUI::StartFrame(); //Just to use ThorUI keyboard and mouse input
+	ThorUI::PreStart(); //Just to use ThorUI keyboard and mouse input
 
 	if (run_simulation == false)
 	{
@@ -102,17 +102,16 @@ void UI_Editor::Draw()
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glClearColor(0.7f, 0.7f, 0.7f, 1.f);
 		glClear(GL_COLOR_BUFFER_BIT);
-	}
 
+		ThorUI::Update();
+	}
 
 	ThorUI::Draw();
-	if (run_simulation == false && grid)
-	{
-		DrawGrid();
-	}
 
 	if (run_simulation == false)
 	{
+		if (grid) DrawGrid();
+
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glClearColor(0.7f, 0.7f, 0.7f, 1.f);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -132,10 +131,6 @@ void UI_Editor::Draw()
 		}
 		DrawIconBar();
 	}
-	else
-	{
-		ThorUI::UpdateItems();
-	}
 
 	ImGui::Render();
 }
@@ -152,6 +147,10 @@ void UI_Editor::HandleInput()
 	}
 }
 
+void Function()
+{
+
+}
 void UI_Editor::DrawMainMenuBar()
 {
 	if (ImGui::BeginMainMenuBar())
@@ -204,6 +203,11 @@ void UI_Editor::DrawMainMenuBar()
 
 				hierarchy->AddNode(text);
 				hierarchy->AddNode(button);
+
+				uint ret = button->Clicked.connect<UI_Editor>(editor, &UI_Editor::OnButtonClickedTest);
+				uint ret2 = button->Hovered.connect<UI_Editor>(editor, &UI_Editor::OnButtonHoverTest);
+				uint ret3 = button->Clicked.connect<UI_Editor>(editor, &UI_Editor::SetApperance(5));
+
 			}
 			if (ImGui::MenuItem("Image"))
 			{
@@ -374,19 +378,34 @@ void UI_Editor::DrawSnapWindow()
 
 void UI_Editor::DeleteSelected()
 {
-	std::list<UI_Item*>::iterator it;
-	for (it = hierarchy->selected.begin(); it != hierarchy->selected.end(); ++it)
+	while (hierarchy->selected.size() > 0)
 	{
+		std::list<UI_Item*>::iterator it = hierarchy->selected.begin();
 		std::vector<UI_Item*> to_remove;
 		(*it)->CollectChildren(to_remove);
 		to_remove.push_back((*it));
 
 		ThorUI::DeleteItem((*it));
-
+	
 		for (uint i = 0; i < to_remove.size(); ++i)
 			hierarchy->RemoveNode(to_remove[i]);
 	}
 	hierarchy->selected.clear();
+}
+
+void UI_Editor::OnButtonClickedTest()
+{
+	LOG("Button clicked");
+}
+
+void UI_Editor::OnButtonHoverTest(int val)
+{
+	LOG("Button hover with value %i", val);
+}
+
+void UI_Editor::SetApperance(int val)
+{
+	LOG("Setting apparence with value %i", val);
 }
 
 void UI_Editor::ProcessEvent(SDL_Event* event)

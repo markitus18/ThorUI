@@ -50,7 +50,9 @@ public:
 	Vec2 ToVec2(ImVec2 point);
 
 	Vec2 GetClosestGridPoint(int x, int y);
-
+	void OnButtonClickedTest();
+	void OnButtonHoverTest(int val);
+	void SetApperance(int val);
 private:
 	void HandleInput();
 	void DrawMainMenuBar();
@@ -62,7 +64,7 @@ private:
 	void DrawSnapWindow();
 
 	void DeleteSelected();
-	
+
 public:
 	Scene* scene = nullptr;
 	Vec2 window_size;

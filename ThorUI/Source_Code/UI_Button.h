@@ -35,7 +35,7 @@ public:
 	THORUI_API void InternalLoad(Config& config);
 
 	Signal<> Clicked;
-
+	Signal<int> Hovered;
 private:
 	Color color;
 	Color color_data[3];

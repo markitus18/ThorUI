@@ -41,10 +41,26 @@ void UI_Button::OnItemEvent(Item_Event event)
 	UI_Item::OnItemEvent(event);
 	switch (event)
 	{
-		case(Mouse_Enter):	color = color_data[1]; break;
-		case(Mouse_Down):	color = color_data[2]; break;
-		case(Mouse_Up):		color = color_data[1]; break;
-		case(Mouse_Exit):	color = color_data[0]; break;
+		case(Mouse_Enter):
+		{
+			color = color_data[1];
+			Hovered.Emit(4);
+			break;
+		}
+		case(Mouse_Down):
+		{
+			color = color_data[2]; break;
+		}
+		case(Mouse_Up):
+		{
+			color = color_data[1];
+			Clicked.Emit();
+			break;
+		}
+		case(Mouse_Exit):
+		{
+			color = color_data[0]; break;
+		}
 	}
 }
 

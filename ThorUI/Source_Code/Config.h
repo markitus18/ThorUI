@@ -27,7 +27,7 @@ typedef struct json_array_t  JSON_Array;
 typedef unsigned int uint;
 
 class Config_Array;
-class Vec2;
+struct Vec2;
 struct Color;
 
 class Config

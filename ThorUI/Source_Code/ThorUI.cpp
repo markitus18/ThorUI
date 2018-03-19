@@ -79,10 +79,15 @@ namespace ThorUI
 
 	void StartFrame()
 	{
+		PreStart();
+		Update();
+	}
+
+	void PreStart()
+	{
 		RemoveToDeleteItems();
 		UpdateKeyboardState();
 		UpdateMouseState();
-		UpdateItems();
 	}
 
 	void Draw()
@@ -243,6 +248,7 @@ namespace ThorUI
 	{
 		if (textures.find(texture_id) != textures.end())
 			return &textures[texture_id];
+		return nullptr;
 	}
 
 	void FreeTexture(uint texture_id)
@@ -378,14 +384,12 @@ namespace ThorUI
 			{
 			case(SDL_WINDOWEVENT_LEAVE):
 			{
-				LOG("Mouse leaving window");
 				mouse_pos.Set(-1000, -1000);
 				mouse_out = true;
 				break;
 			}
 			case(SDL_WINDOWEVENT_ENTER):
 			{
-				LOG("Mouse enter");
 				mouse_out = false;
 				break;
 			}
@@ -461,7 +465,7 @@ namespace ThorUI
 		return current_name;
 	}
 
-	void UpdateItems()
+	void Update()
 	{
 		std::vector<UI_Item*>::iterator it;
 		for (it = items.begin(); it != items.end(); ++it)
@@ -493,7 +497,7 @@ namespace ThorUI
 		}
 
 		to_remove_items.push_back(item);
-		item->GetParent()->RemoveChild(item); //TODO: set parent item to nullptr?
+		item->RemoveFromParent();
 
 		while (item->ChildCount() > 0)
 		{

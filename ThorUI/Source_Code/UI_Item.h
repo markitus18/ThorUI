@@ -53,8 +53,9 @@ public:
 	THORUI_API inline void SetName(const char* name){ this->name = name; }
 	THORUI_API void SetActive(bool active);
 
-	THORUI_API 	void SetParent(UI_Item* parent, UI_Item* next_child = nullptr, bool keep_global = true);
-	THORUI_API 	void RemoveChild(UI_Item* child);
+	THORUI_API void SetParent(UI_Item* parent, UI_Item* next_child = nullptr, bool keep_global = true);
+	THORUI_API void RemoveFromParent();
+	THORUI_API void RemoveChild(UI_Item* child);
 	THORUI_API void DeleteChildren();
 
 	THORUI_API inline UI_Item* GetParent() const
