@@ -34,6 +34,8 @@ public:
 	THORUI_API void InternalSave(Config& config);
 	THORUI_API void InternalLoad(Config& config);
 
+	Signal<> Clicked;
+
 private:
 	Color color;
 	Color color_data[3];

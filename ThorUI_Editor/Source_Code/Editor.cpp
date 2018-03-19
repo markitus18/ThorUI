@@ -89,38 +89,55 @@ bool UI_Editor::Init(SDL_Window* window)
 
 void UI_Editor::Draw()
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, scene->frameBuffer);
-	glClearColor(0.7f, 0.7f, 0.7f, 1.f);
-	glClear(GL_COLOR_BUFFER_BIT);
-
 	ThorUI::StartFrame(); //Just to use ThorUI keyboard and mouse input
 
-	ThorUI::Draw();
+	if (run_simulation == false)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, scene->frameBuffer);
+		glClearColor(0.7f, 0.7f, 0.7f, 1.f);
+		glClear(GL_COLOR_BUFFER_BIT);
+	}
+	else
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glClearColor(0.7f, 0.7f, 0.7f, 1.f);
+		glClear(GL_COLOR_BUFFER_BIT);
+	}
 
-	if (grid)
+
+	ThorUI::Draw();
+	if (run_simulation == false && grid)
 	{
 		DrawGrid();
 	}
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glClearColor(0.7f, 0.7f, 0.7f, 1.f);
-	glClear(GL_COLOR_BUFFER_BIT);
+
+	if (run_simulation == false)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glClearColor(0.7f, 0.7f, 0.7f, 1.f);
+		glClear(GL_COLOR_BUFFER_BIT);
+	}
 
 	ImGui_ImplSdlGL3_NewFrame(window);
 	
 	HandleInput();
-	for (uint i = 0; i < docks.size(); ++i)
-	{
-		if (docks[i]->root) docks[i]->Draw();
-	}
+
 	DrawMainMenuBar();
-	DrawIconBar();
+
+	if (run_simulation == false)
+	{
+		for (uint i = 0; i < docks.size(); ++i)
+		{
+			if (docks[i]->root) docks[i]->Draw();
+		}
+		DrawIconBar();
+	}
+	else
+	{
+		ThorUI::UpdateItems();
+	}
 
 	ImGui::Render();
-
-	if (ThorUI::GetKeyState(SDL_SCANCODE_DELETE) == KEY_DOWN)
-	{
-		DeleteSelected();
-	}
 }
 
 void UI_Editor::HandleInput()
@@ -128,6 +145,10 @@ void UI_Editor::HandleInput()
 	if (ThorUI::GetKeyState(SDL_SCANCODE_G) == KEY_DOWN)
 	{
 		grid = !grid;
+	}
+	if (ThorUI::GetKeyState(SDL_SCANCODE_DELETE) == KEY_DOWN)
+	{
+		DeleteSelected();
 	}
 }
 
@@ -203,6 +224,15 @@ void UI_Editor::DrawMainMenuBar()
 			}
 			ImGui::EndMenu();
 		}
+		if (ImGui::BeginMenu("Project"))
+		{
+			if (ImGui::Checkbox("Run Simulation", &run_simulation))
+			{
+
+			}
+			ImGui::EndMenu();
+		}
+
 		if (ImGui::BeginMenu("Dev Tools"))
 		{
 			if (ImGui::Checkbox("Enable", &dev_tools))
@@ -213,12 +243,15 @@ void UI_Editor::DrawMainMenuBar()
 		}
 		ImGui::EndMainMenuBar();
 
-		if (canvas_win)
-			DrawCanvasWindow();
-		if (grid_win)
-			DrawGridWindow();
-		if (snap_win)
-			DrawSnapWindow();
+		if (run_simulation == false)
+		{
+			if (canvas_win)
+				DrawCanvasWindow();
+			if (grid_win)
+				DrawGridWindow();
+			if (snap_win)
+				DrawSnapWindow();
+		}
 	}
 }
 

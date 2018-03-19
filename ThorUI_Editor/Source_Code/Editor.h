@@ -66,7 +66,7 @@ private:
 public:
 	Scene* scene = nullptr;
 	Vec2 window_size;
-	bool dev_tools = false;
+	bool dev_tools = true;
 
 	//Snap settings
 	int angle_interval = 15;
@@ -94,6 +94,8 @@ private:
 	Inspector* inspector = nullptr;
 	Resources* resources = nullptr;
 	Dock* dock_focus = nullptr;
+
+	bool run_simulation = false;
 	//delete marc;
 };
 

@@ -9,6 +9,7 @@ typedef unsigned int uint;
 template<typename... Args>
 class Signal
 {
+public:
 	Signal() {};
 	~Signal() {};
 
