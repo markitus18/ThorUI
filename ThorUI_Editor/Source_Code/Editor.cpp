@@ -206,8 +206,6 @@ void UI_Editor::DrawMainMenuBar()
 
 				uint ret = button->Clicked.connect<UI_Editor>(editor, &UI_Editor::OnButtonClickedTest);
 				uint ret2 = button->Hovered.connect<UI_Editor>(editor, &UI_Editor::OnButtonHoverTest);
-				uint ret3 = button->Clicked.connect<UI_Editor>(editor, &UI_Editor::SetApperance(5));
-
 			}
 			if (ImGui::MenuItem("Image"))
 			{
@@ -401,11 +399,6 @@ void UI_Editor::OnButtonClickedTest()
 void UI_Editor::OnButtonHoverTest(int val)
 {
 	LOG("Button hover with value %i", val);
-}
-
-void UI_Editor::SetApperance(int val)
-{
-	LOG("Setting apparence with value %i", val);
 }
 
 void UI_Editor::ProcessEvent(SDL_Event* event)

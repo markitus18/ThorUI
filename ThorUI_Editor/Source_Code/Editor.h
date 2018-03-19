@@ -52,7 +52,7 @@ public:
 	Vec2 GetClosestGridPoint(int x, int y);
 	void OnButtonClickedTest();
 	void OnButtonHoverTest(int val);
-	void SetApperance(int val);
+
 private:
 	void HandleInput();
 	void DrawMainMenuBar();
