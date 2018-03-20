@@ -7,9 +7,9 @@
 
 UI_Button::UI_Button()
 {
-	color = color_data[0] = Color::White();
-	color_data[1] = Color::Blue();
-	color_data[2] = Color::Red();
+	color = color_data[0] = Color::Teal();
+	color_data[1] = Color::Olive();
+	color_data[2] = Color::Cyan();
 	name = "Button";
 	type = Button;
 }
@@ -21,6 +21,9 @@ UI_Button::UI_Button(Vec2 pos, Vec2 size) : UI_Item(pos, size)
 	color_data[2] = Color::Cyan();
 	name = "Button";
 	type = Button;
+
+	Clicked.connect_manager<UI_Button>(this, &UI_Button::SignalManager<>);
+	Released.connect_manager<UI_Button>(this, &UI_Button::SignalManager<int, char>);
 }
 
 void UI_Button::Draw()

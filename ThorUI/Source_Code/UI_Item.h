@@ -5,6 +5,7 @@
 #include "Rect.h"
 #include "Transform.h"
 #include "Signal.h"
+#include "Log.h"
 
 #include <vector>
 

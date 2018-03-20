@@ -10,7 +10,7 @@ template<typename... Args>
 class Signal
 {
 public:
-	Signal() {};
+	Signal() { signal_id = 3; };
 	~Signal() {};
 
 	uint connect(std::function<void(Args...)> func)
@@ -29,6 +29,8 @@ public:
 	{
 		for (auto it : slots)
 			it.second(args...);	
+		for (auto it_m : managers)
+			it_m.second(signal_id, args...);
 	}
 
 	void disconnect(uint id)
@@ -36,9 +38,26 @@ public:
 		slots.erase(id);
 	}
 
+	uint connect_manager(std::function<void(int, Args...)> func)
+	{
+		managers.insert(std::pair<uint, std::function<void(int, Args...)>>(++current_id, func));
+		return current_id;
+
+	}
+
+	template <typename C>
+	uint connect_manager(C* instance, void(C::*func)(int, Args...))
+	{
+		return connect_manager([instance = instance, func = func](int v, Args... arg) { (instance->*(func))(v, arg...); });
+	}
+
 private:
 	std::map<uint, std::function<void(Args...)>> slots;
+	std::map<uint, std::function<void(int, Args...)>> managers;
 	uint current_id = 0;
+
+public: //TODO
+	uint signal_id;
 };
 
 #endif

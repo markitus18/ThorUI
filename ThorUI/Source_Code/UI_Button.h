@@ -34,8 +34,19 @@ public:
 	THORUI_API void InternalSave(Config& config);
 	THORUI_API void InternalLoad(Config& config);
 
+	template <typename... Args>
+	void SignalManager(int signal_id, Args... args)
+	{
+		LOG("Signal called with id %i\n", signal_id);
+		LOG("Self signal id:       %i\n", Clicked.signal_id);
+
+	}
+
+	//Signals
 	Signal<> Clicked;
 	Signal<int> Hovered;
+	Signal<int, char> Released;
+
 private:
 	Color color;
 	Color color_data[3];

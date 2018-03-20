@@ -204,8 +204,8 @@ void UI_Editor::DrawMainMenuBar()
 				hierarchy->AddNode(text);
 				hierarchy->AddNode(button);
 
-				uint ret = button->Clicked.connect<UI_Editor>(editor, &UI_Editor::OnButtonClickedTest);
-				uint ret2 = button->Hovered.connect<UI_Editor>(editor, &UI_Editor::OnButtonHoverTest);
+				//uint ret = button->Clicked.connect<UI_Editor>(editor, &UI_Editor::OnButtonClickedTest);
+				//uint ret2 = button->Hovered.connect<UI_Editor>(editor, &UI_Editor::OnButtonHoverTest);
 			}
 			if (ImGui::MenuItem("Image"))
 			{
