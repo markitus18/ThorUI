@@ -23,13 +23,17 @@ namespace Math
 
 	int Rand()
 	{
-		srand(time(nullptr));
+	//	srand(time(nullptr));
 		return rand();
 	}
 
 	int Rand(int min, int max)
 	{
-		srand(time(nullptr));
-		return rand() % (max - min + 1) + min;
+		return Rand() % (max - min + 1) + min;
+	}
+
+	unsigned int RandUInt() 
+	{
+		return Rand(); //TODO: Rand only returns up to 32,767, unsigned int max = 4,294,967,295
 	}
 }

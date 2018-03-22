@@ -15,7 +15,8 @@
 #include "UI_Button.h"
 #include "UI_Text.h"
 #include "Circle.h"
-
+#include "TMath.h"
+#include <time.h> // TODO:
 #include "Config.h"
 
 #pragma comment (lib, "SDL2_ttf-2.0.14/libx86/SDL2_ttf.lib")
@@ -44,6 +45,7 @@ namespace ThorUI
 
 	void Init(SDL_Window* window)
 	{
+		srand(time(nullptr)); //TODO: should be done in math namespace
 		keyboard = new Key_State[SDL_NUM_SCANCODES];
 		for (int i = 0; i < SDL_NUM_SCANCODES; ++i)
 			keyboard[i] = KEY_IDLE;
@@ -437,7 +439,7 @@ namespace ThorUI
 		items.push_back(item);
 
 		if (item->GetID() == -1)
-			item->SetID(items.size() - 1); //TODO: change for random double
+			item->SetID(Math::RandUInt());
 		if (item->GetParent() == nullptr)
 		{
 			item->SetParent(window_item, nullptr, false);
@@ -537,7 +539,7 @@ namespace ThorUI
 
 			for (uint i = 1; i < items.size(); ++i)
 			{
-				items[i]->Save(arr.AddNode());
+				items[i]->InternalSave(arr.AddNode());
 
 			}
 
@@ -592,7 +594,7 @@ namespace ThorUI
 						break;
 					}
 					}
-					item->Load(node);
+					item->InternalLoad(node);
 					AddItem(item);
 					parent_ids.push_back(node.GetNumber("Parent ID", -1));
 					new_items.push_back(item);
