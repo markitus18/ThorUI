@@ -14,8 +14,8 @@ public:
 
 	THORUI_API void Draw();
 
-	THORUI_API void InternalSave(Config& config);
-	THORUI_API void InternalLoad(Config& config);
+	THORUI_API void Save(Config& config);
+	THORUI_API void Load(Config& config);
 
 	THORUI_API //Setters
 	THORUI_API void SetColor(Color color);

@@ -30,14 +30,14 @@ void UI_Image::Draw()
 	glPopMatrix();
 }
 
-void UI_Image::InternalSave(Config& config)
+void UI_Image::Save(Config& config)
 {
 	ThorUI::Texture* tex = ThorUI::GetTexture(texture_id);
 	config.SetString("Texture", tex != nullptr ? tex->path.c_str() : "");
 	config.SetArray("Color").AddColor(color);
 }
 
-void UI_Image::InternalLoad(Config& config)
+void UI_Image::Load(Config& config)
 {
 	color = config.GetArray("Color").GetColor(0);
 	std::string tex_path =  config.GetString("Texture");

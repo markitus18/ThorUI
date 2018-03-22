@@ -23,7 +23,6 @@ UI_Button::UI_Button(Vec2 pos, Vec2 size) : UI_Item(pos, size)
 	type = Button;
 
 	Clicked.connect_manager<UI_Button>(this, &UI_Button::SignalManager<>);
-	Released.connect_manager<UI_Button>(this, &UI_Button::SignalManager<int, char>);
 }
 
 void UI_Button::Draw()
@@ -47,7 +46,7 @@ void UI_Button::OnItemEvent(Item_Event event)
 		case(Mouse_Enter):
 		{
 			color = color_data[1];
-			Hovered.Emit(4);
+			s_hovered.Emit();
 			break;
 		}
 		case(Mouse_Down):
@@ -62,7 +61,9 @@ void UI_Button::OnItemEvent(Item_Event event)
 		}
 		case(Mouse_Exit):
 		{
-			color = color_data[0]; break;
+			color = color_data[0];
+			s_unhovered.Emit();
+			break;
 		}
 	}
 }
@@ -77,12 +78,12 @@ Color UI_Button::GetColor() const
 	return color;
 }
 
-void UI_Button::InternalSave(Config& config)
+void UI_Button::Save(Config& config)
 {
 	config.SetArray("Color").AddColor(color);
 }
 
-void UI_Button::InternalLoad(Config& config)
+void UI_Button::Load(Config& config)
 {
 	color = config.GetArray("Color").GetColor(0);
 }

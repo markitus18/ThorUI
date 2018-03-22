@@ -71,8 +71,8 @@ public:
 	THORUI_API virtual void Draw() {}; //TODO: draw here, or in ThorUI?
 	THORUI_API virtual void OnItemEvent(Item_Event event) { last_event = event; };
 
-	THORUI_API void Save(Config& config);
-	THORUI_API void Load(Config& config);
+	THORUI_API void InternalSave(Config& config);
+	THORUI_API void InternalLoad(Config& config);
 
 	THORUI_API inline Vec2 GetPos() const{ return transform.GetPos();	}
 	THORUI_API inline Vec2 GetGlobalPos() const {return transform.Global().GetTranslation();}
@@ -91,9 +91,12 @@ public:
 	THORUI_API inline bool IsActive() const { return active; }
 	THORUI_API inline bool IsActiveHierarchy() const { return active && hierarchyActive; }
 
+	Signal<> s_hovered;
+	Signal<> s_unhovered;
+
 protected:
-	THORUI_API virtual void InternalSave(Config& config) = 0;
-	THORUI_API virtual void InternalLoad(Config& config) = 0;
+	THORUI_API virtual void Save(Config& config) = 0;
+	THORUI_API virtual void Load(Config& config) = 0;
 
 private:
 	THORUI_API void SetHierarchyActive(bool active);
@@ -109,10 +112,12 @@ protected:
 
 	int id = -1;
 
+	//* Item size in pixels
 	Vec2 size;
-	//Item pivot is saved as a % pivot for its rect size
-	//Range [0, 1], 0 being bottom-left, 1 top-right
+	//* Item pivot is saved as a % pivot for its rect size
+	//* Range [0, 1], 0 being bottom-left, 1 top-right
 	Vec2 pivot;
+	//* Holds the transformation matrix
 	Transform transform;
 
 };

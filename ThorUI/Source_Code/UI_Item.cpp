@@ -20,8 +20,7 @@ UI_Item::UI_Item(Vec2 pos, Vec2 size) : transform(this), size(size)
 
 UI_Item::~UI_Item()
 {
-	//TODO: remove from transform parent. SetParent calls non-necessary functions
-	transform.SetParent(nullptr);
+	RemoveFromParent();
 	std::vector<Transform*> children = transform.GetChildren();
 	while (!children.empty())
 	{
@@ -109,7 +108,7 @@ void UI_Item::SetHierarchyActive(bool active)
 	}
 }
 
-void UI_Item::Save(Config& config)
+void UI_Item::InternalSave(Config& config)
 {
 	config.SetString("Name", name.c_str());
 	config.SetNumber("Item_Type", (int)type);
@@ -123,10 +122,10 @@ void UI_Item::Save(Config& config)
 	config.SetNumber("ID", id);
 	config.SetNumber("Parent ID", transform.GetParent() ? transform.GetParent()->Container<UI_Item>()->GetID() : -1);
 
-	InternalSave(config);
+	Save(config);
 }
 
-void UI_Item::Load(Config& config)
+void UI_Item::InternalLoad(Config& config)
 {
 	name = config.GetString("Name", "Undefined");
 
@@ -138,6 +137,6 @@ void UI_Item::Load(Config& config)
 
 	id = config.GetNumber("ID", -1);
 
-	InternalLoad(config); //TODO: consider if updating pos before or after
+	Load(config); //TODO: consider if updating pos before or after
 	transform.UpdateGlobalTransform();
 }

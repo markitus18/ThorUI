@@ -22,6 +22,8 @@ namespace Math
 	THORUI_API float AngleDegDelta(float a1, float a2);
 	//Returns a random value between min(inlcuded) and max(included)
 	THORUI_API int Rand(int min, int max);
+	//Returns a random value 0 and 4,294,967,295 (max unsigned int size)
+	THORUI_API unsigned int RandUInt();
 }
 
 							

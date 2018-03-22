@@ -67,17 +67,18 @@ namespace ThorUI
 	extern THORUI_API std::map<uint, Texture> textures; //TODO: sort textures by ID or by path?
 	extern THORUI_API std::vector<Font> fonts;
 
-	void THORUI_API Init(SDL_Window* window);
-	void THORUI_API StartFrame();
-	void THORUI_API PreStart();
-	void THORUI_API Draw();
-	void THORUI_API CleanUp();
+	THORUI_API void Init(SDL_Window* window);
+	THORUI_API void StartFrame();
+	THORUI_API void PreStart();
+	THORUI_API void Update();
+	THORUI_API void Draw();
+	THORUI_API void CleanUp();
 
 	//Keyboard event handling -------------------------
-	void THORUI_API UpdateKeyboardState();
-	void THORUI_API DebugKeyboardState(int key, Key_State state);
-	Key_State THORUI_API GetKeyState(int key);
-	void THORUI_API UpdateMouseState();
+	THORUI_API void UpdateKeyboardState();
+	THORUI_API void DebugKeyboardState(int key, Key_State state);
+	THORUI_API Key_State GetKeyState(int key);
+	THORUI_API void UpdateMouseState();
 	//-------------------------------------------------
 
 	//Mouse event handling ----------------------------
@@ -151,7 +152,6 @@ namespace ThorUI
 	//Item management ---------------------------------
 	THORUI_API void AddItem(UI_Item* item);
 	THORUI_API std::string GenUniqueName(UI_Item* parent, const char* name);
-	THORUI_API void Update();
 
 	//* "Tags" the item (and it's children) to be safely deleted after
 	//* It removes the hole hierarchy pointers, do not try to access them after calling this function

@@ -1,8 +1,6 @@
 #ifndef __UI_BUTTON_H__
 #define __UI_BUTTON_H__
 
-#include <cstring>
-
 #include "UI_Item.h"
 #include "Color.h"
 
@@ -31,21 +29,21 @@ public:
 
 	THORUI_API Color GetColor() const;
 
-	THORUI_API void InternalSave(Config& config);
-	THORUI_API void InternalLoad(Config& config);
+	THORUI_API void Save(Config& config);
+	THORUI_API void Load(Config& config);
 
 	template <typename... Args>
 	void SignalManager(int signal_id, Args... args)
 	{
 		LOG("Signal called with id %i\n", signal_id);
 		LOG("Self signal id:       %i\n", Clicked.signal_id);
+//		int arg1 = args[0];
+//		char arg2 = args[1];
 
 	}
 
 	//Signals
 	Signal<> Clicked;
-	Signal<int> Hovered;
-	Signal<int, char> Released;
 
 private:
 	Color color;

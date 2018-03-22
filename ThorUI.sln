@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ThorUI", "ThorUI\ThorUI.vcxproj", "{CBD87DD6-C4BA-4D48-A4DA-9A8C47882253}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ThorUI_Editor", "ThorUI_Editor\ThorUI_Editor.vcxproj", "{A129F123-CF57-4C26-9638-EA93355B89E6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CBD87DD6-C4BA-4D48-A4DA-9A8C47882253} = {CBD87DD6-C4BA-4D48-A4DA-9A8C47882253}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -56,7 +56,7 @@ void TreeDisplay<T>::SetSelect(T* c, bool select, bool single, bool openTree)
 			if (openTree)
 			{
 				TreeNode<T>* it = GetNode(node->GetParentID());
-				while (it != nullptr)
+				while (it != nullptr && it->GetID() != root.GetID())
 				{
 					it->beenSelected = true;
 					it = GetNode(it->GetParentID());

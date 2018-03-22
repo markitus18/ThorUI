@@ -129,6 +129,7 @@ void Scene::HandleInput()
 			{
 				editor->hierarchy->SetSelect(*it, true, true);
 				selected = true;
+				break;
 			}
 		}
 		if (!selected) editor->hierarchy->UnselectAll();

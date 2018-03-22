@@ -3,6 +3,7 @@
 
 #include <map>
 #include <functional>
+#include "TMath.h"
 
 typedef unsigned int uint;
 
@@ -10,7 +11,7 @@ template<typename... Args>
 class Signal
 {
 public:
-	Signal() { signal_id = 3; };
+	Signal() { signal_id = Math::RandUInt(); };
 	~Signal() {};
 
 	uint connect(std::function<void(Args...)> func)
@@ -51,13 +52,15 @@ public:
 		return connect_manager([instance = instance, func = func](int v, Args... arg) { (instance->*(func))(v, arg...); });
 	}
 
+	uint GetID() { return signal_id; }
+
 private:
 	std::map<uint, std::function<void(Args...)>> slots;
 	std::map<uint, std::function<void(int, Args...)>> managers;
 	uint current_id = 0;
 
 public: //TODO
-	uint signal_id;
+	uint signal_id = 0;
 };
 
 #endif

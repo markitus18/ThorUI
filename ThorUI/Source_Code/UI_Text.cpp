@@ -94,7 +94,7 @@ void UI_Text::Draw()
 	}
 }
 
-void UI_Text::InternalSave(Config& config)
+void UI_Text::Save(Config& config)
 {
 	config.SetString("Text", text.c_str());
 
@@ -108,7 +108,7 @@ void UI_Text::InternalSave(Config& config)
 	config.SetArray("Color").AddColor(color);
 }
 
-void UI_Text::InternalLoad(Config& config)
+void UI_Text::Load(Config& config)
 {
 	text = config.GetString("Text", "Undefined");
 
