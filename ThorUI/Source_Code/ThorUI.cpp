@@ -476,16 +476,16 @@ namespace ThorUI
 			if (IsMouseHoveringItem(*it))
 			{
 				if (last_event == Mouse_Exit)
-					(*it)->OnItemEvent(Mouse_Enter);
+					(*it)->InternalOnItemEvent(Mouse_Enter);
 				if (last_event == Mouse_Down && IsMouseIdle(SDL_BUTTON_LEFT))
-					(*it)->OnItemEvent(Mouse_Up);
+					(*it)->InternalOnItemEvent(Mouse_Up);
 				if ((last_event == Mouse_Enter || last_event == Mouse_Up) && GetMouseState(SDL_BUTTON_LEFT) == KEY_DOWN)
-					(*it)->OnItemEvent(Mouse_Down);
+					(*it)->InternalOnItemEvent(Mouse_Down);
 			}
 			else //Mouse is not hovering item
 			{
 				if (last_event != Mouse_Exit)
-					(*it)->OnItemEvent(Mouse_Exit);
+					(*it)->InternalOnItemEvent(Mouse_Exit);
 			}
 		}
 	}

@@ -98,6 +98,25 @@ void UI_Item::CollectChildren(std::vector<UI_Item*>& vector)
 	}
 }
 
+void UI_Item::InternalOnItemEvent(Item_Event event)
+{
+	last_event = event;
+	switch (event)
+	{
+		case(Mouse_Enter):
+		{
+			s_hovered.Emit();
+			break;
+		}
+		case(Mouse_Exit):
+		{
+			s_unhovered.Emit();
+			break;
+		}
+	}
+	OnItemEvent(event);
+}
+
 void UI_Item::SetHierarchyActive(bool active)
 {
 	hierarchyActive = active;

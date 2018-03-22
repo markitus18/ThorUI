@@ -13,6 +13,7 @@ public:
 	THORUI_API UI_Image(Vec2 pos, Vec2 size, int texture_id = 0);
 
 	THORUI_API void Draw();
+	THORUI_API void OnItemEvent(Item_Event event) {}
 
 	THORUI_API void Save(Config& config);
 	THORUI_API void Load(Config& config);
@@ -24,6 +25,10 @@ public:
 	THORUI_API //Getters
 	THORUI_API Color GetColor() const;
 	THORUI_API uint GetTexID() const;
+
+	template <typename... Args>
+	void SignalManager(int s_id, Args... args) {};
+
 
 public:
 

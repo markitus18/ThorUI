@@ -23,6 +23,10 @@ public:
 	THORUI_API Vec2 GetTexSize() const;
 
 	THORUI_API void Draw();
+	THORUI_API void OnItemEvent(Item_Event event) {}
+
+	template <typename... Args>
+	void SignalManager(int s_id, Args... args) {};
 
 protected:
 	THORUI_API void Save(Config& config);

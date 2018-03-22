@@ -22,7 +22,8 @@ UI_Button::UI_Button(Vec2 pos, Vec2 size) : UI_Item(pos, size)
 	name = "Button";
 	type = Button;
 
-	Clicked.connect_manager<UI_Button>(this, &UI_Button::SignalManager<>);
+	s_clicked.connect_manager<UI_Button>(this, &UI_Button::SignalManager);
+	StringToSignal("clicked").connect_manager<UI_Button>(this, &UI_Button::SignalManager);
 }
 
 void UI_Button::Draw()
@@ -40,29 +41,28 @@ void UI_Button::Draw()
 
 void UI_Button::OnItemEvent(Item_Event event)
 {
-	UI_Item::OnItemEvent(event);
 	switch (event)
 	{
 		case(Mouse_Enter):
 		{
 			color = color_data[1];
-			s_hovered.Emit();
 			break;
 		}
 		case(Mouse_Down):
 		{
-			color = color_data[2]; break;
+			color = color_data[2];
+			s_pressed.Emit(5);
+			break;
 		}
 		case(Mouse_Up):
 		{
 			color = color_data[1];
-			Clicked.Emit();
+			s_clicked.Emit();
 			break;
 		}
 		case(Mouse_Exit):
 		{
 			color = color_data[0];
-			s_unhovered.Emit();
 			break;
 		}
 	}

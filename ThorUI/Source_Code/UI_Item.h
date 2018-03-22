@@ -69,7 +69,9 @@ public:
 	THORUI_API void CollectChildren(std::vector<UI_Item*>& vector);
 
 	THORUI_API virtual void Draw() {}; //TODO: draw here, or in ThorUI?
-	THORUI_API virtual void OnItemEvent(Item_Event event) { last_event = event; };
+
+	THORUI_API void InternalOnItemEvent(Item_Event event);
+	THORUI_API virtual void OnItemEvent(Item_Event event) = 0;
 
 	THORUI_API void InternalSave(Config& config);
 	THORUI_API void InternalLoad(Config& config);
@@ -91,8 +93,8 @@ public:
 	THORUI_API inline bool IsActive() const { return active; }
 	THORUI_API inline bool IsActiveHierarchy() const { return active && hierarchyActive; }
 
-	Signal<> s_hovered;
-	Signal<> s_unhovered;
+	//template <typename... Args>
+	//virtual void SignalManager(int s_id, Args... args) = 0;
 
 protected:
 	THORUI_API virtual void Save(Config& config) = 0;
@@ -120,6 +122,9 @@ protected:
 	//* Holds the transformation matrix
 	Transform transform;
 
+public:
+	Signal<> s_hovered;
+	Signal<> s_unhovered;
 };
 
 #endif

@@ -33,17 +33,26 @@ public:
 	THORUI_API void Load(Config& config);
 
 	template <typename... Args>
-	void SignalManager(int signal_id, Args... args)
+	void SignalManager(int s_id, Args... args)
 	{
-		LOG("Signal called with id %i\n", signal_id);
-		LOG("Self signal id:       %i\n", Clicked.signal_id);
-//		int arg1 = args[0];
-//		char arg2 = args[1];
+		LOG("Signal called with id %i\n", s_id);
+		LOG("Self signal id:       %i\n", s_clicked.signal_id);
+	}
 
+	template <typename... Args>
+	Signal<Args...> StringToSignal(std::string str)
+	{
+		if (str == "clicked")
+			return s_clicked;
+		if (str == "pressed")
+			return s_pressed;
 	}
 
 	//Signals
-	Signal<> Clicked;
+	//* Emitted when the mouse is pressed (mouse down)
+	Signal<int> s_pressed;
+	//* Emitted when the mouse is released (and previously pressed) in the item (mouse up)
+	Signal<> s_clicked;
 
 private:
 	Color color;
