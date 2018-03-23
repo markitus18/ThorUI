@@ -84,6 +84,9 @@
     <ClInclude Include="Source_Code\Signal.h">
       <Filter>Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="Source_Code\Signal_Event.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source_Code\Log.cpp">

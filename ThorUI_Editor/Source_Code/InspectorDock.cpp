@@ -17,132 +17,134 @@
 
 void Inspector::Draw()
 {
-	if (editor->hierarchy->selected.size() > 0)
+	if (editor->hierarchy->selected.size() == 0)
+		return;
+
+	UI_Item* selected = editor->hierarchy->selected.front();
+
+	bool active = selected->IsActive();
+	if (ImGui::Checkbox("", &active))
 	{
-		UI_Item* selected = editor->hierarchy->selected.front();
+		selected->SetActive(active);
+	}
+	ImGui::SameLine();
+	DisplayItemName(selected);
 
-		bool active = selected->IsActive();
-		if (ImGui::Checkbox("", &active))
-		{
-			selected->SetActive(active);
-		}
+	if (editor->dev_tools == true)
+	{
 		ImGui::SameLine();
-		DisplayItemName(selected);
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0, 1.0, 0, 1.0));
+		ImGui::Text("ID: %i", selected->GetID());
+		ImGui::PopStyleColor();
+	}
 
-		if (editor->dev_tools == true)
+	ImGui::Separator();
+
+	Vec2 pos = selected->GetTransform()->GetPos();
+	if (ImGui::DragFloat2("Position", &pos))
+	{
+		selected->GetTransform()->SetPos(pos);
+	}
+
+	Vec2 size = selected->GetSize();
+	if (ImGui::DragFloat2("Size", &size))
+	{
+		selected->SetSize(size);
+	}
+	Vec2 scale = selected->GetScale();
+	if (ImGui::DragFloat2("Scale", &scale, 0.03f))
+	{
+		selected->SetScale(scale);
+	}
+	ImGui::Text("Angle");
+	ImGui::SameLine(0, 100 - ImGui::CalcTextSize("Angle").x);
+	float angle = selected->GetTransform()->GetRotation();
+	if (ImGui::DragFloat("##angle_transform", &angle))
+	{
+		selected->GetTransform()->SetRotationDeg(angle);
+	}
+		
+	Vec2 pivot = selected->GetPivot();;
+	if (ImGui::DragFloat2("Pivot", &pivot, 0.03f))
+	{
+		selected->SetPivot(pivot);
+	}
+		
+	if (editor->dev_tools == true)
+	{
+		if (ImGui::CollapsingHeader("Local Matrix"))
 		{
-			ImGui::SameLine();
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0, 1.0, 0, 1.0));
-			ImGui::Text("ID: %i", selected->GetID());
+			const float* ptr = selected->GetTransform()->Local().Ptr();
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 0, 1));
+
+			for (uint i = 0; i < 9; ++i)
+			{
+				ImGui::Text("%.2f  ", ptr[i]);
+				if ((i + 1) % 3 != 0)
+				{
+					ImGui::SameLine(((i + 1) % 3) * 60);
+				}
+
+			}
+			ImGui::PopStyleColor();
+		}
+		if (ImGui::CollapsingHeader("Center Matrix"))
+		{
+			const float* ptr = selected->GetTransform()->Center().Ptr();
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 0, 1));
+
+			for (uint i = 0; i < 9; ++i)
+			{
+				ImGui::Text("%.2f  ", ptr[i]);
+				if ((i + 1) % 3 != 0)
+				{
+					ImGui::SameLine(((i + 1) % 3) * 60);
+				}
+
+			}
+			ImGui::PopStyleColor();
+		}
+		if (ImGui::CollapsingHeader("Global Matrix"))
+		{
+			const float* ptr = selected->GetTransform()->Global().Ptr();
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 0, 1));
+
+			for (uint i = 0; i < 9; ++i)
+			{
+				ImGui::Text("%.2f  ", ptr[i]);
+				if ((i + 1) % 3 != 0)
+				{
+					ImGui::SameLine(((i + 1) % 3) * 60);
+				}
+
+			}
 			ImGui::PopStyleColor();
 		}
 
-		ImGui::Separator();
+	}
 
-		Vec2 pos = selected->GetTransform()->GetPos();
-		if (ImGui::DragFloat2("Position", &pos))
+	ImGui::Separator();
+
+	switch (selected->GetType())
+	{
+		case(Image):
 		{
-			selected->GetTransform()->SetPos(pos);
+			DrawImageItem((UI_Image*)selected);
+			break;
 		}
-
-		Vec2 size = selected->GetSize();
-		if (ImGui::DragFloat2("Size", &size))
+		case(Text):
 		{
-			selected->SetSize(size);
+			DrawTextItem((UI_Text*)selected);
+			break;
 		}
-		Vec2 scale = selected->GetScale();
-		if (ImGui::DragFloat2("Scale", &scale, 0.03f))
+		case(Button):
 		{
-			selected->SetScale(scale);
-		}
-		ImGui::Text("Angle");
-		ImGui::SameLine(0, 100 - ImGui::CalcTextSize("Angle").x);
-		float angle = selected->GetTransform()->GetRotation();
-		if (ImGui::DragFloat("##angle_transform", &angle))
-		{
-			selected->GetTransform()->SetRotationDeg(angle);
-		}
-		
-		Vec2 pivot = selected->GetPivot();;
-		if (ImGui::DragFloat2("Pivot", &pivot, 0.03f))
-		{
-			selected->SetPivot(pivot);
-		}
-		
-		if (editor->dev_tools == true)
-		{
-			if (ImGui::CollapsingHeader("Local Matrix"))
-			{
-				const float* ptr = selected->GetTransform()->Local().Ptr();
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 0, 1));
-
-				for (uint i = 0; i < 9; ++i)
-				{
-					ImGui::Text("%.2f  ", ptr[i]);
-					if ((i + 1) % 3 != 0)
-					{
-						ImGui::SameLine(((i + 1) % 3) * 60);
-					}
-
-				}
-				ImGui::PopStyleColor();
-			}
-			if (ImGui::CollapsingHeader("Center Matrix"))
-			{
-				const float* ptr = selected->GetTransform()->Center().Ptr();
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 0, 1));
-
-				for (uint i = 0; i < 9; ++i)
-				{
-					ImGui::Text("%.2f  ", ptr[i]);
-					if ((i + 1) % 3 != 0)
-					{
-						ImGui::SameLine(((i + 1) % 3) * 60);
-					}
-
-				}
-				ImGui::PopStyleColor();
-			}
-			if (ImGui::CollapsingHeader("Global Matrix"))
-			{
-				const float* ptr = selected->GetTransform()->Global().Ptr();
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 0, 1));
-
-				for (uint i = 0; i < 9; ++i)
-				{
-					ImGui::Text("%.2f  ", ptr[i]);
-					if ((i + 1) % 3 != 0)
-					{
-						ImGui::SameLine(((i + 1) % 3) * 60);
-					}
-
-				}
-				ImGui::PopStyleColor();
-			}
-
-		}
-
-		ImGui::Separator();
-
-		switch (selected->GetType())
-		{
-			case(Image):
-			{
-				DrawImageItem((UI_Image*)selected);
-				break;
-			}
-			case(Text):
-			{
-				DrawTextItem((UI_Text*)selected);
-				break;
-			}
-			case(Button):
-			{
-				DrawButtonItem((UI_Button*)selected);
-				break;
-			}
+			DrawButtonItem((UI_Button*)selected);
+			break;
 		}
 	}
+
+	DisplayItemEvents(selected);
 }
 
 void Inspector::DisplayItemName(UI_Item* item)
@@ -211,5 +213,54 @@ void Inspector::DrawButtonItem(UI_Button* button)
 	if (ImGui::ColorEdit3("Color", color.ptr()))
 	{
 		button->SetColor(color);
+	}
+}
+
+void Inspector::DisplayItemEvents(UI_Item* item)
+{
+	if (ImGui::CollapsingHeader("Events"))
+	{
+		std::vector<Signal_Event>& events = item->GetSignalEvents();
+		std::vector<Signal_Event>::iterator it;
+		for (it = events.begin(); it != events.end(); ++it)
+		{
+			Signal_Event& ev = (*it);
+			UI_Item* event_holder = nullptr;
+			if (ev.item_signal_id != 0) event_holder = ThorUI::GetItem(ev.item_signal_id);
+
+			ImGui::Text("Item Signal: "); ImGui::SameLine();
+			ImGui::PushID(&(*it));
+			if (ImGui::BeginMenu_ThorUI(ev.item_signal_id == 0 ? "-- Select Item --" : event_holder->GetName()))
+			{
+				ImGui::PushID(item);
+				if (ImGui::MenuItem("Self"))
+				{
+					ev.item_signal_id = item->GetID();
+				}
+				ImGui::PopID();
+				ImGui::Separator();
+
+				for (uint i = 1; i < ThorUI::items.size(); ++i)
+				{
+					if (ThorUI::items[i] != item)
+					{
+						ImGui::PushID(ThorUI::items[i]->GetID());
+						if (ImGui::MenuItem(ThorUI::items[i]->GetName()))
+						{
+							ev.item_signal_id = ThorUI::items[i]->GetID();
+						}
+						ImGui::PopID();
+					}
+				}
+				ImGui::EndMenu();
+			}
+			ImGui::PopID();
+		}
+
+		ImGui::NewLine();ImGui::SameLine(0, 50);
+		if (ImGui::Button("Add Event", ImVec2(ImGui::GetWindowWidth() - 100, 0)))
+		{
+			events.push_back(Signal_Event());
+		}
 	}
 }

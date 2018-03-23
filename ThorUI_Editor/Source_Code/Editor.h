@@ -68,7 +68,7 @@ private:
 public:
 	Scene* scene = nullptr;
 	Vec2 window_size;
-	bool dev_tools = true;
+	bool dev_tools = false;
 
 	//Snap settings
 	int angle_interval = 15;

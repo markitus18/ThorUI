@@ -159,3 +159,18 @@ void UI_Item::InternalLoad(Config& config)
 	Load(config); //TODO: consider if updating pos before or after
 	transform.UpdateGlobalTransform();
 }
+
+bool UI_Item::ConnectItemWithSignal(UI_Item* item, std::string signal_name)
+{
+	if (signal_name == "hovered")
+	{
+		s_hovered.connect_manager<UI_Item>(item, &UI_Item::SignalManager);
+		return true;
+	}
+	if (signal_name == "unhovered")
+	{
+		s_hovered.connect_manager<UI_Item>(item, &UI_Item::SignalManager);
+		return true;
+	}
+	return false;
+}

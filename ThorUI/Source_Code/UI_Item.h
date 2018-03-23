@@ -5,6 +5,7 @@
 #include "Rect.h"
 #include "Transform.h"
 #include "Signal.h"
+#include "Signal_Event.h"
 #include "Log.h"
 
 #include <vector>
@@ -93,8 +94,18 @@ public:
 	THORUI_API inline bool IsActive() const { return active; }
 	THORUI_API inline bool IsActiveHierarchy() const { return active && hierarchyActive; }
 
-	//template <typename... Args>
-	//virtual void SignalManager(int s_id, Args... args) = 0;
+	//* Connects the given UI_Item (item) SignalManager function with the signal given by signal_name
+	//* Returns true if sucess, false if no signal found or item already connected.
+	THORUI_API virtual bool ConnectItemWithSignal(UI_Item* item, std::string signal_name);
+
+	//* Manages to throw events in the item according to the signals recieved and it's parameters.
+	template <typename... Args>
+	void SignalManager(int s_id, Args... args)
+	{
+
+	}
+
+	THORUI_API inline std::vector<Signal_Event>& GetSignalEvents() { return s_events; }
 
 protected:
 	THORUI_API virtual void Save(Config& config) = 0;
@@ -121,6 +132,8 @@ protected:
 	Vec2 pivot;
 	//* Holds the transformation matrix
 	Transform transform;
+
+	std::vector<Signal_Event> s_events;
 
 public:
 	Signal<> s_hovered;

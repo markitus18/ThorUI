@@ -3,6 +3,7 @@
 
 #include "UI_Item.h"
 #include "Color.h"
+#include <map>
 
 struct Button_Apparence
 {
@@ -37,15 +38,20 @@ public:
 	{
 		LOG("Signal called with id %i\n", s_id);
 		LOG("Self signal id:       %i\n", s_clicked.signal_id);
+
+		//ReadArgs(args...);
 	}
 
-	template <typename... Args>
-	Signal<Args...> StringToSignal(std::string str)
+	template <typename T, typename... Args>
+	void ReadArgs(T t, Args... args)
 	{
-		if (str == "clicked")
-			return s_clicked;
-		if (str == "pressed")
-			return s_pressed;
+		LOG("Reading argument value: %i", t);
+		ReadArgs(args...);
+	}
+	
+	void ConnectWithSignal(std::string signal, UI_Item* item)
+	{
+
 	}
 
 	//Signals

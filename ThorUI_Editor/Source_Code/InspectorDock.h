@@ -22,6 +22,7 @@ private:
 	void DrawImageItem(UI_Image* img);
 	void DrawTextItem(UI_Text* text);
 	void DrawButtonItem(UI_Button* button);
+	void DisplayItemEvents(UI_Item* item);
 };
 
 #endif

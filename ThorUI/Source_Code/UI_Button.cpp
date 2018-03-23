@@ -22,8 +22,8 @@ UI_Button::UI_Button(Vec2 pos, Vec2 size) : UI_Item(pos, size)
 	name = "Button";
 	type = Button;
 
-	s_clicked.connect_manager<UI_Button>(this, &UI_Button::SignalManager);
-	StringToSignal("clicked").connect_manager<UI_Button>(this, &UI_Button::SignalManager);
+	//s_clicked.connect_manager<UI_Button>(this, &UI_Button::SignalManager);
+	//s_pressed.connect_manager<UI_Button>(this, &UI_Button::SignalManager);
 }
 
 void UI_Button::Draw()

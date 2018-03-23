@@ -152,6 +152,7 @@ namespace ThorUI
 	//Item management ---------------------------------
 	THORUI_API void AddItem(UI_Item* item);
 	THORUI_API std::string GenUniqueName(UI_Item* parent, const char* name);
+	THORUI_API UI_Item* GetItem(uint item_id);
 
 	//* "Tags" the item (and it's children) to be safely deleted after
 	//* It removes the hole hierarchy pointers, do not try to access them after calling this function

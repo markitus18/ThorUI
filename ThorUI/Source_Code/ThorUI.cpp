@@ -467,6 +467,16 @@ namespace ThorUI
 		return current_name;
 	}
 
+	UI_Item* GetItem(uint item_id) //TODO: move to a map [id, item]
+	{
+		for (uint i = 0; i < items.size(); ++i)
+		{
+			if (items[i]->GetID() == item_id)
+				return items[i];
+		}
+		return nullptr;
+	}
+
 	void Update()
 	{
 		std::vector<UI_Item*>::iterator it;
