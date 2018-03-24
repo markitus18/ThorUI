@@ -227,33 +227,13 @@ void Inspector::DisplayItemEvents(UI_Item* item)
 			Signal_Event& ev = (*it);
 			UI_Item* event_holder = nullptr;
 			if (ev.item_signal_id != 0) event_holder = ThorUI::GetItem(ev.item_signal_id);
+			
+			ImGui::PushID(&ev);
+			DisplayEventItemMenu(item, event_holder, ev);
+			if (event_holder != nullptr)
+				DisplaySignalMenu(item, event_holder, ev);
 
-			ImGui::Text("Item Signal: "); ImGui::SameLine();
-			ImGui::PushID(&(*it));
-			if (ImGui::BeginMenu_ThorUI(ev.item_signal_id == 0 ? "-- Select Item --" : event_holder->GetName()))
-			{
-				ImGui::PushID(item);
-				if (ImGui::MenuItem("Self"))
-				{
-					ev.item_signal_id = item->GetID();
-				}
-				ImGui::PopID();
-				ImGui::Separator();
-
-				for (uint i = 1; i < ThorUI::items.size(); ++i)
-				{
-					if (ThorUI::items[i] != item)
-					{
-						ImGui::PushID(ThorUI::items[i]->GetID());
-						if (ImGui::MenuItem(ThorUI::items[i]->GetName()))
-						{
-							ev.item_signal_id = ThorUI::items[i]->GetID();
-						}
-						ImGui::PopID();
-					}
-				}
-				ImGui::EndMenu();
-			}
+			ImGui::Separator();
 			ImGui::PopID();
 		}
 
@@ -263,4 +243,75 @@ void Inspector::DisplayItemEvents(UI_Item* item)
 			events.push_back(Signal_Event());
 		}
 	}
+}
+
+void Inspector::DisplayEventItemMenu(UI_Item* item, UI_Item* ev_holder, Signal_Event& ev)
+{
+	ImGui::Text("Item Signal: "); ImGui::SameLine();
+	ImVec4 text_color = ImGui::GetStyle().Colors[ImGuiCol_Text];
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.23f, 0.61f, 0.81f, 1.0f));
+	if (ImGui::BeginMenu_ThorUI(ev.item_signal_id == 0 ? "-- Select Item --" : ev_holder->GetName()))
+	{
+		ImGui::PushStyleColor(ImGuiCol_Text, text_color);
+		if (ImGui::MenuItem("Self"))
+		{
+			ev.item_signal_id = item->GetID();
+		}
+		ImGui::Separator();
+
+		for (uint i = 1; i < ThorUI::items.size(); ++i)
+		{
+			if (ThorUI::items[i] != item)
+			{
+				ImGui::PushID(ThorUI::items[i]->GetID());
+				if (ImGui::MenuItem(ThorUI::items[i]->GetName()))
+				{
+					ev.item_signal_id = ThorUI::items[i]->GetID();
+				}
+				ImGui::PopID();
+			}
+		}
+		ImGui::PopStyleColor();
+		ImGui::EndMenu();
+	}
+	else
+	{
+		if (ImGui::IsItemHovered() && ThorUI::IsMouseDown(SDL_BUTTON_RIGHT))
+		{
+			ev.item_signal_id = 0;
+		}
+	}
+	ImGui::PopStyleColor();
+}
+
+void Inspector::DisplaySignalMenu(UI_Item* item, UI_Item* ev_holder, Signal_Event& ev)
+{
+	ImGui::Text("  Signal:    "); ImGui::SameLine();
+	ImVec4 text_color = ImGui::GetStyle().Colors[ImGuiCol_Text];
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.23f, 0.61f, 0.81f, 1.0f));
+	if (ImGui::BeginMenu_ThorUI(ev.signal_name == "" ? "-- Select Signal --" : ev.signal_name.c_str()))
+	{
+		ImGui::PushStyleColor(ImGuiCol_Text, text_color);
+
+		std::vector<std::string> signals = ev_holder->GetSignalsStr();
+		for (uint i = 0; i < signals.size(); ++i)
+		{
+			if (ImGui::MenuItem(signals[i].c_str()))
+			{
+
+			}
+		}
+
+		ImGui::PopStyleColor();
+		ImGui::EndMenu();
+	}
+	else
+	{
+		if (ImGui::IsItemHovered() && ThorUI::IsMouseDown(SDL_BUTTON_RIGHT))
+		{
+			ev.signal_name = "";
+			ev.signal_id = 0;
+		}
+	}
+	ImGui::PopStyleColor();
 }

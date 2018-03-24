@@ -87,3 +87,26 @@ void UI_Button::Load(Config& config)
 {
 	color = config.GetArray("Color").GetColor(0);
 }
+
+bool UI_Button::ConnectItemWithSignal(UI_Item* item, std::string signal_name)
+{
+	if (signal_name == "pressed")
+	{
+		s_pressed.connect_manager<UI_Item>(item, &UI_Item::SignalManager);
+		return true;
+	}
+	if (signal_name == "clicked")
+	{
+		s_clicked.connect_manager<UI_Item>(item, &UI_Item::SignalManager);
+		return true;
+	}
+	return UI_Item::ConnectItemWithSignal(item, signal_name);
+}
+
+std::vector<std::string> UI_Button::GetSignalStr()
+{
+	std::vector<std::string> ret = UI_Item::GetSignalsStr();
+	ret.push_back("pressed");
+	ret.push_back("clicked");
+	return ret;
+}

@@ -33,27 +33,8 @@ public:
 	THORUI_API void Save(Config& config);
 	THORUI_API void Load(Config& config);
 
-	template <typename... Args>
-	void SignalManager(int s_id, Args... args)
-	{
-		LOG("Signal called with id %i\n", s_id);
-		LOG("Self signal id:       %i\n", s_clicked.signal_id);
-
-		//ReadArgs(args...);
-	}
-
-	template <typename T, typename... Args>
-	void ReadArgs(T t, Args... args)
-	{
-		LOG("Reading argument value: %i", t);
-		ReadArgs(args...);
-	}
-	
-	void ConnectWithSignal(std::string signal, UI_Item* item)
-	{
-
-	}
-
+	THORUI_API virtual bool ConnectItemWithSignal(UI_Item* item, std::string signal_name);
+	THORUI_API virtual std::vector<std::string> GetSignalStr();
 	//Signals
 	//* Emitted when the mouse is pressed (mouse down)
 	Signal<int> s_pressed;

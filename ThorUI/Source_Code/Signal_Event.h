@@ -23,8 +23,9 @@ union S_Value
 
 struct Signal_Event
 {
-	//* The item holding the signal. Just for editor purposes
+	//* Just for editor purposes
 	uint item_signal_id = 0;
+	std::string signal_name;
 
 	//* The signal id that triggers the event
 	uint signal_id = 0;

@@ -97,12 +97,13 @@ public:
 	//* Connects the given UI_Item (item) SignalManager function with the signal given by signal_name
 	//* Returns true if sucess, false if no signal found or item already connected.
 	THORUI_API virtual bool ConnectItemWithSignal(UI_Item* item, std::string signal_name);
+	THORUI_API virtual std::vector<std::string> GetSignalsStr();
 
 	//* Manages to throw events in the item according to the signals recieved and it's parameters.
 	template <typename... Args>
 	void SignalManager(int s_id, Args... args)
 	{
-
+		LOG("Signal recieved on item %s. Signal id: %i\n", name.c_str(), s_id);
 	}
 
 	THORUI_API inline std::vector<Signal_Event>& GetSignalEvents() { return s_events; }

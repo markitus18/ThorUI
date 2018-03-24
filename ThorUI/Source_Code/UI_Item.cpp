@@ -169,8 +169,16 @@ bool UI_Item::ConnectItemWithSignal(UI_Item* item, std::string signal_name)
 	}
 	if (signal_name == "unhovered")
 	{
-		s_hovered.connect_manager<UI_Item>(item, &UI_Item::SignalManager);
+		s_unhovered.connect_manager<UI_Item>(item, &UI_Item::SignalManager);
 		return true;
 	}
 	return false;
+}
+
+std::vector<std::string> UI_Item::GetSignalsStr()
+{
+	std::vector<std::string> ret;
+	ret.push_back("hovered");
+	ret.push_back("unhovered");
+	return ret;
 }

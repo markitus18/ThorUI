@@ -8,6 +8,7 @@ class UI_Button;
 class UI_Text;
 class UI_Item;
 class UI_Editor;
+struct Signal_Event;
 
 class Inspector : public DockData
 {
@@ -22,7 +23,11 @@ private:
 	void DrawImageItem(UI_Image* img);
 	void DrawTextItem(UI_Text* text);
 	void DrawButtonItem(UI_Button* button);
+
+	//Events and signals
 	void DisplayItemEvents(UI_Item* item);
+	void DisplayEventItemMenu(UI_Item* item, UI_Item* ev_holder, Signal_Event& ev);
+	void DisplaySignalMenu(UI_Item* item, UI_Item* ev_holder, Signal_Event& ev);
 };
 
 #endif
