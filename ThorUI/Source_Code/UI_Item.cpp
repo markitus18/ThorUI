@@ -160,16 +160,22 @@ void UI_Item::InternalLoad(Config& config)
 	transform.UpdateGlobalTransform();
 }
 
-bool UI_Item::ConnectItemWithSignal(UI_Item* item, std::string signal_name)
+bool UI_Item::ConnectItemWithSignal(UI_Item* item, std::string signal_name, Signal_Event& s_ev)
 {
 	if (signal_name == "hovered")
 	{
 		s_hovered.connect_manager<UI_Item>(item, &UI_Item::SignalManager);
+		s_ev.signal_id = s_hovered.GetID();
+		s_ev.signal_name = signal_name;
+		s_ev.SetValueTypes(std::vector<std::string>());
 		return true;
 	}
 	if (signal_name == "unhovered")
 	{
 		s_unhovered.connect_manager<UI_Item>(item, &UI_Item::SignalManager);
+		s_ev.signal_id = s_unhovered.GetID();
+		s_ev.signal_name = signal_name;
+		s_ev.SetValueTypes(std::vector<std::string>{"string", "int", "float"});
 		return true;
 	}
 	return false;

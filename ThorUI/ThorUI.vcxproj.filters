@@ -129,5 +129,8 @@
     <ClCompile Include="Source_Code\TMath.cpp">
       <Filter>Utilities</Filter>
     </ClCompile>
+    <ClCompile Include="Source_Code\Signal_Event.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

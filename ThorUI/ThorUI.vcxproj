@@ -183,6 +183,7 @@
     <ClCompile Include="Source_Code\External_Libraries\parson\parson.c" />
     <ClCompile Include="Source_Code\Log.cpp" />
     <ClCompile Include="Source_Code\Mat3x3.cpp" />
+    <ClCompile Include="Source_Code\Signal_Event.cpp" />
     <ClCompile Include="Source_Code\TMath.cpp" />
     <ClCompile Include="Source_Code\stdafx.cpp" />
     <ClCompile Include="Source_Code\ThorUI.cpp" />

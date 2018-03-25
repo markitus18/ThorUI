@@ -4,46 +4,25 @@
 #include <vector>
 #include <string>
 
+#ifdef THORUI_EXPORTS
+#define THORUI_API __declspec(dllexport) 
+#else
+#define THORUI_API __declspec(dllimport) 
+#endif
+
 typedef unsigned int uint;
 
 enum S_Compare_Type
 {
-	None,
 	Equal,
+	Different,
 	Smaller,
 	Greater,
-};
-
-union S_Value
-{
-	int i;
-	float f;
-	char str;
+	None,
 };
 
 struct Signal_Event
 {
-	//* Just for editor purposes
-	uint item_signal_id = 0;
-	std::string signal_name;
-
-	//* The signal id that triggers the event
-	uint signal_id = 0;
-
-	//* Values to be compared with the arguments sent by the signal
-	std::vector<std::string> s_values;
-	std::vector<int> i_values;
-	std::vector<float> f_values;
-
-	//* Values data type
-	std::vector<std::string> v_types;
-
-	//* How to compare the values given by the values set
-	std::vector<S_Compare_Type> v_c_type;
-
-	//* Event to trigger when all conditions are satisfied
-	uint event_id = 0;
-
 	template <typename T>
 	bool CompareValue(T v, int v_index)
 	{
@@ -72,21 +51,70 @@ struct Signal_Event
 		return false;
 	}
 
+	THORUI_API void SetValueTypes(std::vector<std::string> types);
+	THORUI_API int GetVectorIndex(int v_index);
+	THORUI_API static std::string CompareTypeToString(S_Compare_Type type);
+
 	template <typename T>
 	T GetValue(int v_index)
 	{
 		std::string v_type = v_types[v_index];
-		int v_count = 0;
-		for (uint i = 0; i < v_types.size() && i <= v_index; ++i)
+		int vec_index = GetVectorIndex(v_index);
+
+		if (vec_index > 0)
 		{
-			if (v_type == v_types[i]) v_count++;
+			if (v_type == "string") return s_values[vec_index];
+			if (v_type == "int") return i_values[vec_index];
+			if (v_type == "float") return f_values[vec_index];
 		}
-		
-		if (v_type == "string") return s_values[v_count];
-		if (v_type == "int") return i_values[v_count];
-		if (v_type == "float") return f_values[v_count];
-	
 	}
+
+	template <typename T>
+	void SetValue(T v, int v_index)
+	{
+		std::string v_type = v_types[v_index];
+		int vec_index = GetVectorIndex(v_index);
+
+		if (v_type == "string")
+		{
+			while (vec_index >= s_values.size())
+				s_values.push_back("");
+			s_values[vec_index] = v;
+		}
+		if (v_type == "int")
+		{
+			while (vec_index >= i_values.size())
+				i_values.push_back(0);
+			i_values[vec_index] = v;
+		}
+		if (v_type == "float")
+		{
+			while (vec_index >= f_values.size())
+				f_values.push_back(0);
+			f_values[vec_index] = v;
+		}
+	}
+
+	//* Just for editor purposes
+	uint item_signal_id = 0;
+	std::string signal_name;
+
+	//* The signal id that triggers the event
+	uint signal_id = 0;
+
+	//* Values to be compared with the arguments sent by the signal
+	std::vector<std::string> s_values;
+	std::vector<int> i_values;
+	std::vector<float> f_values;
+
+	//* Values data type
+	std::vector<std::string> v_types;
+
+	//* How to compare the values given by the values set
+	std::vector<S_Compare_Type> v_c_type;
+
+	//* Event to trigger when all conditions are satisfied
+	uint event_id = 0;
 };
 
 #endif

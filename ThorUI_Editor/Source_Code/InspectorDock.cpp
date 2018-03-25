@@ -145,6 +145,7 @@ void Inspector::Draw()
 	}
 
 	DisplayItemEvents(selected);
+	DisplayItemApperance(selected);
 }
 
 void Inspector::DisplayItemName(UI_Item* item)
@@ -231,7 +232,10 @@ void Inspector::DisplayItemEvents(UI_Item* item)
 			ImGui::PushID(&ev);
 			DisplayEventItemMenu(item, event_holder, ev);
 			if (event_holder != nullptr)
+			{
 				DisplaySignalMenu(item, event_holder, ev);
+				DisplaySignalParameters(ev);
+			}
 
 			ImGui::Separator();
 			ImGui::PopID();
@@ -298,7 +302,7 @@ void Inspector::DisplaySignalMenu(UI_Item* item, UI_Item* ev_holder, Signal_Even
 		{
 			if (ImGui::MenuItem(signals[i].c_str()))
 			{
-
+				ev_holder->ConnectItemWithSignal(item, signals[i].c_str(), ev);
 			}
 		}
 
@@ -314,4 +318,88 @@ void Inspector::DisplaySignalMenu(UI_Item* item, UI_Item* ev_holder, Signal_Even
 		}
 	}
 	ImGui::PopStyleColor();
+}
+
+void Inspector::DisplaySignalParameters(Signal_Event& ev)
+{
+	for (uint i = 0; i < ev.v_types.size(); ++i)
+	{
+		std::string param_str = "    Param. " + std::to_string(i);
+		param_str += " (" + ev.v_types[i] + "):";
+		if (ev.v_types[i] == "int") param_str += "   ";
+		if (ev.v_types[i] == "float") param_str += " ";
+
+		ImGui::Text(param_str.c_str()); ImGui::SameLine();
+		ImVec4 text_color = ImGui::GetStyle().Colors[ImGuiCol_Text];
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.23f, 0.61f, 0.81f, 1.0f));
+		std::string menu_text = ev.CompareTypeToString(ev.v_c_type[i]) + " [value]";
+
+		ImGui::PushID(i);
+		if (ImGui::BeginMenu_ThorUI(menu_text.c_str()))
+		{
+			ImGui::PushStyleColor(ImGuiCol_Text, text_color);
+
+			for (uint t = 0; t < (ev.v_types[i] == "string" ? Smaller : None); t++)
+			{
+				if (ImGui::MenuItem(ev.CompareTypeToString((S_Compare_Type)t).c_str()))
+				{
+					ev.v_c_type[i] = (S_Compare_Type)t;
+				}
+			}
+
+			ImGui::PopStyleColor();
+			ImGui::EndMenu();
+		}
+		else
+		{
+			if (ImGui::IsItemHovered() && ThorUI::IsMouseDown(SDL_BUTTON_RIGHT))
+			{
+				ev.v_c_type[i] = None;
+			}
+		}
+
+		ImGui::PopStyleColor();
+
+		if (ev.v_c_type[i] != None)
+		{
+			ImGui::Text("    Insert Value:    "); ImGui::SameLine();
+			if (ev.v_types[i] == "string")
+			{
+				char text[30];
+				memcpy(text, ev.s_values[ev.GetVectorIndex(i)].c_str(), 30);
+
+				if (ImGui::InputText("##string", text, 30))
+				{
+					ev.s_values[ev.GetVectorIndex(i)] = text;
+				}
+			}
+			if (ev.v_types[i] == "int")
+			{
+				int value = ev.i_values[ev.GetVectorIndex(i)];
+				if (ImGui::InputInt("int", &value, 0, 0))
+				{
+					ev.i_values[ev.GetVectorIndex(i)] = value;
+				}
+			}
+			if (ev.v_types[i] == "float")
+			{
+				float value = ev.f_values[ev.GetVectorIndex(i)];
+				if (ImGui::InputFloat("float", &value, 0, 0))
+				{
+					ev.f_values[ev.GetVectorIndex(i)] = value;
+				}
+			}
+		}
+
+
+		ImGui::PopID();
+	}
+}
+
+void Inspector::DisplayItemApperance(UI_Item* item)
+{
+	if (ImGui::CollapsingHeader("Apperance Sets"))
+	{
+
+	}
 }

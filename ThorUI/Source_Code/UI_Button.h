@@ -33,8 +33,10 @@ public:
 	THORUI_API void Save(Config& config);
 	THORUI_API void Load(Config& config);
 
-	THORUI_API virtual bool ConnectItemWithSignal(UI_Item* item, std::string signal_name);
-	THORUI_API virtual std::vector<std::string> GetSignalStr();
+	THORUI_API virtual bool ConnectItemWithSignal(UI_Item* item, std::string signal_name, Signal_Event& s_ev);
+	THORUI_API virtual std::vector<std::string> GetSignalsStr();
+
+public:
 	//Signals
 	//* Emitted when the mouse is pressed (mouse down)
 	Signal<int> s_pressed;

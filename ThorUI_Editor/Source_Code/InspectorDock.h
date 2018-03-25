@@ -28,6 +28,10 @@ private:
 	void DisplayItemEvents(UI_Item* item);
 	void DisplayEventItemMenu(UI_Item* item, UI_Item* ev_holder, Signal_Event& ev);
 	void DisplaySignalMenu(UI_Item* item, UI_Item* ev_holder, Signal_Event& ev);
+	void DisplaySignalParameters(Signal_Event& ev);
+	
+	//Apperance sets
+	void DisplayItemApperance(UI_Item* item);
 };
 
 #endif
