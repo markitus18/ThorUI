@@ -39,17 +39,22 @@ public:
 		slots.erase(id);
 	}
 
-	uint connect_manager(std::function<void(int, Args...)> func)
+	void disconnect_manager(uint slot_id)
 	{
-		managers.insert(std::pair<uint, std::function<void(int, Args...)>>(++current_id, func));
-		return current_id;
+		managers.erase(slot_id);
+	}
+
+	uint connect_manager(std::function<void(int, Args...)> func, int slot_id)
+	{
+		managers.insert(std::pair<uint, std::function<void(int, Args...)>>(slot_id, func));
+		return slot_id; //TODO: return T/F
 
 	}
 
 	template <typename C>
-	uint connect_manager(C* instance, void(C::*func)(int, Args...))
+	uint connect_manager(C* instance, void(C::*func)(int, Args...), int slot_id)
 	{
-		return connect_manager([instance = instance, func = func](int v, Args... arg) { (instance->*(func))(v, arg...); });
+		return connect_manager([instance = instance, func = func](int v, Args... arg) { (instance->*(func))(v, arg...); }, slot_id);
 	}
 
 	uint GetID() { return signal_id; }
@@ -58,8 +63,6 @@ private:
 	std::map<uint, std::function<void(Args...)>> slots;
 	std::map<uint, std::function<void(int, Args...)>> managers;
 	uint current_id = 0;
-
-public: //TODO
 	uint signal_id = 0;
 };
 

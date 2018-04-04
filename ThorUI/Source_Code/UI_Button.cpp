@@ -21,9 +21,6 @@ UI_Button::UI_Button(Vec2 pos, Vec2 size) : UI_Item(pos, size)
 	color_data[2] = Color::Cyan();
 	name = "Button";
 	type = Button;
-
-	//s_clicked.connect_manager<UI_Button>(this, &UI_Button::SignalManager);
-	//s_pressed.connect_manager<UI_Button>(this, &UI_Button::SignalManager);
 }
 
 void UI_Button::Draw()
@@ -51,7 +48,7 @@ void UI_Button::OnItemEvent(Item_Event event)
 		case(Mouse_Down):
 		{
 			color = color_data[2];
-			s_pressed.Emit(5);
+			s_pressed.Emit(5, "hello", 1.5f);
 			break;
 		}
 		case(Mouse_Up):
@@ -92,12 +89,15 @@ bool UI_Button::ConnectItemWithSignal(UI_Item* item, std::string signal_name, Si
 {
 	if (signal_name == "pressed")
 	{
-		s_pressed.connect_manager<UI_Item>(item, &UI_Item::SignalManager);
+		s_pressed.connect_manager<UI_Item>(item, &UI_Item::SignalManager, item->GetID());
+		s_ev.signal_id = s_pressed.GetID();
+		s_ev.SetValueTypes(std::vector<std::string>{"int", "string", "float"});
 		return true;
 	}
 	if (signal_name == "clicked")
 	{
-		s_clicked.connect_manager<UI_Item>(item, &UI_Item::SignalManager);
+		s_clicked.connect_manager<UI_Item>(item, &UI_Item::SignalManager, item->GetID());
+		s_ev.signal_id = s_clicked.GetID();
 		return true;
 	}
 	return UI_Item::ConnectItemWithSignal(item, signal_name, s_ev);

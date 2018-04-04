@@ -104,6 +104,20 @@ public:
 	void SignalManager(int s_id, Args... args)
 	{
 		LOG("Signal recieved on item %s. Signal id: %i\n", name.c_str(), s_id);
+		for (uint i = 0; i < s_events.size(); ++i)
+		{
+			if (s_events[i].signal_id == s_id)
+			{
+				if (s_events[i].ProcessArgs(args...))
+				{
+					LOG("Signal event parameters sucessfully matched!");
+				}
+				else
+				{
+					int k = 1;
+				}
+			}
+		}
 	}
 
 	THORUI_API inline std::vector<Signal_Event>& GetSignalEvents() { return s_events; }

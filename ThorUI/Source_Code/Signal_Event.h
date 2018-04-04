@@ -26,9 +26,9 @@ struct Signal_Event
 	template <typename T>
 	bool CompareValue(T v, int v_index)
 	{
-		if (v_index <= values_size)
+		if (v_index <= v_c_type.size())
 		{
-			switch (v_c_type)
+			switch (v_c_type[v_index])
 			{
 				case(None):
 				{
@@ -46,6 +46,10 @@ struct Signal_Event
 				{
 					return v > GetValue<T>(v_index);
 				}
+				case (Different):
+				{
+					return v != GetValue<T>(v_index);
+				}
 			}
 		}
 		return false;
@@ -61,11 +65,11 @@ struct Signal_Event
 		std::string v_type = v_types[v_index];
 		int vec_index = GetVectorIndex(v_index);
 
-		if (vec_index > 0)
+		if (vec_index >= 0)
 		{
-			if (v_type == "string") return s_values[vec_index];
-			if (v_type == "int") return i_values[vec_index];
-			if (v_type == "float") return f_values[vec_index];
+			if (v_type == "string") return *(reinterpret_cast<T*>(&s_values[vec_index]));
+			if (v_type == "int") return *(reinterpret_cast<T*>(&i_values[vec_index]));
+			if (v_type == "float") return *(reinterpret_cast<T*>(&f_values[vec_index]));
 		}
 	}
 
@@ -93,6 +97,26 @@ struct Signal_Event
 				f_values.push_back(0);
 			f_values[vec_index] = v;
 		}
+	}
+
+	template <typename... Args>
+	bool ProcessArgs(Args... args)
+	{
+		return CompareArg(0, args...);
+	}
+
+	bool CompareArg(uint index)
+	{
+		return true;
+	}
+
+	template <typename T, typename... Args>
+	bool CompareArg(uint index, T t, Args... args)
+	{
+		bool ret = CompareValue(t, index);
+		if (ret == false)
+			return false;
+		return CompareArg(++index, args...);
 	}
 
 	//* Just for editor purposes
