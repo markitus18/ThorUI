@@ -227,7 +227,7 @@ void Inspector::DisplayItemEvents(UI_Item* item)
 		{
 			Signal_Event& ev = (*it);
 			UI_Item* event_holder = nullptr;
-			if (ev.item_signal_id != 0) event_holder = ThorUI::GetItem(ev.item_signal_id);
+			if (ev.item_id != 0) event_holder = ThorUI::GetItem(ev.item_id);
 			
 			ImGui::PushID(&ev);
 			DisplayEventItemMenu(item, event_holder, ev);
@@ -254,12 +254,13 @@ void Inspector::DisplayEventItemMenu(UI_Item* item, UI_Item* ev_holder, Signal_E
 	ImGui::Text("Item Signal: "); ImGui::SameLine();
 	ImVec4 text_color = ImGui::GetStyle().Colors[ImGuiCol_Text];
 	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.23f, 0.61f, 0.81f, 1.0f));
-	if (ImGui::BeginMenu_ThorUI(ev.item_signal_id == 0 ? "-- Select Item --" : ev_holder->GetName()))
+	if (ImGui::BeginMenu_ThorUI(ev.item_id == 0 ? "-- Select Item --" : ev_holder->GetName()))
 	{
 		ImGui::PushStyleColor(ImGuiCol_Text, text_color);
 		if (ImGui::MenuItem("Self"))
 		{
-			ev.item_signal_id = item->GetID();
+			ev.ClearSignal(); ev.ClearTypes();
+			ev.item_id = item->GetID();
 		}
 		ImGui::Separator();
 
@@ -270,7 +271,8 @@ void Inspector::DisplayEventItemMenu(UI_Item* item, UI_Item* ev_holder, Signal_E
 				ImGui::PushID(ThorUI::items[i]->GetID());
 				if (ImGui::MenuItem(ThorUI::items[i]->GetName()))
 				{
-					ev.item_signal_id = ThorUI::items[i]->GetID();
+					ev.ClearSignal(); ev.ClearTypes();
+					ev.item_id = ThorUI::items[i]->GetID();
 				}
 				ImGui::PopID();
 			}
@@ -282,7 +284,7 @@ void Inspector::DisplayEventItemMenu(UI_Item* item, UI_Item* ev_holder, Signal_E
 	{
 		if (ImGui::IsItemHovered() && ThorUI::IsMouseDown(SDL_BUTTON_RIGHT))
 		{
-			ev.item_signal_id = 0;
+			ev.item_id = 0;
 		}
 	}
 	ImGui::PopStyleColor();
@@ -332,7 +334,7 @@ void Inspector::DisplaySignalParameters(Signal_Event& ev)
 		ImGui::Text(param_str.c_str()); ImGui::SameLine();
 		ImVec4 text_color = ImGui::GetStyle().Colors[ImGuiCol_Text];
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.23f, 0.61f, 0.81f, 1.0f));
-		std::string menu_text = ev.CompareTypeToString(ev.v_c_type[i]) + " [value]";
+		std::string menu_text = ev.CompareTypeToString(ev.v_c_types[i]) + " [value]";
 
 		ImGui::PushID(i);
 		if (ImGui::BeginMenu_ThorUI(menu_text.c_str()))
@@ -343,7 +345,7 @@ void Inspector::DisplaySignalParameters(Signal_Event& ev)
 			{
 				if (ImGui::MenuItem(ev.CompareTypeToString((S_Compare_Type)t).c_str()))
 				{
-					ev.v_c_type[i] = (S_Compare_Type)t;
+					ev.v_c_types[i] = (S_Compare_Type)t;
 				}
 			}
 
@@ -354,13 +356,13 @@ void Inspector::DisplaySignalParameters(Signal_Event& ev)
 		{
 			if (ImGui::IsItemHovered() && ThorUI::IsMouseDown(SDL_BUTTON_RIGHT))
 			{
-				ev.v_c_type[i] = None;
+				ev.v_c_types[i] = None;
 			}
 		}
 
 		ImGui::PopStyleColor();
 
-		if (ev.v_c_type[i] != None)
+		if (ev.v_c_types[i] != None)
 		{
 			ImGui::Text("    Insert Value:    "); ImGui::SameLine();
 			if (ev.v_types[i] == "string")
@@ -390,7 +392,6 @@ void Inspector::DisplaySignalParameters(Signal_Event& ev)
 				}
 			}
 		}
-
 
 		ImGui::PopID();
 	}

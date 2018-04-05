@@ -142,6 +142,11 @@ void UI_Item::InternalSave(Config& config)
 	config.SetNumber("Parent ID", transform.GetParent() ? transform.GetParent()->Container<UI_Item>()->GetID() : -1);
 
 	Save(config);
+	Config_Array ev_data = config.SetArray("Signal_Events");
+	for (uint i = 0; i < s_events.size(); ++i)
+	{
+		s_events[i].Save(ev_data.AddNode());
+	}
 }
 
 void UI_Item::InternalLoad(Config& config)

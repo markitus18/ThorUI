@@ -21,43 +21,50 @@ enum S_Compare_Type
 	None,
 };
 
+class Config;
+
 struct Signal_Event
 {
+	THORUI_API void SetValueTypes(std::vector<std::string> types);
+	THORUI_API int GetVectorIndex(int v_index);
+	THORUI_API static std::string CompareTypeToString(S_Compare_Type type);
+	THORUI_API void Reset();
+	THORUI_API void ClearSignal();
+	THORUI_API void ClearTypes();
+	THORUI_API void Save(Config& data);
+	THORUI_API void Load(Config& data);
+
 	template <typename T>
 	bool CompareValue(T v, int v_index)
 	{
-		if (v_index <= v_c_type.size())
+		if (v_index <= v_c_types.size())
 		{
-			switch (v_c_type[v_index])
+			switch (v_c_types[v_index])
 			{
-				case(None):
-				{
-					return true;
-				}
-				case(Equal):
-				{
-					return v == GetValue<T>(v_index);
-				}
-				case(Smaller):
-				{
-					return v < GetValue<T>(v_index);
-				}
-				case(Greater):
-				{
-					return v > GetValue<T>(v_index);
-				}
-				case (Different):
-				{
-					return v != GetValue<T>(v_index);
-				}
+			case(None):
+			{
+				return true;
+			}
+			case(Equal):
+			{
+				return v == GetValue<T>(v_index);
+			}
+			case(Smaller):
+			{
+				return v < GetValue<T>(v_index);
+			}
+			case(Greater):
+			{
+				return v > GetValue<T>(v_index);
+			}
+			case (Different):
+			{
+				return v != GetValue<T>(v_index);
+			}
 			}
 		}
 		return false;
 	}
-
-	THORUI_API void SetValueTypes(std::vector<std::string> types);
-	THORUI_API int GetVectorIndex(int v_index);
-	THORUI_API static std::string CompareTypeToString(S_Compare_Type type);
 
 	template <typename T>
 	T GetValue(int v_index)
@@ -105,22 +112,18 @@ struct Signal_Event
 		return CompareArg(0, args...);
 	}
 
-	bool CompareArg(uint index)
-	{
-		return true;
-	}
+	//The function is called when all the arguments have been expanded or when there are no arguments at all.
+	//In both cases, the parameters are successflully matched
+	THORUI_API inline bool CompareArg(uint index) { return true; }
 
 	template <typename T, typename... Args>
 	bool CompareArg(uint index, T t, Args... args)
 	{
-		bool ret = CompareValue(t, index);
-		if (ret == false)
-			return false;
-		return CompareArg(++index, args...);
+		return CompareValue(t, index) ? CompareArg(++index, args...) : false;
 	}
 
 	//* Just for editor purposes
-	uint item_signal_id = 0;
+	uint item_id = 0;
 	std::string signal_name;
 
 	//* The signal id that triggers the event
@@ -135,10 +138,10 @@ struct Signal_Event
 	std::vector<std::string> v_types;
 
 	//* How to compare the values given by the values set
-	std::vector<S_Compare_Type> v_c_type;
+	std::vector<S_Compare_Type> v_c_types;
 
 	//* Event to trigger when all conditions are satisfied
-	uint event_id = 0;
+	uint apperance_set = 0;
 };
 
 #endif

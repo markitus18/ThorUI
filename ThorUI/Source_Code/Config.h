@@ -80,8 +80,8 @@ public:
 	THORUI_API Config_Array(JSON_Array* arr);
 
 	//Append attributes ------------
-	THORUI_API void AddNumber(int number);
-	THORUI_API void AddString(char* string);
+	THORUI_API void AddNumber(double number);
+	THORUI_API void AddString(const char* string);
 	THORUI_API void AddBool(bool boolean);
 	THORUI_API void AddVec2(const Vec2& vec);
 	THORUI_API void AddColor(const Color& color);

@@ -103,7 +103,7 @@ public:
 	template <typename... Args>
 	void SignalManager(int s_id, Args... args)
 	{
-		LOG("Signal recieved on item %s. Signal id: %i\n", name.c_str(), s_id);
+		LOG("\nSignal recieved on item %s. Signal id: %i", name.c_str(), s_id);
 		for (uint i = 0; i < s_events.size(); ++i)
 		{
 			if (s_events[i].signal_id == s_id)
@@ -114,7 +114,7 @@ public:
 				}
 				else
 				{
-					int k = 1;
+					LOG("Signal even recieved. No parameters match.");
 				}
 			}
 		}

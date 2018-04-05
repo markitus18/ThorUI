@@ -92,12 +92,14 @@ bool UI_Button::ConnectItemWithSignal(UI_Item* item, std::string signal_name, Si
 		s_pressed.connect_manager<UI_Item>(item, &UI_Item::SignalManager, item->GetID());
 		s_ev.signal_id = s_pressed.GetID();
 		s_ev.SetValueTypes(std::vector<std::string>{"int", "string", "float"});
+		s_ev.signal_name = signal_name;
 		return true;
 	}
 	if (signal_name == "clicked")
 	{
 		s_clicked.connect_manager<UI_Item>(item, &UI_Item::SignalManager, item->GetID());
 		s_ev.signal_id = s_clicked.GetID();
+		s_ev.signal_name = signal_name;
 		return true;
 	}
 	return UI_Item::ConnectItemWithSignal(item, signal_name, s_ev);

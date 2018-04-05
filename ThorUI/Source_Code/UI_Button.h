@@ -39,7 +39,7 @@ public:
 public:
 	//Signals
 	//* Emitted when the mouse is pressed (mouse down)
-	Signal<int> s_pressed;
+	Signal<int, std::string, float> s_pressed;
 	//* Emitted when the mouse is released (and previously pressed) in the item (mouse up)
 	Signal<> s_clicked;
 
