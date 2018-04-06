@@ -163,10 +163,16 @@ void UI_Editor::DrawMainMenuBar()
 			}
 			if (ImGui::MenuItem("Load"))
 			{
+				hierarchy->ClearTree();
 				ThorUI::LoadScene("scene_save.thor");
+				for (uint i = 1; i < ThorUI::items.size(); ++i)
+				{
+					hierarchy->AddNode(ThorUI::items[i]);
+				}
 			}
 			if (ImGui::MenuItem("New Scene"))
 			{
+				hierarchy->ClearTree();
 				ThorUI::ClearScene();
 			}
 

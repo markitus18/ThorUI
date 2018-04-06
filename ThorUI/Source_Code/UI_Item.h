@@ -103,7 +103,7 @@ public:
 	template <typename... Args>
 	void SignalManager(int s_id, Args... args)
 	{
-		LOG("\nSignal recieved on item %s. Signal id: %i", name.c_str(), s_id);
+		LOG("Signal recieved on item %s. Signal id: %i", name.c_str(), s_id);
 		for (uint i = 0; i < s_events.size(); ++i)
 		{
 			if (s_events[i].signal_id == s_id)

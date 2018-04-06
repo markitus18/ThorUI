@@ -163,6 +163,8 @@ namespace ThorUI
 	//Secen management --------------------------------
 	THORUI_API void SaveScene(const char* path);
 	THORUI_API void LoadScene(const char* path);
+	//Sets all event connections after the items are loaded
+	THORUI_API void ConnectLoadedItems();
 	THORUI_API void ClearScene();
 	THORUI_API void SetCanvasSize(Vec2 size);
 	//-------------------------------------------------

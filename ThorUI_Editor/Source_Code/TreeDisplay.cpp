@@ -506,3 +506,16 @@ void TreeDisplay<T>::RecalculateOpenNodes(TreeNode<T>& node)
 		RecalculateOpenNodes(*GetNode(node.GetChildID(i)));
 	}
 }
+
+template <typename T>
+void TreeDisplay<T>::ClearTree()
+{
+	nodes.clear();
+	selected.clear();
+	to_select.clear();
+	to_unselect.clear();
+	to_drag.clear();
+	last_selected = nullptr;
+	dragging = false;
+	selection_started = false;
+}

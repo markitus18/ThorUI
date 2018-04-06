@@ -161,6 +161,13 @@ void UI_Item::InternalLoad(Config& config)
 
 	id = config.GetNumber("ID", -1);
 
+	Config_Array ev_arr = config.GetArray("Signal_Events");
+	for (uint i = 0; i < ev_arr.GetSize(); ++i)
+	{
+		s_events.push_back(Signal_Event());
+		s_events[i].Load(ev_arr.GetNode(i));
+	}
+
 	Load(config); //TODO: consider if updating pos before or after
 	transform.UpdateGlobalTransform();
 }

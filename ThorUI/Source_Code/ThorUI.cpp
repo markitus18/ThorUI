@@ -14,6 +14,7 @@
 #include "UI_Image.h"
 #include "UI_Button.h"
 #include "UI_Text.h"
+#include "Signal_Event.h"
 #include "Circle.h"
 #include "TMath.h"
 #include <time.h> // TODO:
@@ -583,7 +584,7 @@ namespace ThorUI
 				for (uint i = 0; i < arr.GetSize(); ++i)
 				{
 					Config node = arr.GetNode(i);
-					Item_Type type = (Item_Type)(int)node.GetNumber("Type");
+					Item_Type type = (Item_Type)(int)node.GetNumber("Item_Type");
 					UI_Item* item = nullptr;
 
 					switch (type)
@@ -610,24 +611,32 @@ namespace ThorUI
 					new_items.push_back(item);
 				}
 
+				//Set all parent hierarchy after all items are created
 				for (uint i = 0; i < parent_ids.size(); ++i)
 				{
 					bool set = false;
-					for (uint item = 0; item < items.size() && !set; ++item)
-					{
-						if (parent_ids[i] == items[item]->GetID())
-						{
-							new_items[i]->SetParent(items[item], false);
-							set = true;
-						}
-					}
-					if (!set)
-					{
-						new_items[i]->SetParent(window_item, false);
-					}
+					UI_Item* parent = GetItem(parent_ids[i]);
+					new_items[i]->SetParent(parent ? parent : window_item, nullptr, false);
 				}
+				ConnectLoadedItems();
 			}
 			SDL_RWclose(rw);
+		}
+	}
+
+	void ConnectLoadedItems()
+	{
+		for (uint i = 1; i < items.size(); ++i)
+		{
+			std::vector<Signal_Event>& events = items[i]->GetSignalEvents();
+			for (uint e = 0; e < events.size(); e++)
+			{
+				UI_Item* to_connect = GetItem(events[e].item_id);
+				if (to_connect != nullptr)
+					to_connect->ConnectItemWithSignal(items[i], events[e].signal_name, events[e]);
+				else
+					events[e].SetLinkError();
+			}
 		}
 	}
 

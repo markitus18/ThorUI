@@ -61,6 +61,9 @@ public:
 	bool SetParentByPlace(TreeNode<T>& parent, std::vector<TreeNode<T>*>& children, TreeNode<T>* next = nullptr);
 	void RecalculateOpenNodes(TreeNode<T>& node);
 
+	//Clears all items in the tree. Keeps the root node
+	void ClearTree();
+
 public:
 	TreeNode<T> root;
 	std::map<int, TreeNode<T>> nodes;

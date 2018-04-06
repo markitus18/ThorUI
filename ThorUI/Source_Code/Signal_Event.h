@@ -28,11 +28,15 @@ struct Signal_Event
 	THORUI_API void SetValueTypes(std::vector<std::string> types);
 	THORUI_API int GetVectorIndex(int v_index);
 	THORUI_API static std::string CompareTypeToString(S_Compare_Type type);
+
 	THORUI_API void Reset();
 	THORUI_API void ClearSignal();
 	THORUI_API void ClearTypes();
 	THORUI_API void Save(Config& data);
 	THORUI_API void Load(Config& data);
+
+	//Function to be called when the signal links of this event cannot be constructed
+	THORUI_API void SetLinkError();
 
 	template <typename T>
 	bool CompareValue(T v, int v_index)
@@ -142,6 +146,9 @@ struct Signal_Event
 
 	//* Event to trigger when all conditions are satisfied
 	uint apperance_set = 0;
+
+	bool s_event_loaded = false;
+	bool link_error = false;
 };
 
 #endif
