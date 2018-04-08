@@ -159,6 +159,7 @@
     <ClInclude Include="Source_Code\Color.h" />
     <ClInclude Include="Source_Code\Config.h" />
     <ClInclude Include="Source_Code\External_Libraries\parson\parson.h" />
+    <ClInclude Include="Source_Code\Item_Appearance.h" />
     <ClInclude Include="Source_Code\Log.h" />
     <ClInclude Include="Source_Code\Mat3x3.h" />
     <ClInclude Include="Source_Code\Signal.h" />
@@ -181,6 +182,7 @@
     <ClCompile Include="Source_Code\Config.cpp" />
     <ClCompile Include="Source_Code\dllmain.cpp" />
     <ClCompile Include="Source_Code\External_Libraries\parson\parson.c" />
+    <ClCompile Include="Source_Code\Item_Appearance.cpp" />
     <ClCompile Include="Source_Code\Log.cpp" />
     <ClCompile Include="Source_Code\Mat3x3.cpp" />
     <ClCompile Include="Source_Code\Signal_Event.cpp" />

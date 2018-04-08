@@ -90,7 +90,6 @@ bool UI_Editor::Init(SDL_Window* window)
 void UI_Editor::Draw()
 {
 	ThorUI::PreStart(); //Just to use ThorUI keyboard and mouse input
-
 	if (run_simulation == false)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, scene->frameBuffer);
@@ -118,7 +117,6 @@ void UI_Editor::Draw()
 	}
 
 	ImGui_ImplSdlGL3_NewFrame(window);
-	
 	HandleInput();
 
 	DrawMainMenuBar();

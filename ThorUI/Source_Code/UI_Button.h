@@ -5,16 +5,6 @@
 #include "Color.h"
 #include <map>
 
-struct Button_Apparence
-{
-	THORUI_API Button_Apparence() { memset(change_attribute, false, 4); };
-	Vec2 size;
-	Vec2 position;
-	int texture_id;
-	Color color;
-	bool change_attribute[4];
-};
-
 class Config;
 
 class UI_Button : public UI_Item
@@ -34,12 +24,13 @@ public:
 	THORUI_API void Load(Config& config);
 
 	THORUI_API virtual bool ConnectItemWithSignal(UI_Item* item, std::string signal_name, Signal_Event& s_ev);
+	THORUI_API virtual bool DisconnectItemWithSignal(UI_Item* item, Signal_Event& s_ev);
 	THORUI_API virtual std::vector<std::string> GetSignalsStr();
 
 public:
 	//Signals
 	//* Emitted when the mouse is pressed (mouse down)
-	Signal<int, std::string, float> s_pressed;
+	Signal<> s_pressed;
 	//* Emitted when the mouse is released (and previously pressed) in the item (mouse up)
 	Signal<> s_clicked;
 

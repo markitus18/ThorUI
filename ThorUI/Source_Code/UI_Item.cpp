@@ -147,6 +147,12 @@ void UI_Item::InternalSave(Config& config)
 	{
 		s_events[i].Save(ev_data.AddNode());
 	}
+
+	Config_Array ap_sets_data = config.SetArray("Ap_Sets");
+	for (uint i = 0; i < appearance_sets.size(); ++i)
+	{
+		appearance_sets[i].Save(ap_sets_data.AddNode());
+	}
 }
 
 void UI_Item::InternalLoad(Config& config)
@@ -168,6 +174,13 @@ void UI_Item::InternalLoad(Config& config)
 		s_events[i].Load(ev_arr.GetNode(i));
 	}
 
+	Config_Array ap_sets_arr = config.GetArray("Ap_Sets");
+	for (uint i = 0; i < ap_sets_arr.GetSize(); ++i)
+	{
+		appearance_sets.push_back(Appearance_Set());
+		appearance_sets[i].Load(ap_sets_arr.GetNode(i));
+	}
+
 	Load(config); //TODO: consider if updating pos before or after
 	transform.UpdateGlobalTransform();
 }
@@ -176,7 +189,7 @@ bool UI_Item::ConnectItemWithSignal(UI_Item* item, std::string signal_name, Sign
 {
 	if (signal_name == "hovered")
 	{
-		s_hovered.connect_manager<UI_Item>(item, &UI_Item::SignalManager, item->GetID());
+		s_ev.slot_id = s_hovered.connect_manager<UI_Item>(item, &UI_Item::SignalManager, item->GetID());
 		s_ev.signal_id = s_hovered.GetID();
 		s_ev.signal_name = signal_name;
 		s_ev.SetValueTypes(std::vector<std::string>());
@@ -184,10 +197,27 @@ bool UI_Item::ConnectItemWithSignal(UI_Item* item, std::string signal_name, Sign
 	}
 	if (signal_name == "unhovered")
 	{
-		s_unhovered.connect_manager<UI_Item>(item, &UI_Item::SignalManager, item->GetID());
+		s_ev.slot_id = s_unhovered.connect_manager<UI_Item>(item, &UI_Item::SignalManager, item->GetID());
 		s_ev.signal_id = s_unhovered.GetID();
 		s_ev.signal_name = signal_name;
-		s_ev.SetValueTypes(std::vector<std::string>{"string", "int", "float"});
+		s_ev.SetValueTypes(std::vector<std::string>());
+		return true;
+	}
+	return false;
+}
+
+bool UI_Item::DisconnectItemWithSignal(UI_Item* item, Signal_Event& s_ev)
+{
+	if (s_ev.signal_name == "hovered")
+	{
+		s_hovered.disconnect_manager(s_ev.slot_id);
+		s_ev.ClearSignal();
+		return true;
+	}
+	if (s_ev.signal_name == "unhovered")
+	{
+		s_unhovered.disconnect_manager(s_ev.slot_id);
+		s_ev.ClearSignal();
 		return true;
 	}
 	return false;
@@ -199,4 +229,34 @@ std::vector<std::string> UI_Item::GetSignalsStr()
 	ret.push_back("hovered");
 	ret.push_back("unhovered");
 	return ret;
+}
+
+void UI_Item::AddApSet()
+{
+	std::string name = "Apperance Set ";
+	name += std::to_string(appearance_sets.size());
+	Appearance_Set set;
+	set.name = name;
+	appearance_sets.push_back(set);
+}
+
+void UI_Item::SetAppearanceSet(uint index)
+{
+	if (index < appearance_sets.size())
+	{
+		Appearance_Set& set = appearance_sets[index];
+		if (set.item_ap != nullptr)
+		{
+			if (set.item_ap->attributes["position"] == true)
+				transform.SetPos(set.item_ap->transform.GetPos());
+			if (set.item_ap->attributes["scale"] == true)
+				transform.SetScale(set.item_ap->transform.GetScale());
+			if (set.item_ap->attributes["angle"] == true)
+				transform.SetRotationDeg(set.item_ap->transform.GetRotation());
+			if (set.item_ap->attributes["size"] == true)
+				SetSize(set.item_ap->size);
+			if (set.item_ap->attributes["pivot"] == true)
+				SetPivot(set.item_ap->pivot);
+		}
+	}
 }

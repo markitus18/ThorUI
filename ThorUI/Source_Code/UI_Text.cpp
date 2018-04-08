@@ -61,7 +61,7 @@ void UI_Text::SetFont(uint font_id)
 
 void UI_Text::SetSize(Vec2 size)
 {
-	this->size = size;
+	size = size;
 	transform.SetPivot((Vec2(0.5f, 0.5f) - pivot) * size);
 	LoadTexture();
 }

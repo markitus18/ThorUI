@@ -61,13 +61,14 @@ std::string Signal_Event::CompareTypeToString(S_Compare_Type type)
 void Signal_Event::Reset()
 {
 	ClearSignal();
-	ClearTypes();
-	apperance_set = 0;
+	apperance_set = -1;
+	item_id = 0;
 }
 
 void Signal_Event::ClearSignal()
 {
-	item_id = 0;
+	ClearTypes();
+	slot_id = -1;
 	signal_name = "";
 	signal_id = 0;
 }

@@ -145,7 +145,7 @@ void Inspector::Draw()
 	}
 
 	DisplayItemEvents(selected);
-	DisplayItemApperance(selected);
+	DisplayItemApSets(selected);
 }
 
 void Inspector::DisplayItemName(UI_Item* item)
@@ -251,14 +251,18 @@ void Inspector::DisplayItemEvents(UI_Item* item)
 
 void Inspector::DisplayEventItemMenu(UI_Item* item, UI_Item* ev_holder, Signal_Event& ev)
 {
-	ImGui::Text("Item Signal: "); ImGui::SameLine();
+	ImGui::Text("Signal Launcher: "); ImGui::SameLine();
 	ImVec4 text_color = ImGui::GetStyle().Colors[ImGuiCol_Text];
 	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.23f, 0.61f, 0.81f, 1.0f));
-	if (ImGui::BeginMenu_ThorUI(ev.item_id == 0 ? "-- Select Item --" : ev_holder->GetName()))
+	if (ImGui::BeginMenu_ThorUI(ev_holder ? ev_holder->GetName() : "-- Select Item --"))
 	{
 		ImGui::PushStyleColor(ImGuiCol_Text, text_color);
 		if (ImGui::MenuItem("Self"))
 		{
+			if (ev.slot_id != -1)
+			{
+				ev_holder->DisconnectItemWithSignal(item, ev);
+			}
 			ev.ClearSignal(); ev.ClearTypes();
 			ev.item_id = item->GetID();
 		}
@@ -284,15 +288,41 @@ void Inspector::DisplayEventItemMenu(UI_Item* item, UI_Item* ev_holder, Signal_E
 	{
 		if (ImGui::IsItemHovered() && ThorUI::IsMouseDown(SDL_BUTTON_RIGHT))
 		{
-			ev.item_id = 0;
+			if (ev.slot_id != -1)
+			{
+				ev_holder->DisconnectItemWithSignal(item, ev);
+			}
+			ev.Reset();
 		}
+	}
+	ImGui::PopStyleColor();
+
+	ImGui::Text("Apperance Set:   "); ImGui::SameLine();
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.23f, 0.61f, 0.81f, 1.0f));
+	std::vector<Appearance_Set>& sets = item->GetApSets();
+	if (ImGui::BeginMenu_ThorUI(ev.apperance_set != -1 ? sets[ev.apperance_set].name.c_str() : "-- Select Set--"))
+	{
+		ImGui::PushStyleColor(ImGuiCol_Text, text_color);
+		for (uint i = 0; i < sets.size(); ++i)
+		{
+			if (ImGui::MenuItem(sets[i].name.c_str()))
+			{
+				ev.apperance_set = i;
+			}
+		}
+		ImGui::PopStyleColor();
+		ImGui::EndMenu();
+	}
+	else if (ImGui::IsItemHovered() && ThorUI::IsMouseDown(SDL_BUTTON_RIGHT))
+	{
+		ev.apperance_set = -1;
 	}
 	ImGui::PopStyleColor();
 }
 
 void Inspector::DisplaySignalMenu(UI_Item* item, UI_Item* ev_holder, Signal_Event& ev)
 {
-	ImGui::Text("  Signal:    "); ImGui::SameLine();
+	ImGui::Text("  Signal:        "); ImGui::SameLine();
 	ImVec4 text_color = ImGui::GetStyle().Colors[ImGuiCol_Text];
 	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.23f, 0.61f, 0.81f, 1.0f));
 	if (ImGui::BeginMenu_ThorUI(ev.signal_name == "" ? "-- Select Signal --" : ev.signal_name.c_str()))
@@ -304,6 +334,10 @@ void Inspector::DisplaySignalMenu(UI_Item* item, UI_Item* ev_holder, Signal_Even
 		{
 			if (ImGui::MenuItem(signals[i].c_str()))
 			{
+				if (ev.slot_id != -1)
+				{
+					ev_holder->DisconnectItemWithSignal(item, ev);
+				}
 				ev_holder->ConnectItemWithSignal(item, signals[i].c_str(), ev);
 			}
 		}
@@ -397,10 +431,109 @@ void Inspector::DisplaySignalParameters(Signal_Event& ev)
 	}
 }
 
-void Inspector::DisplayItemApperance(UI_Item* item)
+void Inspector::DisplayItemApSets(UI_Item* item)
 {
 	if (ImGui::CollapsingHeader("Apperance Sets"))
 	{
+		std::vector<Appearance_Set>& sets = item->GetApSets();
+		for (uint i = 0; i < sets.size(); ++i)
+		{
+			DisplayItemApSet(item, sets[i]);
+		}
 
+		ImGui::NewLine(); ImGui::SameLine(0, 50);
+		if (ImGui::Button("Add Set", ImVec2(ImGui::GetWindowWidth() - 100, 0)))
+		{
+			item->AddApSet();
+		}
 	}
+}
+
+void Inspector::DisplayItemApSet(UI_Item* item, Appearance_Set& set)
+{
+	if (ImGui::TreeNodeEx(set.name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		if (set.item_ap == nullptr)
+		{
+			if (ImGui::Button("Add Item Attributes"))
+			{
+				set.item_ap = new Item_Ap();
+			}
+		}
+		else
+		{
+			DisplayItemAp(item, set.item_ap);
+		}
+		ImGui::TreePop();
+	}
+
+	ImGui::Separator();
+}
+
+void Inspector::DisplayItemAp(UI_Item* item, Item_Ap* ap)
+{
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.22f, 0.83f, 0.94f, 1.0f));
+	ImGui::Text("UI_Item");
+	ImGui::PopStyleColor();
+	ImGui::Text("Add Attribute: "); ImGui::SameLine();
+	if (ImGui::BeginMenu_ThorUI(""))
+	{
+		std::unordered_map<std::string, bool>::iterator it;
+		for (it = ap->attributes.begin(); it != ap->attributes.end(); ++it)
+		{
+			if (it->second == false && ImGui::MenuItem(it->first.c_str()))
+			{
+				it->second = true;
+			}
+		}
+		ImGui::EndMenu();
+	}
+
+	ImGui::PushID(ap);
+
+	if (ap->attributes["position"] == true)
+	{
+		Vec2 pos = ap->transform.GetPos();
+		if (ImGui::DragFloat2("Position", &pos))
+		{
+			ap->transform.SetPos(pos);
+		}
+	}
+	if (ap->attributes["size"] == true)
+	{
+		Vec2 size = ap->size;
+		if (ImGui::DragFloat2("Size", &size))
+		{
+			ap->size = size;
+		}
+	}
+	if (ap->attributes["scale"] == true)
+	{
+		Vec2 scale = ap->transform.GetScale();
+		if (ImGui::DragFloat2("Scale", &scale, 0.03f))
+		{
+			ap->transform.SetScale(scale);
+		}
+	}
+
+	if (ap->attributes["angle"] == true)
+	{
+		ImGui::Text("Angle");
+		ImGui::SameLine(0, 100 - ImGui::CalcTextSize("Angle").x);
+		float angle = ap->transform.GetRotation();
+		if (ImGui::DragFloat("##Angle", &angle, 0.03f))
+		{
+			ap->transform.SetRotationDeg(angle);
+		}
+	}
+
+	if (ap->attributes["pivot"] == true)
+	{
+		Vec2 pivot = ap->pivot;
+		if (ImGui::DragFloat2("Pivot", &pivot, 0.03f))
+		{
+			ap->pivot = pivot;
+		}
+	}
+	ImGui::PopID();
 }

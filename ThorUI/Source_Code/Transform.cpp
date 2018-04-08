@@ -2,6 +2,13 @@
 #include <math.h>
 #include "TMath.h"
 
+Transform::Transform()
+{
+	local_m.SetIdentity();
+	global_m.SetIdentity();
+	scale.Set(1, 1);
+}
+
 Transform::Transform(void* container) : container(container)
 {
 	local_m.SetIdentity();
@@ -12,6 +19,11 @@ Transform::Transform(void* container) : container(container)
 Transform::Transform(void* container, Vec2 pos, Vec2 scale, float rotation): container(container), pos(pos), scale(scale), rotation(rotation)
 {
 	local_m.FromTRS(pos, scale, rotation);
+}
+
+void Transform::SetContainer(void* container)
+{
+	this->container = container;
 }
 
 void Transform::SetPos(Vec2 pos)

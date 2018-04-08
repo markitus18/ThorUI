@@ -8,9 +8,11 @@
 class Transform
 {
 public:
+	THORUI_API Transform();
 	THORUI_API Transform(void* container);
 	THORUI_API Transform(void* container, Vec2 pos, Vec2 scale, float rotation);
 
+	THORUI_API void SetContainer(void* container);
 	THORUI_API void SetPos(Vec2 pos);
 	THORUI_API void SetGlobalPos(Vec2 pos);
 	THORUI_API void SetScale(Vec2 scale);
@@ -57,7 +59,7 @@ private:
 	//Transformation of the center of the item in global_space
 	Mat3x3 center_m;
 
-	Transform* parent;
+	Transform* parent = nullptr;
 	std::vector<Transform*> children;
 
 	void* container = nullptr; //TODO: void* or Transform<T> ?

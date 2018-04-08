@@ -21,10 +21,10 @@ Dock::~Dock()
 void Dock::Draw()
 {
 	ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
-		ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoScrollbar |
-		ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBringToFrontOnFocus |
+		ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoBringToFrontOnFocus |
 		ImGuiWindowFlags_NoResize;
 
+	if (separation != NONE || data_children.empty()) flags |= ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse;
 	if (root == true)
 	{
 		ImGui::SetNextWindowPos(ImVec2(position.x, position.y));
@@ -337,7 +337,7 @@ void Dock::CloseDockData(DockData* data)
 
 void Dock::SetSize(Vec2 size)
 {
-	this->size = size;
+	this->size = size - Vec2(6, 0);
 
 	for (uint i = 0; i < data_children.size(); ++i)
 	{

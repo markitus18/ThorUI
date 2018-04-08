@@ -129,6 +129,7 @@ struct Signal_Event
 	//* Just for editor purposes
 	uint item_id = 0;
 	std::string signal_name;
+	int slot_id = -1;
 
 	//* The signal id that triggers the event
 	uint signal_id = 0;
@@ -145,7 +146,7 @@ struct Signal_Event
 	std::vector<S_Compare_Type> v_c_types;
 
 	//* Event to trigger when all conditions are satisfied
-	uint apperance_set = 0;
+	int apperance_set = -1;
 
 	bool s_event_loaded = false;
 	bool link_error = false;

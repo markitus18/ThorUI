@@ -1,14 +1,11 @@
 #ifndef __UI_ITEM_H__
 #define __UI_ITEM_H__
 
-#include "Vec2.h"
 #include "Rect.h"
-#include "Transform.h"
 #include "Signal.h"
 #include "Signal_Event.h"
+#include "Item_Appearance.h" //Transform -> Vec2, std vector / Color
 #include "Log.h"
-
-#include <vector>
 
 enum Item_Type
 {
@@ -97,30 +94,33 @@ public:
 	//* Connects the given UI_Item (item) SignalManager function with the signal given by signal_name
 	//* Returns true if sucess, false if no signal found or item already connected.
 	THORUI_API virtual bool ConnectItemWithSignal(UI_Item* item, std::string signal_name, Signal_Event& s_ev);
+	THORUI_API virtual bool DisconnectItemWithSignal(UI_Item* item, Signal_Event& s_ev);
+
 	THORUI_API virtual std::vector<std::string> GetSignalsStr();
 
 	//* Manages to throw events in the item according to the signals recieved and it's parameters.
 	template <typename... Args>
 	void SignalManager(int s_id, Args... args)
 	{
-		LOG("Signal recieved on item %s. Signal id: %i", name.c_str(), s_id);
 		for (uint i = 0; i < s_events.size(); ++i)
 		{
 			if (s_events[i].signal_id == s_id)
 			{
 				if (s_events[i].ProcessArgs(args...))
 				{
-					LOG("Signal event parameters sucessfully matched!");
+					if (s_events[i].apperance_set != -1)
+						SetAppearanceSet(s_events[i].apperance_set);
 				}
-				else
-				{
-					LOG("Signal even recieved. No parameters match.");
-				}
+				break;
 			}
 		}
 	}
 
 	THORUI_API inline std::vector<Signal_Event>& GetSignalEvents() { return s_events; }
+
+	THORUI_API void AddApSet();
+	THORUI_API inline std::vector<Appearance_Set>& GetApSets() { return appearance_sets; }
+	THORUI_API virtual void SetAppearanceSet(uint index);
 
 protected:
 	THORUI_API virtual void Save(Config& config) = 0;
@@ -148,6 +148,7 @@ protected:
 	//* Holds the transformation matrix
 	Transform transform;
 
+	std::vector<Appearance_Set> appearance_sets;
 	std::vector<Signal_Event> s_events;
 
 public:

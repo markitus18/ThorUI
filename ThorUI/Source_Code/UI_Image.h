@@ -2,7 +2,6 @@
 #define __UI_IMAGE_H__
 
 #include "UI_Item.h"
-#include "Color.h" //TODO: fwd declaration and Color* ?
 
 class Config;
 

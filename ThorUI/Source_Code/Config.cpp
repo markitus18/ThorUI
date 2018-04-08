@@ -39,7 +39,6 @@ uint Config::Serialize(char** buffer)
 
 bool Config::NodeExists()
 {
-	//Casting (bool)root_value could cause problems
 	return root_value != nullptr;
 }
 
@@ -118,6 +117,11 @@ Config Config::GetNode(const char* name) const
 	return Config(json_object_get_object(node, name));
 }
 //Endof Get attributes---------
+
+bool Config::HasValue(const char* name) const
+{
+	return json_object_has_value(node, name) != 0;
+}
 
 Config_Array::Config_Array()
 {

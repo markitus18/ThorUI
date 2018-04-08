@@ -67,6 +67,7 @@ public:
 	THORUI_API Config GetNode(const char* name) const;
 	//Endof Get attributes---------
 
+	THORUI_API bool HasValue(const char* name) const;
 private:
 	JSON_Value* root_value = nullptr; //Only used for file root
 	JSON_Object* node = nullptr;

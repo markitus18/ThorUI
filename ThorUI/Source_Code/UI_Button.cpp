@@ -42,24 +42,24 @@ void UI_Button::OnItemEvent(Item_Event event)
 	{
 		case(Mouse_Enter):
 		{
-			color = color_data[1];
+			//color = color_data[1];
 			break;
 		}
 		case(Mouse_Down):
 		{
-			color = color_data[2];
-			s_pressed.Emit(5, "hello", 1.5f);
+			//color = color_data[2];
+			s_pressed.Emit();
 			break;
 		}
 		case(Mouse_Up):
 		{
-			color = color_data[1];
+			//color = color_data[1];
 			s_clicked.Emit();
 			break;
 		}
 		case(Mouse_Exit):
 		{
-			color = color_data[0];
+			//color = color_data[0];
 			break;
 		}
 	}
@@ -89,21 +89,38 @@ bool UI_Button::ConnectItemWithSignal(UI_Item* item, std::string signal_name, Si
 {
 	if (signal_name == "pressed")
 	{
-		s_pressed.connect_manager<UI_Item>(item, &UI_Item::SignalManager, item->GetID());
+		s_ev.slot_id = s_pressed.connect_manager<UI_Item>(item, &UI_Item::SignalManager, item->GetID());
 		s_ev.signal_id = s_pressed.GetID();
-		s_ev.SetValueTypes(std::vector<std::string>{"int", "string", "float"});
+		s_ev.SetValueTypes(std::vector<std::string>());
 		s_ev.signal_name = signal_name;
 		return true;
 	}
 	if (signal_name == "clicked")
 	{
-		s_clicked.connect_manager<UI_Item>(item, &UI_Item::SignalManager, item->GetID());
+		s_ev.slot_id = s_clicked.connect_manager<UI_Item>(item, &UI_Item::SignalManager, item->GetID());
 		s_ev.signal_id = s_clicked.GetID();
 		s_ev.SetValueTypes(std::vector<std::string>());
 		s_ev.signal_name = signal_name;
 		return true;
 	}
 	return UI_Item::ConnectItemWithSignal(item, signal_name, s_ev);
+}
+
+bool UI_Button::DisconnectItemWithSignal(UI_Item* item, Signal_Event& s_ev)
+{
+	if (s_ev.signal_name == "pressed")
+	{
+		s_pressed.disconnect_manager(s_ev.slot_id);
+		s_ev.ClearSignal();
+		return true;
+	}
+	if (s_ev.signal_name == "clicked")
+	{
+		s_clicked.disconnect_manager(s_ev.slot_id);
+		s_ev.ClearSignal();
+		return true;
+	}
+	return UI_Item::DisconnectItemWithSignal(item, s_ev);
 }
 
 std::vector<std::string> UI_Button::GetSignalsStr()
