@@ -337,7 +337,8 @@ void Dock::CloseDockData(DockData* data)
 
 void Dock::SetSize(Vec2 size)
 {
-	this->size = size - Vec2(6, 0);
+	this->size = size - Vec2(6, 0); //Temoral fix to allow the scrollbar to appear
+									//ImGui window size doesn't have the exact value.
 
 	for (uint i = 0; i < data_children.size(); ++i)
 	{
