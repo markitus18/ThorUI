@@ -61,6 +61,9 @@ struct Button_Ap
 
 	uint texture_id;
 	Color color;
+
+	THORUI_API void Save(Config& config);
+	THORUI_API void Load(Config& config);
 };
 
 struct Text_Ap

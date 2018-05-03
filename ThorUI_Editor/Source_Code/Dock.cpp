@@ -62,7 +62,7 @@ void Dock::Draw()
 
 			dock_children[0]->Draw();
 
-			if (separation == VERTICAL)	ImGui::SameLine(0, 0);
+ 			if (separation == VERTICAL)	ImGui::SameLine(0, 0);
 			ImVec2 separator_pos = ImGui::GetCursorPos();
 			ImGui::SetCursorPos(separator_pos + (separation == VERTICAL ? ImVec2(7, 0) : ImVec2(0, 7)));
 	
@@ -338,7 +338,7 @@ void Dock::CloseDockData(DockData* data)
 void Dock::SetSize(Vec2 size)
 {
 	this->size = size - Vec2(6, 0); //Temoral fix to allow the scrollbar to appear
-									//ImGui window size doesn't have the exact value.
+									//ImGui window size doesn't have the exact value. 
 
 	for (uint i = 0; i < data_children.size(); ++i)
 	{

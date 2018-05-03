@@ -464,6 +464,17 @@ void Inspector::DisplayItemApSet(UI_Item* item, Appearance_Set& set)
 		{
 			DisplayItemAp(item, set.item_ap);
 		}
+		if (set.button_ap == nullptr)
+		{
+			if (item->GetType() == Button && ImGui::Button("Add Button Attributes"))
+			{
+				set.button_ap = new Button_Ap();
+			}
+		}
+		else
+		{
+			DisplayButtonAp(item, set.button_ap);
+		}
 		ImGui::TreePop();
 	}
 
@@ -533,6 +544,52 @@ void Inspector::DisplayItemAp(UI_Item* item, Item_Ap* ap)
 		if (ImGui::DragFloat2("Pivot", &pivot, 0.03f))
 		{
 			ap->pivot = pivot;
+		}
+	}
+	ImGui::PopID();
+}
+
+void Inspector::DisplayButtonAp(UI_Item* item, Button_Ap* ap)
+{
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.22f, 0.83f, 0.94f, 1.0f));
+	ImGui::Text("UI_Button");
+	ImGui::PopStyleColor();
+	ImGui::Text("Add Attribute: "); ImGui::SameLine();
+	ImGui::PushID(ap);
+	if (ImGui::BeginMenu_ThorUI(""))
+	{
+		std::unordered_map<std::string, bool>::iterator it;
+		for (it = ap->attributes.begin(); it != ap->attributes.end(); ++it)
+		{
+			if (it->second == false && ImGui::MenuItem(it->first.c_str()))
+			{
+				it->second = true;
+			}
+		}
+		ImGui::EndMenu();
+	}
+
+	if (ap->attributes["color"] == true)
+	{
+		Color color = ap->color;
+		if (ImGui::ColorEdit3("Color", color.ptr()))
+		{
+			ap->color = color;
+		}
+	}
+	if (ap->attributes["texture"] == true)
+	{
+		if (ImGui::BeginMenu_ThorUI("Set Texture: "))
+		{
+			std::map<uint, ThorUI::Texture>::iterator it;
+			for (it = ThorUI::textures.begin(); it != ThorUI::textures.end(); ++it)
+			{
+				if (ImGui::MenuItem((*it).second.path.c_str()))
+				{
+					ap->texture_id = (*it).second.id;
+				}
+			}
+			ImGui::EndMenu();
 		}
 	}
 	ImGui::PopID();

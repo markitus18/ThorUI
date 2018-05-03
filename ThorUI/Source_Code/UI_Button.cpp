@@ -130,3 +130,21 @@ std::vector<std::string> UI_Button::GetSignalsStr()
 	ret.push_back("clicked");
 	return ret;
 }
+
+void UI_Button::SetAppearanceSet(uint index)
+{
+	UI_Item::SetAppearanceSet(index);
+
+	if (index < appearance_sets.size())
+	{
+		Appearance_Set& set = appearance_sets[index];
+		if (set.button_ap != nullptr)
+		{
+			if (set.button_ap->attributes["color"] == true)
+				color = set.button_ap->color;
+			if (set.button_ap->attributes["texture"] == true)
+				int k = 1; //TODO: change button texture
+		}
+	}
+
+}

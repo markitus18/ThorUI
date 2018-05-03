@@ -11,6 +11,7 @@ class UI_Editor;
 struct Signal_Event;
 struct Appearance_Set;
 struct Item_Ap;
+struct Button_Ap;
 
 class Inspector : public DockData
 {
@@ -36,6 +37,7 @@ private:
 	void DisplayItemApSets(UI_Item* item);
 	void DisplayItemApSet(UI_Item* item, Appearance_Set& set);
 	void DisplayItemAp(UI_Item* item, Item_Ap* ap);
+	void DisplayButtonAp(UI_Item* item, Button_Ap* ap);
 };
 
 #endif

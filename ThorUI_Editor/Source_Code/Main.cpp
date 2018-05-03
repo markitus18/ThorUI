@@ -13,9 +13,7 @@
 #include "Color.h"
 #include "ThorUI.h"
 #include "Editor.h"
-
-//tmp
-#include "SceneDock.h"
+#include "Log.h"
 
 SDL_Window* gWindow = nullptr;
 SDL_Surface* gScreenSurface = nullptr;
@@ -81,6 +79,8 @@ bool initGL()
 		success = false;
 	}
 
+	if (SDL_GL_SetSwapInterval(1) < 0)
+		LOG("Unable to set VSYNC: %s", SDL_GetError());
 	return success;
 }
 
@@ -99,6 +99,7 @@ bool init()
 	{
 		//Create window
 		gWindow = SDL_CreateWindow("Thor UI", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1600, 900, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN |SDL_WINDOW_RESIZABLE);
+
 		if (gWindow == NULL)
 		{
 			printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -130,23 +131,6 @@ void close()
 	SDL_Quit();
 }
 
-void LoadUI()
-{
-	/*
-	image = new UI_Image(Vec2(0.0, 0.0), Vec2(249, 375), ThorUI::LoadTexture("photo.bmp"));
-	ThorUI::AddItem(image);
-	//button = new UI_Button(Vec2(0.3f, 0.3f), Vec2(0.5, 0.5));
-	//ThorUI::AddItem(button);
-
-	font_1 = ThorUI::LoadFont("Times_New_Roman_Normal.ttf", 64);
-	font_2 = ThorUI::LoadFont("arial.ttf", 64);
-	text = new UI_Text(Vec2(70, 200), Vec2(0, 0), "Tres Tristos Lligres...");
-	text->SetFont(font_1);
-	text->SetParent(image);
-	ThorUI::AddItem(text);
-	*/
-}
-
 int main(int argc, char** args)
 {
 	//Start up SDL and create window
@@ -167,7 +151,6 @@ int main(int argc, char** args)
 		SDL_StartTextInput();
 		//ThorUI::Init(gWindow);
 		editor->Init(gWindow);
-		//LoadUI();
 
 		while (quit == false)
 		{
@@ -188,7 +171,6 @@ int main(int argc, char** args)
 			//ThorUI::Draw();
 
 			editor->Draw();
-			//ThorUI::DrawImage(Vec2(0, 0), Vec2(ThorUI::screen_size.x * 4 / 5, ThorUI::screen_size.y * 4 / 5), editor->scene->renderTexture, Color::White());
 
 			SDL_GL_SwapWindow(gWindow);
 			ThorUI::UpdateKeyboardState();

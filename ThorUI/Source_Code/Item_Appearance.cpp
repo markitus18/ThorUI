@@ -59,6 +59,33 @@ void Item_Ap::Load(Config& config)
 	}
 }
 
+void Button_Ap::Save(Config& config)
+{
+	if (attributes["color"] == true)
+	{
+		config.SetArray("color").AddColor(color);
+	}
+	if (attributes["texture"] == true)
+	{
+		config.SetNumber("texture_id", texture_id);
+	}
+}
+
+void Button_Ap::Load(Config& config)
+{
+	if (config.HasValue("color") == true)
+	{
+		attributes["color"] = true;
+		color = config.GetArray("color").GetColor(0);
+	}
+	if (config.HasValue("texture_id") == true)
+	{
+		attributes["texture"] = true;
+		texture_id = config.GetNumber("texture_id");
+	}
+}
+
+
 void Appearance_Set::Save(Config& config)
 {
 	config.SetString("Name", name.c_str());
@@ -66,6 +93,11 @@ void Appearance_Set::Save(Config& config)
 	if (item_ap != nullptr)
 	{
 		item_ap->Save(config);
+	}
+	config.SetBool("Button_Ap", button_ap != nullptr);
+	if (button_ap != nullptr)
+	{
+		button_ap->Save(config);
 	}
 }
 
@@ -78,4 +110,11 @@ void Appearance_Set::Load(Config& config)
 		item_ap = new Item_Ap();
 		item_ap->Load(config);
 	}
+	bool button_b = config.GetBool("Button_Ap");
+	if (button_ap)
+	{
+		button_ap = new Button_Ap();
+		button_ap->Load(config);
+	}
+	
 }
