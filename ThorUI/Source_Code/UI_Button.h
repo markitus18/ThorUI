@@ -17,7 +17,9 @@ public:
 	THORUI_API void OnItemEvent(Item_Event event);
 
 	THORUI_API void SetColor(Color color);
+	THORUI_API void SetTexture(uint texture_id);
 
+	THORUI_API uint GetTexID() const;
 	THORUI_API Color GetColor() const;
 
 	THORUI_API void Save(Config& config);
@@ -36,8 +38,8 @@ public:
 	Signal<> s_clicked;
 
 private:
+	uint texture_id = 0;
 	Color color;
-	Color color_data[3];
 };
 
 #endif // !__UI_BUTTON_H__

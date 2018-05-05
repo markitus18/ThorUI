@@ -12,6 +12,10 @@ struct Signal_Event;
 struct Appearance_Set;
 struct Item_Ap;
 struct Button_Ap;
+struct Image_Ap;
+struct Text_Ap;
+
+namespace ThorUI { struct Texture; }
 
 class Inspector : public DockData
 {
@@ -27,6 +31,8 @@ private:
 	void DrawTextItem(UI_Text* text);
 	void DrawButtonItem(UI_Button* button);
 
+	ThorUI::Texture* DisplayTextureSelection(ThorUI::Texture* texture);
+
 	//Events and signals
 	void DisplayItemEvents(UI_Item* item);
 	void DisplayEventItemMenu(UI_Item* item, UI_Item* ev_holder, Signal_Event& ev);
@@ -36,8 +42,11 @@ private:
 	//Apperance sets
 	void DisplayItemApSets(UI_Item* item);
 	void DisplayItemApSet(UI_Item* item, Appearance_Set& set);
+
 	void DisplayItemAp(UI_Item* item, Item_Ap* ap);
 	void DisplayButtonAp(UI_Item* item, Button_Ap* ap);
+	void DisplayImageAp(UI_Item* item, Image_Ap* ap);
+	void DisplayTextAp(UI_Item* item, Text_Ap* ap);
 };
 
 #endif

@@ -7,33 +7,35 @@
 
 UI_Button::UI_Button()
 {
-	color = color_data[0] = Color::Teal();
-	color_data[1] = Color::Olive();
-	color_data[2] = Color::Cyan();
+	color = Color::Teal();
 	name = "Button";
 	type = Button;
 }
 
 UI_Button::UI_Button(Vec2 pos, Vec2 size) : UI_Item(pos, size)
 {
-	color = color_data[0] = Color::Teal();
-	color_data[1] = Color::Olive();
-	color_data[2] = Color::Cyan();
+	color = Color::Teal();
 	name = "Button";
 	type = Button;
 }
 
 void UI_Button::Draw()
 {
-	if (IsActiveHierarchy() == true)
-	{
-		glPushMatrix();
-		glMultMatrixf(transform.Center().OpenGLPtr());
-		
-		ThorUI::DrawQuad(-size/2, size, color, true, 5.0f);
+	if (IsActiveHierarchy() == false) return;
 
-		glPopMatrix();
+	glPushMatrix();
+	glMultMatrixf(transform.Center().OpenGLPtr());
+	
+	if (texture_id != 0)
+	{
+		ThorUI::DrawImage(-size / 2, size, texture_id, color);
 	}
+	else
+	{
+		ThorUI::DrawQuad(-size/2, size, color, true, 5.0f);
+	}
+
+	glPopMatrix();
 }
 
 void UI_Button::OnItemEvent(Item_Event event)
@@ -67,7 +69,23 @@ void UI_Button::OnItemEvent(Item_Event event)
 
 void UI_Button::SetColor(Color color)
 {
-	color_data[0] = this->color = color;
+	this->color = color;
+}
+
+void UI_Button::SetTexture(uint texture_id)
+{
+	if (texture_id == 0 || this->texture_id == texture_id) return;
+
+	if (this->texture_id != 0)
+		ThorUI::OnLeaveTexture(this->texture_id);
+
+	this->texture_id = texture_id;
+	ThorUI::OnSetTexture(texture_id);
+}
+
+uint UI_Button::GetTexID() const
+{
+	return texture_id;
 }
 
 Color UI_Button::GetColor() const
@@ -143,7 +161,7 @@ void UI_Button::SetAppearanceSet(uint index)
 			if (set.button_ap->attributes["color"] == true)
 				color = set.button_ap->color;
 			if (set.button_ap->attributes["texture"] == true)
-				int k = 1; //TODO: change button texture
+				SetTexture(set.button_ap->texture_id);
 		}
 	}
 

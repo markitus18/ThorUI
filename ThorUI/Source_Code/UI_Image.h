@@ -14,9 +14,6 @@ public:
 	THORUI_API void Draw();
 	THORUI_API void OnItemEvent(Item_Event event) {}
 
-	THORUI_API void Save(Config& config);
-	THORUI_API void Load(Config& config);
-
 	THORUI_API //Setters
 	THORUI_API void SetColor(Color color);
 	THORUI_API void SetTexture(uint texture_id);
@@ -25,9 +22,13 @@ public:
 	THORUI_API Color GetColor() const;
 	THORUI_API uint GetTexID() const;
 
+	THORUI_API void Save(Config& config);
+	THORUI_API void Load(Config& config);
+
+	THORUI_API virtual void SetAppearanceSet(uint index);
+
 	template <typename... Args>
 	void SignalManager(int s_id, Args... args) {};
-
 
 public:
 

@@ -81,6 +81,23 @@ Vec2 UI_Text::GetTexSize() const
 	return texture_size;
 }
 
+void UI_Text::SetAppearanceSet(uint index)
+{
+	UI_Item::SetAppearanceSet(index);
+
+	if (index < appearance_sets.size())
+	{
+		Appearance_Set& set = appearance_sets[index];
+		if (set.text_ap != nullptr)
+		{
+			if (set.text_ap->attributes["color"] == true)
+				color = set.text_ap->color;
+			if (set.text_ap->attributes["text"] == true)
+				SetText(set.text_ap->text.c_str());
+		}
+	}
+}
+
 void UI_Text::Draw()
 {
 	if (IsActiveHierarchy() == true && texture_id != 0)

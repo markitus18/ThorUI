@@ -13,6 +13,9 @@ public:
 	THORUI_API UI_Text(Vec2 pos, Vec2 size, const char* text);
 	THORUI_API ~UI_Text();
 
+	THORUI_API void Draw();
+	THORUI_API void OnItemEvent(Item_Event event) {}
+
 	THORUI_API void SetText(const char* text);
 	THORUI_API void SetColor(const Color& color);
 	THORUI_API void SetFont(uint font_id);
@@ -22,8 +25,7 @@ public:
 	THORUI_API Color GetColor() const;
 	THORUI_API Vec2 GetTexSize() const;
 
-	THORUI_API void Draw();
-	THORUI_API void OnItemEvent(Item_Event event) {}
+	THORUI_API virtual void SetAppearanceSet(uint index);
 
 protected:
 	THORUI_API void Save(Config& config);

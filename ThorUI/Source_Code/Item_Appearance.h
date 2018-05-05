@@ -76,11 +76,8 @@ struct Text_Ap
 
 	std::unordered_map<std::string, bool> attributes;
 
-	Vec2 texture_size;
 	std::string text;
 	Color color;
-	uint texture_id = 0;
-	uint font_id = 1;
 };
 
 struct Appearance_Set

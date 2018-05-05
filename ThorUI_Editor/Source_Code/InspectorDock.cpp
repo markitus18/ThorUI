@@ -1,5 +1,7 @@
 #include "InspectorDock.h"
 
+#include "ThorUI.h"
+
 #include "UI_Item.h"
 #include "UI_Image.h"
 #include "UI_Button.h"
@@ -164,25 +166,9 @@ void Inspector::DrawImageItem(UI_Image* img)
 	{
 		editor->DisplayTexture(ThorUI::GetTexture(img->GetTexID()));
 	}
-	if (ImGui::BeginMenu_ThorUI("Set Texture: "))
+	if (ThorUI::Texture* new_tex = DisplayTextureSelection(ThorUI::GetTexture(img->GetTexID())))
 	{
-		std::map<uint, ThorUI::Texture>::iterator it;
-		for (it = ThorUI::textures.begin(); it != ThorUI::textures.end(); ++it)
-		{
-			if (ImGui::MenuItem((*it).second.path.c_str()))
-			{
-				img->SetTexture((*it).second.id);
-			}
-		}
-		if (ImGui::MenuItem("Load New Texture..."))
-		{
-			std::string fileName = FileSystem::OpenFileDialog();
-			if (fileName != "")
-			{
-				img->SetTexture(ThorUI::LoadTexture(fileName.c_str()));
-			}
-		}
-		ImGui::EndMenu();
+		img->SetTexture(new_tex->id);
 	}
 	Color color = img->GetColor();
 	if (ImGui::ColorEdit3("Color", color.ptr()))
@@ -210,11 +196,48 @@ void Inspector::DrawTextItem(UI_Text* text)
 
 void Inspector::DrawButtonItem(UI_Button* button)
 {
+	ImGui::Text("Source Image");
+	if (button->GetTexID() != 0)
+	{
+		editor->DisplayTexture(ThorUI::GetTexture(button->GetTexID()));
+	}
+	if (ThorUI::Texture* new_tex = DisplayTextureSelection(ThorUI::GetTexture(button->GetTexID())))
+	{
+		button->SetTexture(new_tex->id);
+	}
 	Color color = button->GetColor();
 	if (ImGui::ColorEdit3("Color", color.ptr()))
 	{
 		button->SetColor(color);
 	}
+}
+
+ThorUI::Texture* Inspector::DisplayTextureSelection(ThorUI::Texture* texture)
+{
+	ThorUI::Texture* ret = nullptr;
+	std::string menu_str = "Set Texture: ";
+	if (texture != nullptr) menu_str.append(texture->path);
+	if (ImGui::BeginMenu_ThorUI(menu_str.c_str()))
+	{
+		std::map<uint, ThorUI::Texture>::iterator it;
+		for (it = ThorUI::textures.begin(); it != ThorUI::textures.end(); ++it)
+		{
+			if (ImGui::MenuItem((*it).second.path.c_str()))
+			{
+				ret = &(*it).second;
+			}
+		}
+		if (ImGui::MenuItem("Load New Texture..."))
+		{
+			std::string fileName = FileSystem::OpenFileDialog();
+			if (fileName != "")
+			{
+				ret = ThorUI::GetTexture(ThorUI::LoadTexture(fileName.c_str()));
+			}
+		}
+		ImGui::EndMenu();
+	}
+	return ret;
 }
 
 void Inspector::DisplayItemEvents(UI_Item* item)
@@ -475,6 +498,28 @@ void Inspector::DisplayItemApSet(UI_Item* item, Appearance_Set& set)
 		{
 			DisplayButtonAp(item, set.button_ap);
 		}
+		if (set.image_ap == nullptr)
+		{
+			if (item->GetType() == Image && ImGui::Button("Add Image Attributes"))
+			{
+				set.image_ap = new Image_Ap();
+			}
+		}
+		else
+		{
+			DisplayImageAp(item, set.image_ap);
+		}
+		if (set.text_ap == nullptr)
+		{
+			if (item->GetType() == Text && ImGui::Button("Add Text Attributes"))
+			{
+				set.text_ap = new Text_Ap();
+			}
+		}
+		else
+		{
+			DisplayTextAp(item, set.text_ap);
+		}
 		ImGui::TreePop();
 	}
 
@@ -579,18 +624,85 @@ void Inspector::DisplayButtonAp(UI_Item* item, Button_Ap* ap)
 	}
 	if (ap->attributes["texture"] == true)
 	{
-		if (ImGui::BeginMenu_ThorUI("Set Texture: "))
+		if (ThorUI::Texture* tex = DisplayTextureSelection(ThorUI::GetTexture(ap->texture_id)))
 		{
-			std::map<uint, ThorUI::Texture>::iterator it;
-			for (it = ThorUI::textures.begin(); it != ThorUI::textures.end(); ++it)
-			{
-				if (ImGui::MenuItem((*it).second.path.c_str()))
-				{
-					ap->texture_id = (*it).second.id;
-				}
-			}
-			ImGui::EndMenu();
+			ap->texture_id = tex->id;
 		}
+	}
+	ImGui::PopID();
+}
+
+void Inspector::DisplayImageAp(UI_Item* item, Image_Ap* ap)
+{
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.22f, 0.83f, 0.94f, 1.0f));
+	ImGui::Text("UI_Image");
+	ImGui::PopStyleColor();
+	ImGui::Text("Add Attribute: "); ImGui::SameLine();
+	ImGui::PushID(ap);
+	if (ImGui::BeginMenu_ThorUI(""))
+	{
+		std::unordered_map<std::string, bool>::iterator it;
+		for (it = ap->attributes.begin(); it != ap->attributes.end(); ++it)
+		{
+			if (it->second == false && ImGui::MenuItem(it->first.c_str()))
+			{
+				it->second = true;
+			}
+		}
+		ImGui::EndMenu();
+	}
+	if (ap->attributes["color"] == true)
+	{
+		Color color = ap->color;
+		if (ImGui::ColorEdit3("Color", color.ptr()))
+		{
+			ap->color = color;
+		}
+	}
+	if (ap->attributes["texture"] == true)
+	{
+		if (ThorUI::Texture* tex = DisplayTextureSelection(ThorUI::GetTexture(ap->texture_id)))
+		{
+			ap->texture_id = tex->id;
+		}
+	}
+	ImGui::PopID();
+}
+
+void Inspector::DisplayTextAp(UI_Item* item, Text_Ap* ap)
+{
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.22f, 0.83f, 0.94f, 1.0f));
+	ImGui::Text("UI_Text");
+	ImGui::PopStyleColor();
+	ImGui::Text("Add Attribute: "); ImGui::SameLine();
+	ImGui::PushID(ap);
+	if (ImGui::BeginMenu_ThorUI(""))
+	{
+		std::unordered_map<std::string, bool>::iterator it;
+		for (it = ap->attributes.begin(); it != ap->attributes.end(); ++it)
+		{
+			if (it->second == false && ImGui::MenuItem(it->first.c_str()))
+			{
+				it->second = true;
+			}
+		}
+		ImGui::EndMenu();
+	}
+	if (ap->attributes["color"] == true)
+	{
+		Color color = ap->color;
+		if (ImGui::ColorEdit3("Color", color.ptr()))
+		{
+			ap->color = color;
+		}
+	}
+	if (ap->attributes["text"] == true)
+	{
+		char text[50];
+		strcpy_s(text, 50, ap->text.c_str());
+		ImGuiInputTextFlags name_input_flags = ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue;
+		if (ImGui::InputTextEx("###text_ap", text, 50, ImVec2(200, 0), name_input_flags))
+			ap->text = text;
 	}
 	ImGui::PopID();
 }

@@ -49,6 +49,23 @@ void UI_Image::Load(Config& config)
 	}
 }
 
+void UI_Image::SetAppearanceSet(uint index)
+{
+	UI_Item::SetAppearanceSet(index);
+
+	if (index < appearance_sets.size())
+	{
+		Appearance_Set& set = appearance_sets[index];
+		if (set.image_ap != nullptr)
+		{
+			if (set.image_ap->attributes["color"] == true)
+				color = set.button_ap->color;
+			if (set.image_ap->attributes["texture"] == true)
+				SetTexture(set.image_ap->texture_id);
+		}
+	}
+}
+
 void UI_Image::SetColor(Color color)
 {
 	this->color = color;
