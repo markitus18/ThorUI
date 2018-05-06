@@ -39,7 +39,6 @@ void UI_Image::Save(Config& config)
 
 void UI_Image::Load(Config& config)
 {
-	color = config.GetArray("Color").GetColor(0);
 	std::string tex_path =  config.GetString("Texture");
 	if (tex_path != "")
 	{
@@ -47,6 +46,7 @@ void UI_Image::Load(Config& config)
 		if (tex_id != 0)
 			SetTexture(tex_id);
 	}
+	color = config.GetArray("Color").GetColor(0);
 }
 
 void UI_Image::SetAppearanceSet(uint index)

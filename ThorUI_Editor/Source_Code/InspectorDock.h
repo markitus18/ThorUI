@@ -7,13 +7,16 @@ class UI_Image;
 class UI_Button;
 class UI_Text;
 class UI_Item;
+class UI_Panel;
 class UI_Editor;
 struct Signal_Event;
+
 struct Appearance_Set;
 struct Item_Ap;
 struct Button_Ap;
 struct Image_Ap;
 struct Text_Ap;
+struct Panel_Ap;
 
 namespace ThorUI { struct Texture; }
 
@@ -30,6 +33,7 @@ private:
 	void DrawImageItem(UI_Image* img);
 	void DrawTextItem(UI_Text* text);
 	void DrawButtonItem(UI_Button* button);
+	void DrawPanelItem(UI_Panel* button);
 
 	ThorUI::Texture* DisplayTextureSelection(ThorUI::Texture* texture);
 
@@ -47,6 +51,7 @@ private:
 	void DisplayButtonAp(UI_Item* item, Button_Ap* ap);
 	void DisplayImageAp(UI_Item* item, Image_Ap* ap);
 	void DisplayTextAp(UI_Item* item, Text_Ap* ap);
+	void DisplayPanelAp(UI_Item* item, Panel_Ap* ap);
 };
 
 #endif

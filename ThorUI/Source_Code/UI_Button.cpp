@@ -95,11 +95,20 @@ Color UI_Button::GetColor() const
 
 void UI_Button::Save(Config& config)
 {
+	ThorUI::Texture* tex = ThorUI::GetTexture(texture_id);
+	config.SetString("Texture", tex != nullptr ? tex->path.c_str() : "");
 	config.SetArray("Color").AddColor(color);
 }
 
 void UI_Button::Load(Config& config)
 {
+	std::string tex_path = config.GetString("Texture");
+	if (tex_path != "")
+	{
+		int tex_id = ThorUI::LoadTexture(tex_path.c_str());
+		if (tex_id != 0)
+			SetTexture(tex_id);
+	}
 	color = config.GetArray("Color").GetColor(0);
 }
 

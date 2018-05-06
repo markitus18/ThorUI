@@ -14,6 +14,7 @@
 #include "UI_Image.h"
 #include "UI_Button.h"
 #include "UI_Text.h"
+#include "UI_Panel.h"
 #include "Signal_Event.h"
 #include "Circle.h"
 #include "TMath.h"
@@ -403,16 +404,35 @@ namespace ThorUI
 
 	void DrawQuad(Vec2 pos, Vec2 size, Color color, bool filled, float lineWidth)
 	{
+		if (filled == false)
+		{
+			DrawNoFilledQuad(pos, size, color, lineWidth);
+			return;
+		}
+
+		glEnable(GL_BLEND);
 		glColor4fv(color.ptr());
-		filled ? glBegin(GL_QUADS) : glBegin(GL_LINE_LOOP);
-		glLineWidth(lineWidth);
+		glBegin(GL_QUADS);
+
 		glVertex2f(pos.x, pos.y);
 		glVertex2f(pos.x + size.x, pos.y);
 		glVertex2f(pos.x + size.x, pos.y + size.y);
 		glVertex2f(pos.x, pos.y + size.y);
+
 		glEnd();
-		filled ? 0 : glLineWidth(1.0f);
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		glDisable(GL_BLEND);
+	}
+
+	void DrawNoFilledQuad(Vec2 pos, Vec2 size, Color color, float lineWidth)
+	{
+		//Drawing side quads
+		DrawQuad(pos, Vec2(lineWidth, size.y), color);
+		DrawQuad(pos + Vec2(size.x - lineWidth, 0),  Vec2(lineWidth, size.y), color); 
+
+		//Drawing top/bottom quads
+		DrawQuad(pos + Vec2(lineWidth, 0), Vec2(size.x - lineWidth * 2, lineWidth), color);
+		DrawQuad(pos + Vec2(lineWidth, size.y - lineWidth), Vec2(size.x - lineWidth * 2, lineWidth), color);
 	}
 
 	void DrawImage(Vec2 pos, Vec2 size, int texture_id, Color color)
@@ -602,6 +622,11 @@ namespace ThorUI
 					case(Text):
 					{
 						item = new UI_Text();
+						break;
+					}
+					case (Panel):
+					{
+						item = new UI_Panel();
 						break;
 					}
 					}

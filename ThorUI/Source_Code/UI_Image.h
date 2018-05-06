@@ -14,11 +14,11 @@ public:
 	THORUI_API void Draw();
 	THORUI_API void OnItemEvent(Item_Event event) {}
 
-	THORUI_API //Setters
+	//Setters
 	THORUI_API void SetColor(Color color);
 	THORUI_API void SetTexture(uint texture_id);
 
-	THORUI_API //Getters
+	//Getters
 	THORUI_API Color GetColor() const;
 	THORUI_API uint GetTexID() const;
 

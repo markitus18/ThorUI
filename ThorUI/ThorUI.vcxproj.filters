@@ -90,6 +90,9 @@
     <ClInclude Include="Source_Code\Item_Appearance.h">
       <Filter>UI_Items</Filter>
     </ClInclude>
+    <ClInclude Include="Source_Code\UI_Panel.h">
+      <Filter>UI_Items</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source_Code\Log.cpp">
@@ -136,6 +139,9 @@
       <Filter>Utilities</Filter>
     </ClCompile>
     <ClCompile Include="Source_Code\Item_Appearance.cpp">
+      <Filter>UI_Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_Code\UI_Panel.cpp">
       <Filter>UI_Items</Filter>
     </ClCompile>
   </ItemGroup>

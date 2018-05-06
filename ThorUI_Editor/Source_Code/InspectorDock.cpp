@@ -6,6 +6,7 @@
 #include "UI_Image.h"
 #include "UI_Button.h"
 #include "UI_Text.h"
+#include "UI_Panel.h"
 
 #include "ImGui\imgui.h"
 #include "ImGui\imgui_internal.h"
@@ -144,6 +145,10 @@ void Inspector::Draw()
 			DrawButtonItem((UI_Button*)selected);
 			break;
 		}
+		case (Panel):
+		{
+			DrawPanelItem((UI_Panel*)selected);
+		}
 	}
 
 	DisplayItemEvents(selected);
@@ -171,7 +176,7 @@ void Inspector::DrawImageItem(UI_Image* img)
 		img->SetTexture(new_tex->id);
 	}
 	Color color = img->GetColor();
-	if (ImGui::ColorEdit3("Color", color.ptr()))
+	if (ImGui::ColorEdit4("Color", color.ptr()))
 	{
 		img->SetColor(color);
 	}
@@ -188,7 +193,7 @@ void Inspector::DrawTextItem(UI_Text* text)
 	}
 
 	Color color = text->GetColor();
-	if (ImGui::ColorEdit3("Color", color.ptr()))
+	if (ImGui::ColorEdit4("Color", color.ptr()))
 	{
 		text->SetColor(color);
 	}
@@ -206,10 +211,27 @@ void Inspector::DrawButtonItem(UI_Button* button)
 		button->SetTexture(new_tex->id);
 	}
 	Color color = button->GetColor();
-	if (ImGui::ColorEdit3("Color", color.ptr()))
+	if (ImGui::ColorEdit4("Color", color.ptr()))
 	{
 		button->SetColor(color);
 	}
+}
+
+void Inspector::DrawPanelItem(UI_Panel* panel)
+{
+	Color color = panel->GetColor();
+	if (ImGui::ColorEdit4("Color", color.ptr()))
+	{
+		panel->SetColor(color);
+	}
+	color = panel->GetBorderColor();
+	if (ImGui::ColorEdit4("Border Color", color.ptr()))
+	{
+		panel->SetBorderColor(color);
+	}
+	int width = panel->GetBorderWidth();
+	if (ImGui::SliderInt("Border Width", &width, -50, 50))
+		panel->SetBorderWidth(width);
 }
 
 ThorUI::Texture* Inspector::DisplayTextureSelection(ThorUI::Texture* texture)
@@ -520,6 +542,17 @@ void Inspector::DisplayItemApSet(UI_Item* item, Appearance_Set& set)
 		{
 			DisplayTextAp(item, set.text_ap);
 		}
+		if (set.panel_ap == nullptr)
+		{
+			if (item->GetType() == Panel && ImGui::Button("Add Panel Attributes"))
+			{
+				set.panel_ap = new Panel_Ap();
+			}
+		}
+		else
+		{
+			DisplayPanelAp(item, set.panel_ap);
+		}
 		ImGui::TreePop();
 	}
 
@@ -617,7 +650,7 @@ void Inspector::DisplayButtonAp(UI_Item* item, Button_Ap* ap)
 	if (ap->attributes["color"] == true)
 	{
 		Color color = ap->color;
-		if (ImGui::ColorEdit3("Color", color.ptr()))
+		if (ImGui::ColorEdit4("Color", color.ptr()))
 		{
 			ap->color = color;
 		}
@@ -654,7 +687,7 @@ void Inspector::DisplayImageAp(UI_Item* item, Image_Ap* ap)
 	if (ap->attributes["color"] == true)
 	{
 		Color color = ap->color;
-		if (ImGui::ColorEdit3("Color", color.ptr()))
+		if (ImGui::ColorEdit4("Color", color.ptr()))
 		{
 			ap->color = color;
 		}
@@ -688,21 +721,65 @@ void Inspector::DisplayTextAp(UI_Item* item, Text_Ap* ap)
 		}
 		ImGui::EndMenu();
 	}
-	if (ap->attributes["color"] == true)
-	{
-		Color color = ap->color;
-		if (ImGui::ColorEdit3("Color", color.ptr()))
-		{
-			ap->color = color;
-		}
-	}
 	if (ap->attributes["text"] == true)
 	{
 		char text[50];
 		strcpy_s(text, 50, ap->text.c_str());
 		ImGuiInputTextFlags name_input_flags = ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue;
-		if (ImGui::InputTextEx("###text_ap", text, 50, ImVec2(200, 0), name_input_flags))
+		if (ImGui::InputTextEx("Text###text_ap", text, 50, ImVec2(200, 0), name_input_flags))
 			ap->text = text;
+	}
+	if (ap->attributes["color"] == true)
+	{
+		Color color = ap->color;
+		if (ImGui::ColorEdit4("Color", color.ptr()))
+		{
+			ap->color = color;
+		}
+	}
+	ImGui::PopID();
+}
+
+void Inspector::DisplayPanelAp(UI_Item* item, Panel_Ap* ap)
+{
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.22f, 0.83f, 0.94f, 1.0f));
+	ImGui::Text("UI_Panel");
+	ImGui::PopStyleColor();
+	ImGui::Text("Add Attribute: "); ImGui::SameLine();
+	ImGui::PushID(ap);
+
+	if (ImGui::BeginMenu_ThorUI(""))
+	{
+		std::unordered_map<std::string, bool>::iterator it;
+		for (it = ap->attributes.begin(); it != ap->attributes.end(); ++it)
+		{
+			if (it->second == false && ImGui::MenuItem(it->first.c_str()))
+			{
+				it->second = true;
+			}
+		}
+		ImGui::EndMenu();
+	}
+
+	if (ap->attributes["color"] == true)
+	{
+		Color color = ap->color;
+		if (ImGui::ColorEdit4("Color", color.ptr()))
+		{
+			ap->color = color;
+		}
+	}
+	if (ap->attributes["border_color"] == true)
+	{
+		Color border_color = ap->border_color;
+		if (ImGui::ColorEdit4("Border Color", border_color.ptr()))
+		{
+			ap->border_color = border_color;
+		}
+	}
+	if (ap->attributes["border_width"] == true)
+	{
+		ImGui::SliderInt("Border Width", &ap->border_width, -50, 50);
 	}
 	ImGui::PopID();
 }

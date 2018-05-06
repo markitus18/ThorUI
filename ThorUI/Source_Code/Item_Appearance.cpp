@@ -1,5 +1,6 @@
 #include "Item_Appearance.h"
 
+#include "ThorUI.h"
 #include "Config.h"
 
 void Item_Ap::Save(Config& config)
@@ -59,6 +60,33 @@ void Item_Ap::Load(Config& config)
 	}
 }
 
+void Image_Ap::Save(Config& config)
+{
+	if (attributes["color"] == true)
+	{
+		config.SetArray("color").AddColor(color);
+	}
+	if (attributes["texture"] == true)
+	{
+		ThorUI::Texture* tex = ThorUI::GetTexture(texture_id);
+		config.SetString("texture", tex != nullptr ? tex->path.c_str() : "");
+	}
+}
+
+void Image_Ap::Load(Config& config)
+{
+	if (config.HasValue("color") == true)
+	{
+		attributes["color"] = true;
+		color = config.GetArray("color").GetColor(0);
+	}
+	if (config.HasValue("texture") == true)
+	{
+		attributes["texture"] = true;
+		texture_id = ThorUI::LoadTexture(config.GetString("texture").c_str());
+	}
+}
+
 void Button_Ap::Save(Config& config)
 {
 	if (attributes["color"] == true)
@@ -67,7 +95,8 @@ void Button_Ap::Save(Config& config)
 	}
 	if (attributes["texture"] == true)
 	{
-		config.SetNumber("texture_id", texture_id);
+		ThorUI::Texture* tex = ThorUI::GetTexture(texture_id);
+		config.SetString("texture", tex != nullptr ? tex->path.c_str() : "");
 	}
 }
 
@@ -78,13 +107,73 @@ void Button_Ap::Load(Config& config)
 		attributes["color"] = true;
 		color = config.GetArray("color").GetColor(0);
 	}
-	if (config.HasValue("texture_id") == true)
+	if (config.HasValue("texture") == true)
 	{
 		attributes["texture"] = true;
-		texture_id = config.GetNumber("texture_id");
+		texture_id = ThorUI::LoadTexture(config.GetString("texture").c_str());
 	}
 }
 
+void Text_Ap::Save(Config& config)
+{
+	if (attributes["color"] == true)
+	{
+		config.SetArray("color").AddColor(color);
+	}
+	if (attributes["text"] == true)
+	{
+		config.SetString("text", text.c_str());
+	}
+}
+
+void Text_Ap::Load(Config& config)
+{
+	if (config.HasValue("color") == true)
+	{
+		attributes["color"] = true;
+		color = config.GetArray("color").GetColor(0);
+	}
+	if (config.HasValue("text") == true)
+	{
+		attributes["text"] = true;
+		text = config.GetString("text");
+	}
+}
+
+void Panel_Ap::Save(Config& config)
+{
+	if (attributes["color"] == true)
+	{
+		config.SetArray("color").AddColor(color);
+	}
+	if (attributes["border_color"] == true)
+	{
+		config.SetArray("border_color").AddColor(border_color);
+	}
+	if (attributes["border_width"] == true)
+	{
+		config.SetNumber("border_width", border_width);
+	}
+}
+
+void Panel_Ap::Load(Config& config)
+{
+	if (config.HasValue("color") == true)
+	{
+		attributes["color"] = true;
+		color = config.GetArray("color").GetColor(0);
+	}
+	if (config.HasValue("border_color") == true)
+	{
+		attributes["border_color"] = true;
+		border_color = config.GetArray("border_color").GetColor(0);
+	}
+	if (config.HasValue("border_width") == true)
+	{
+		attributes["border_width"] = true;
+		border_width = config.GetNumber("border_width");
+	}
+}
 
 void Appearance_Set::Save(Config& config)
 {
@@ -99,22 +188,49 @@ void Appearance_Set::Save(Config& config)
 	{
 		button_ap->Save(config);
 	}
+	config.SetBool("Image_Ap", image_ap != nullptr);
+	if (image_ap != nullptr)
+	{
+		image_ap->Save(config);
+	}
+	config.SetBool("Text_Ap", text_ap != nullptr);
+	if (text_ap != nullptr)
+	{
+		text_ap->Save(config);
+	}
+	config.SetBool("Panel_Ap", panel_ap != nullptr);
+	if (panel_ap != nullptr)
+	{
+		panel_ap->Save(config);
+	}
 }
 
 void Appearance_Set::Load(Config& config)
 {
 	name = config.GetString("Name");
-	bool item_b = config.GetBool("Item_Ap");
-	if (item_b)
+	if (config.GetBool("Item_Ap"))
 	{
 		item_ap = new Item_Ap();
 		item_ap->Load(config);
 	}
-	bool button_b = config.GetBool("Button_Ap");
-	if (button_ap)
+	if (config.GetBool("Image_Ap"))
+	{
+		image_ap = new Image_Ap();
+		image_ap->Load(config);
+	}
+	if (config.GetBool("Button_Ap"))
 	{
 		button_ap = new Button_Ap();
 		button_ap->Load(config);
 	}
-	
+	if (config.GetBool("Text_Ap"))
+	{
+		text_ap = new Text_Ap();
+		text_ap->Load(config);
+	}
+	if (config.GetBool("Panel_Ap"))
+	{
+		panel_ap = new Panel_Ap();
+		panel_ap->Load(config);
+	}
 }

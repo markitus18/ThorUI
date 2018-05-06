@@ -9,6 +9,7 @@
 #include "UI_Image.h"
 #include "UI_Button.h"
 #include "UI_Text.h"
+#include "UI_Panel.h"
 
 #include "Rect.h"
 #include "Circle.h"
@@ -227,6 +228,13 @@ void UI_Editor::DrawMainMenuBar()
 				text->SetName(ThorUI::GenUniqueName(ThorUI::window_item, "Text").c_str());
 				ThorUI::AddItem(text);
 				hierarchy->AddNode(text);
+			}
+			if (ImGui::MenuItem("Panel"))
+			{
+				UI_Panel* panel = new UI_Panel(window_size / 2, Vec2(0, 0));
+				panel->SetName(ThorUI::GenUniqueName(ThorUI::window_item, "Panel").c_str());
+				ThorUI::AddItem(panel);
+				hierarchy->AddNode(panel);
 			}
 			ImGui::EndMenu();
 		}

@@ -144,9 +144,8 @@ namespace ThorUI
 
 	//Draw Utilities ----------------------------------
 	THORUI_API void DrawQuad(Vec2 pos, Vec2 size, Color color, bool filled = true, float lineWidth = 1.0f);
-	//void DrawQuad(Vec2* corners, Color color, bool filled = true, float lineWidth = 1.0f);
+	THORUI_API void DrawNoFilledQuad(Vec2 pos, Vec2 size, Color color, float lineWidth = 1.0f);
 	THORUI_API void DrawImage(Vec2 pos, Vec2 size, int texture_id, Color color);
-	//void DrawImage(Vec2* corners, int texture_id, Color  color);
 	//-------------------------------------------------
 
 	//Item management ---------------------------------

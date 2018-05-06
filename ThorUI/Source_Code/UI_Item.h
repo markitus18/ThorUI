@@ -12,6 +12,7 @@ enum Item_Type
 	Button,
 	Text,
 	Image,
+	Panel,
 };
 
 enum Item_Event

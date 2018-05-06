@@ -175,6 +175,7 @@
     <ClInclude Include="Source_Code\UI_Button.h" />
     <ClInclude Include="Source_Code\UI_Image.h" />
     <ClInclude Include="Source_Code\UI_Item.h" />
+    <ClInclude Include="Source_Code\UI_Panel.h" />
     <ClInclude Include="Source_Code\UI_Text.h" />
     <ClInclude Include="Source_Code\Vec2.h" />
   </ItemGroup>
@@ -193,6 +194,7 @@
     <ClCompile Include="Source_Code\UI_Button.cpp" />
     <ClCompile Include="Source_Code\UI_Image.cpp" />
     <ClCompile Include="Source_Code\UI_Item.cpp" />
+    <ClCompile Include="Source_Code\UI_Panel.cpp" />
     <ClCompile Include="Source_Code\UI_Text.cpp" />
     <ClCompile Include="Source_Code\Vec2.cpp" />
   </ItemGroup>

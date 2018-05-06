@@ -46,6 +46,9 @@ struct Image_Ap
 
 	uint texture_id;
 	Color color;
+
+	THORUI_API void Save(Config& config);
+	THORUI_API void Load(Config& config);
 };
 
 //Same data as image, keeping it separate by now
@@ -78,6 +81,28 @@ struct Text_Ap
 
 	std::string text;
 	Color color;
+
+	THORUI_API void Save(Config& config);
+	THORUI_API void Load(Config& config);
+};
+
+struct Panel_Ap
+{
+	Panel_Ap()
+	{
+		attributes["color"] = false;
+		attributes["border_color"] = false;
+		attributes["border_width"] = false;
+	}
+
+	std::unordered_map<std::string, bool> attributes;
+
+	Color color;
+	Color border_color;
+	int border_width;
+
+	THORUI_API void Save(Config& config);
+	THORUI_API void Load(Config& config);
 };
 
 struct Appearance_Set
@@ -88,6 +113,7 @@ struct Appearance_Set
 	Image_Ap* image_ap = nullptr;
 	Button_Ap* button_ap = nullptr;
 	Text_Ap* text_ap = nullptr;
+	Panel_Ap* panel_ap = nullptr;
 
 	THORUI_API void Save(Config& config);
 	THORUI_API void Load(Config& config);
