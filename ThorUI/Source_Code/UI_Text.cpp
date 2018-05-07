@@ -7,7 +7,7 @@
 UI_Text::UI_Text() : color(Color::White())
 {
 	name = "Text";
-	type = Text;
+	type = Item_Type::Text;
 }
 
 UI_Text::UI_Text(Vec2 pos, Vec2 size, const char* text) :  UI_Item(pos, size), color(Color::White()), text(text)
@@ -15,7 +15,7 @@ UI_Text::UI_Text(Vec2 pos, Vec2 size, const char* text) :  UI_Item(pos, size), c
 	name = "Text";
 	ThorUI::OnSetFont(font_id);
 	LoadTexture();
-	type = Text;
+	type = Item_Type::Text;
 }
 
 UI_Text::~UI_Text()

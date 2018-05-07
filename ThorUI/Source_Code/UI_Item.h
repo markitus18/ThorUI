@@ -7,12 +7,14 @@
 #include "Item_Appearance.h" //Transform -> Vec2, std vector / Color
 #include "Log.h"
 
-enum Item_Type
+enum class Item_Type
 {
+	Item,
 	Button,
 	Text,
 	Image,
 	Panel,
+	None,
 };
 
 enum Item_Event

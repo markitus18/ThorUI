@@ -6,7 +6,7 @@
 class UI_Panel : public UI_Item
 {
 public:
-	THORUI_API UI_Panel() { name = "Panel"; type = Panel; };
+	THORUI_API UI_Panel() { name = "Panel"; type = Item_Type::Panel; };
 	THORUI_API UI_Panel(Vec2 pos, Vec2 size);
 
 	THORUI_API void Draw();

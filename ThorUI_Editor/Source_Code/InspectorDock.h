@@ -12,6 +12,7 @@ class UI_Editor;
 struct Signal_Event;
 
 struct Appearance_Set;
+struct Generic_Ap;
 struct Item_Ap;
 struct Button_Ap;
 struct Image_Ap;
@@ -47,6 +48,7 @@ private:
 	void DisplayItemApSets(UI_Item* item);
 	void DisplayItemApSet(UI_Item* item, Appearance_Set& set);
 
+	void DisplayApHeader(Generic_Ap* ap, std::string text);
 	void DisplayItemAp(UI_Item* item, Item_Ap* ap);
 	void DisplayButtonAp(UI_Item* item, Button_Ap* ap);
 	void DisplayImageAp(UI_Item* item, Image_Ap* ap);

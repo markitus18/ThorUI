@@ -9,7 +9,15 @@
 typedef unsigned int uint;
 class Config;
 
-struct Item_Ap
+struct Generic_Ap
+{
+	std::unordered_map<std::string, bool> attributes;
+
+	THORUI_API virtual void Save(Config& config) = 0;
+	THORUI_API virtual void Load(Config& config) = 0;
+};
+
+struct Item_Ap : Generic_Ap
 {
 	Item_Ap()
 	{
@@ -19,8 +27,6 @@ struct Item_Ap
 		attributes["angle"] = false;
 		attributes["pivot"] = false;
 	}
-
-	std::unordered_map<std::string, bool> attributes;
 
 	//* Item size in pixels
 	Vec2 size;
@@ -34,15 +40,13 @@ struct Item_Ap
 	THORUI_API void Load(Config& config);
 };
 
-struct Image_Ap
+struct Image_Ap : Generic_Ap
 {
 	Image_Ap()
 	{
 		attributes["texture"] = false;
 		attributes["color"] = false;
 	}
-
-	std::unordered_map<std::string, bool> attributes;
 
 	uint texture_id;
 	Color color;
@@ -52,15 +56,13 @@ struct Image_Ap
 };
 
 //Same data as image, keeping it separate by now
-struct Button_Ap
+struct Button_Ap : Generic_Ap
 {
 	Button_Ap()
 	{
 		attributes["texture"] = false;
 		attributes["color"] = false;
 	}
-
-	std::unordered_map<std::string, bool> attributes;
 
 	uint texture_id;
 	Color color;
@@ -69,15 +71,13 @@ struct Button_Ap
 	THORUI_API void Load(Config& config);
 };
 
-struct Text_Ap
+struct Text_Ap : Generic_Ap
 {
 	Text_Ap()
 	{
 		attributes["text"] = false;
 		attributes["color"] = false;
 	}
-
-	std::unordered_map<std::string, bool> attributes;
 
 	std::string text;
 	Color color;
@@ -86,7 +86,7 @@ struct Text_Ap
 	THORUI_API void Load(Config& config);
 };
 
-struct Panel_Ap
+struct Panel_Ap : Generic_Ap
 {
 	Panel_Ap()
 	{
@@ -94,8 +94,6 @@ struct Panel_Ap
 		attributes["border_color"] = false;
 		attributes["border_width"] = false;
 	}
-
-	std::unordered_map<std::string, bool> attributes;
 
 	Color color;
 	Color border_color;

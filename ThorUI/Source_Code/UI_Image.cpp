@@ -7,7 +7,7 @@
 UI_Image::UI_Image(Vec2 pos, Vec2 size, int texture_id) : UI_Item(pos, size)
 {
 	name = "Image";
-	type = Image;
+	type = Item_Type::Image;
 	SetTexture(texture_id);
 }
 

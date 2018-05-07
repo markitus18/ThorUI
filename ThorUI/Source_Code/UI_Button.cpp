@@ -9,14 +9,14 @@ UI_Button::UI_Button()
 {
 	color = Color::Teal();
 	name = "Button";
-	type = Button;
+	type = Item_Type::Button;
 }
 
 UI_Button::UI_Button(Vec2 pos, Vec2 size) : UI_Item(pos, size)
 {
 	color = Color::Teal();
 	name = "Button";
-	type = Button;
+	type = Item_Type::Button;
 }
 
 void UI_Button::Draw()
@@ -118,7 +118,7 @@ bool UI_Button::ConnectItemWithSignal(UI_Item* item, std::string signal_name, Si
 	{
 		s_ev.slot_id = s_pressed.connect_manager<UI_Item>(item, &UI_Item::SignalManager, item->GetID());
 		s_ev.signal_id = s_pressed.GetID();
-		s_ev.SetValueTypes(std::vector<std::string>());
+		s_ev.SetValueTypes(std::vector<std::string>{"int"});
 		s_ev.signal_name = signal_name;
 		return true;
 	}

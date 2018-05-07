@@ -8,7 +8,7 @@
 UI_Panel::UI_Panel(Vec2 pos, Vec2 size) : UI_Item(pos, size)
 {
 	name = "Panel";
-	type = Panel;
+	type = Item_Type::Panel;
 	border_color = Color::Black();
 	color = Color::Cyan();
 	color.a = 0.3f;

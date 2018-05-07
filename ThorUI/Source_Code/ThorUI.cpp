@@ -609,22 +609,22 @@ namespace ThorUI
 
 					switch (type)
 					{
-					case(Image):
+					case(Item_Type::Image):
 					{
 						item = new UI_Image();
 						break;
 					}
-					case(Button):
+					case(Item_Type::Button):
 					{
 						item = new UI_Button();
 						break;
 					}
-					case(Text):
+					case(Item_Type::Text):
 					{
 						item = new UI_Text();
 						break;
 					}
-					case (Panel):
+					case (Item_Type::Panel):
 					{
 						item = new UI_Panel();
 						break;

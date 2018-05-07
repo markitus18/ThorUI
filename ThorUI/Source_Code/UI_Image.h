@@ -8,7 +8,7 @@ class Config;
 class UI_Image : public UI_Item
 {
 public:
-	THORUI_API UI_Image() { name = "Image"; type = Image; };
+	THORUI_API UI_Image() { name = "Image"; type = Item_Type::Image; };
 	THORUI_API UI_Image(Vec2 pos, Vec2 size, int texture_id = 0);
 
 	THORUI_API void Draw();

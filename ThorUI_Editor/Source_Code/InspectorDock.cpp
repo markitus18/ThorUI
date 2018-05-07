@@ -35,7 +35,7 @@ void Inspector::Draw()
 
 	if (editor->dev_tools == true)
 	{
-		ImGui::SameLine();
+		ImGui::SameLine();		
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0, 1.0, 0, 1.0));
 		ImGui::Text("ID: %i", selected->GetID());
 		ImGui::PopStyleColor();
@@ -130,22 +130,22 @@ void Inspector::Draw()
 
 	switch (selected->GetType())
 	{
-		case(Image):
+		case(Item_Type::Image):
 		{
 			DrawImageItem((UI_Image*)selected);
 			break;
 		}
-		case(Text):
+		case(Item_Type::Text):
 		{
 			DrawTextItem((UI_Text*)selected);
 			break;
 		}
-		case(Button):
+		case(Item_Type::Button):
 		{
 			DrawButtonItem((UI_Button*)selected);
 			break;
 		}
-		case (Panel):
+		case (Item_Type::Panel):
 		{
 			DrawPanelItem((UI_Panel*)selected);
 		}
@@ -457,7 +457,7 @@ void Inspector::DisplaySignalParameters(Signal_Event& ev)
 			if (ev.v_types[i] == "int")
 			{
 				int value = ev.i_values[ev.GetVectorIndex(i)];
-				if (ImGui::InputInt("int", &value, 0, 0))
+				if (ImGui::InputInt("##int", &value, 0, 0))
 				{
 					ev.i_values[ev.GetVectorIndex(i)] = value;
 				}
@@ -465,7 +465,7 @@ void Inspector::DisplaySignalParameters(Signal_Event& ev)
 			if (ev.v_types[i] == "float")
 			{
 				float value = ev.f_values[ev.GetVectorIndex(i)];
-				if (ImGui::InputFloat("float", &value, 0, 0))
+				if (ImGui::InputFloat("##float", &value, 0, 0))
 				{
 					ev.f_values[ev.GetVectorIndex(i)] = value;
 				}
@@ -511,7 +511,7 @@ void Inspector::DisplayItemApSet(UI_Item* item, Appearance_Set& set)
 		}
 		if (set.button_ap == nullptr)
 		{
-			if (item->GetType() == Button && ImGui::Button("Add Button Attributes"))
+			if (item->GetType() == Item_Type::Button && ImGui::Button("Add Button Attributes"))
 			{
 				set.button_ap = new Button_Ap();
 			}
@@ -522,7 +522,7 @@ void Inspector::DisplayItemApSet(UI_Item* item, Appearance_Set& set)
 		}
 		if (set.image_ap == nullptr)
 		{
-			if (item->GetType() == Image && ImGui::Button("Add Image Attributes"))
+			if (item->GetType() == Item_Type::Image && ImGui::Button("Add Image Attributes"))
 			{
 				set.image_ap = new Image_Ap();
 			}
@@ -533,7 +533,7 @@ void Inspector::DisplayItemApSet(UI_Item* item, Appearance_Set& set)
 		}
 		if (set.text_ap == nullptr)
 		{
-			if (item->GetType() == Text && ImGui::Button("Add Text Attributes"))
+			if (item->GetType() == Item_Type::Text && ImGui::Button("Add Text Attributes"))
 			{
 				set.text_ap = new Text_Ap();
 			}
@@ -544,7 +544,7 @@ void Inspector::DisplayItemApSet(UI_Item* item, Appearance_Set& set)
 		}
 		if (set.panel_ap == nullptr)
 		{
-			if (item->GetType() == Panel && ImGui::Button("Add Panel Attributes"))
+			if (item->GetType() == Item_Type::Panel && ImGui::Button("Add Panel Attributes"))
 			{
 				set.panel_ap = new Panel_Ap();
 			}
@@ -559,10 +559,10 @@ void Inspector::DisplayItemApSet(UI_Item* item, Appearance_Set& set)
 	ImGui::Separator();
 }
 
-void Inspector::DisplayItemAp(UI_Item* item, Item_Ap* ap)
+void Inspector::DisplayApHeader(Generic_Ap* ap, std::string text)
 {
 	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.22f, 0.83f, 0.94f, 1.0f));
-	ImGui::Text("UI_Item");
+	ImGui::Text(text.c_str());
 	ImGui::PopStyleColor();
 	ImGui::Text("Add Attribute: "); ImGui::SameLine();
 	if (ImGui::BeginMenu_ThorUI(""))
@@ -577,8 +577,12 @@ void Inspector::DisplayItemAp(UI_Item* item, Item_Ap* ap)
 		}
 		ImGui::EndMenu();
 	}
+}
 
+void Inspector::DisplayItemAp(UI_Item* item, Item_Ap* ap)
+{
 	ImGui::PushID(ap);
+	DisplayApHeader(ap, "UI_Item");
 
 	if (ap->attributes["position"] == true)
 	{
@@ -629,23 +633,8 @@ void Inspector::DisplayItemAp(UI_Item* item, Item_Ap* ap)
 
 void Inspector::DisplayButtonAp(UI_Item* item, Button_Ap* ap)
 {
-	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.22f, 0.83f, 0.94f, 1.0f));
-	ImGui::Text("UI_Button");
-	ImGui::PopStyleColor();
-	ImGui::Text("Add Attribute: "); ImGui::SameLine();
 	ImGui::PushID(ap);
-	if (ImGui::BeginMenu_ThorUI(""))
-	{
-		std::unordered_map<std::string, bool>::iterator it;
-		for (it = ap->attributes.begin(); it != ap->attributes.end(); ++it)
-		{
-			if (it->second == false && ImGui::MenuItem(it->first.c_str()))
-			{
-				it->second = true;
-			}
-		}
-		ImGui::EndMenu();
-	}
+	DisplayApHeader(ap, "UI_Button");
 
 	if (ap->attributes["color"] == true)
 	{
@@ -662,28 +651,15 @@ void Inspector::DisplayButtonAp(UI_Item* item, Button_Ap* ap)
 			ap->texture_id = tex->id;
 		}
 	}
+
 	ImGui::PopID();
 }
 
 void Inspector::DisplayImageAp(UI_Item* item, Image_Ap* ap)
 {
-	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.22f, 0.83f, 0.94f, 1.0f));
-	ImGui::Text("UI_Image");
-	ImGui::PopStyleColor();
-	ImGui::Text("Add Attribute: "); ImGui::SameLine();
 	ImGui::PushID(ap);
-	if (ImGui::BeginMenu_ThorUI(""))
-	{
-		std::unordered_map<std::string, bool>::iterator it;
-		for (it = ap->attributes.begin(); it != ap->attributes.end(); ++it)
-		{
-			if (it->second == false && ImGui::MenuItem(it->first.c_str()))
-			{
-				it->second = true;
-			}
-		}
-		ImGui::EndMenu();
-	}
+	DisplayApHeader(ap, "UI_Image");
+
 	if (ap->attributes["color"] == true)
 	{
 		Color color = ap->color;
@@ -699,28 +675,15 @@ void Inspector::DisplayImageAp(UI_Item* item, Image_Ap* ap)
 			ap->texture_id = tex->id;
 		}
 	}
+
 	ImGui::PopID();
 }
 
 void Inspector::DisplayTextAp(UI_Item* item, Text_Ap* ap)
 {
-	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.22f, 0.83f, 0.94f, 1.0f));
-	ImGui::Text("UI_Text");
-	ImGui::PopStyleColor();
-	ImGui::Text("Add Attribute: "); ImGui::SameLine();
 	ImGui::PushID(ap);
-	if (ImGui::BeginMenu_ThorUI(""))
-	{
-		std::unordered_map<std::string, bool>::iterator it;
-		for (it = ap->attributes.begin(); it != ap->attributes.end(); ++it)
-		{
-			if (it->second == false && ImGui::MenuItem(it->first.c_str()))
-			{
-				it->second = true;
-			}
-		}
-		ImGui::EndMenu();
-	}
+	DisplayApHeader(ap, "UI_Text");
+ 
 	if (ap->attributes["text"] == true)
 	{
 		char text[50];
@@ -737,29 +700,14 @@ void Inspector::DisplayTextAp(UI_Item* item, Text_Ap* ap)
 			ap->color = color;
 		}
 	}
+
 	ImGui::PopID();
 }
 
 void Inspector::DisplayPanelAp(UI_Item* item, Panel_Ap* ap)
 {
-	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.22f, 0.83f, 0.94f, 1.0f));
-	ImGui::Text("UI_Panel");
-	ImGui::PopStyleColor();
-	ImGui::Text("Add Attribute: "); ImGui::SameLine();
 	ImGui::PushID(ap);
-
-	if (ImGui::BeginMenu_ThorUI(""))
-	{
-		std::unordered_map<std::string, bool>::iterator it;
-		for (it = ap->attributes.begin(); it != ap->attributes.end(); ++it)
-		{
-			if (it->second == false && ImGui::MenuItem(it->first.c_str()))
-			{
-				it->second = true;
-			}
-		}
-		ImGui::EndMenu();
-	}
+	DisplayApHeader(ap, "UI_Panel");
 
 	if (ap->attributes["color"] == true)
 	{
@@ -781,5 +729,6 @@ void Inspector::DisplayPanelAp(UI_Item* item, Panel_Ap* ap)
 	{
 		ImGui::SliderInt("Border Width", &ap->border_width, -50, 50);
 	}
+
 	ImGui::PopID();
 }
