@@ -211,7 +211,7 @@ void UI_Editor::DrawMainMenuBar()
 				UI_Button* button = new UI_Button(window_size / 2, Vec2(150, 60));
 				button->SetName(ThorUI::GenUniqueName(ThorUI::window_item, "Button").c_str());
 				ThorUI::AddItem(button);
-				UI_Text* text = new UI_Text(Vec2(0, 0), Vec2(0, 0), "Button");
+				UI_Text* text = new UI_Text(Vec2(0, 0), Vec2(200, 100), "Button");
 				text->SetParent(button, nullptr, false);
 				ThorUI::AddItem(text);
 
@@ -233,7 +233,7 @@ void UI_Editor::DrawMainMenuBar()
 			}
 			if (ImGui::MenuItem("Text"))
 			{
-				UI_Text* text = new UI_Text(window_size / 2, Vec2(0, 0), "New Text");
+				UI_Text* text = new UI_Text(window_size / 2, Vec2(200, 100), "New Text");
 				text->SetName(ThorUI::GenUniqueName(ThorUI::window_item, "Text").c_str());
 				ThorUI::AddItem(text);
 				hierarchy->AddNode(text);
