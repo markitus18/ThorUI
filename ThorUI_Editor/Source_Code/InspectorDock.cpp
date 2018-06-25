@@ -363,6 +363,8 @@ void Inspector::DisplayEventItemMenu(UI_Item* item, UI_Item* ev_holder, Signal_E
 		ev.apperance_set = -1;
 	}
 	ImGui::PopStyleColor();
+	ImGui::Text("Time:            "); ImGui::SameLine();
+	ImGui::InputFloat("##trans_time", &ev.transition_time);
 }
 
 void Inspector::DisplaySignalMenu(UI_Item* item, UI_Item* ev_holder, Signal_Event& ev)
@@ -507,7 +509,7 @@ void Inspector::DisplayItemApSet(UI_Item* item, Appearance_Set& set)
 		}
 		else
 		{
-			DisplayItemAp(item, set.item_ap);
+			DisplayItemAp(set.item_ap);
 		}
 		if (set.button_ap == nullptr)
 		{
@@ -518,7 +520,7 @@ void Inspector::DisplayItemApSet(UI_Item* item, Appearance_Set& set)
 		}
 		else
 		{
-			DisplayButtonAp(item, set.button_ap);
+			DisplayButtonAp(set.button_ap);
 		}
 		if (set.image_ap == nullptr)
 		{
@@ -529,7 +531,7 @@ void Inspector::DisplayItemApSet(UI_Item* item, Appearance_Set& set)
 		}
 		else
 		{
-			DisplayImageAp(item, set.image_ap);
+			DisplayImageAp(set.image_ap);
 		}
 		if (set.text_ap == nullptr)
 		{
@@ -540,7 +542,7 @@ void Inspector::DisplayItemApSet(UI_Item* item, Appearance_Set& set)
 		}
 		else
 		{
-			DisplayTextAp(item, set.text_ap);
+			DisplayTextAp(set.text_ap);
 		}
 		if (set.panel_ap == nullptr)
 		{
@@ -551,7 +553,7 @@ void Inspector::DisplayItemApSet(UI_Item* item, Appearance_Set& set)
 		}
 		else
 		{
-			DisplayPanelAp(item, set.panel_ap);
+			DisplayPanelAp(set.panel_ap);
 		}
 		ImGui::TreePop();
 	}
@@ -579,7 +581,7 @@ void Inspector::DisplayApHeader(Generic_Ap* ap, std::string text)
 	}
 }
 
-void Inspector::DisplayItemAp(UI_Item* item, Item_Ap* ap)
+void Inspector::DisplayItemAp(Item_Ap* ap)
 {
 	ImGui::PushID(ap);
 	DisplayApHeader(ap, "UI_Item");
@@ -631,7 +633,7 @@ void Inspector::DisplayItemAp(UI_Item* item, Item_Ap* ap)
 	ImGui::PopID();
 }
 
-void Inspector::DisplayButtonAp(UI_Item* item, Button_Ap* ap)
+void Inspector::DisplayButtonAp(Button_Ap* ap)
 {
 	ImGui::PushID(ap);
 	DisplayApHeader(ap, "UI_Button");
@@ -655,7 +657,7 @@ void Inspector::DisplayButtonAp(UI_Item* item, Button_Ap* ap)
 	ImGui::PopID();
 }
 
-void Inspector::DisplayImageAp(UI_Item* item, Image_Ap* ap)
+void Inspector::DisplayImageAp(Image_Ap* ap)
 {
 	ImGui::PushID(ap);
 	DisplayApHeader(ap, "UI_Image");
@@ -679,7 +681,7 @@ void Inspector::DisplayImageAp(UI_Item* item, Image_Ap* ap)
 	ImGui::PopID();
 }
 
-void Inspector::DisplayTextAp(UI_Item* item, Text_Ap* ap)
+void Inspector::DisplayTextAp(Text_Ap* ap)
 {
 	ImGui::PushID(ap);
 	DisplayApHeader(ap, "UI_Text");
@@ -704,7 +706,7 @@ void Inspector::DisplayTextAp(UI_Item* item, Text_Ap* ap)
 	ImGui::PopID();
 }
 
-void Inspector::DisplayPanelAp(UI_Item* item, Panel_Ap* ap)
+void Inspector::DisplayPanelAp(Panel_Ap* ap)
 {
 	ImGui::PushID(ap);
 	DisplayApHeader(ap, "UI_Panel");

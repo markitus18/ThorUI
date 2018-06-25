@@ -1,5 +1,6 @@
 #include "UI_Item.h"
 #include "Config.h"
+#include "TMath.h"
 
 UI_Item::UI_Item() : transform(this)
 {
@@ -95,6 +96,14 @@ void UI_Item::CollectChildren(std::vector<UI_Item*>& vector)
 	{
 		vector.push_back(children[i]->Container<UI_Item>());
 		children[i]->Container<UI_Item>()->CollectChildren(vector);
+	}
+}
+
+void UI_Item::Update(float dt)
+{
+	if (transitioning == true)
+	{
+		UpdateApSetTransition(dt);
 	}
 }
 
@@ -240,23 +249,60 @@ void UI_Item::AddApSet()
 	appearance_sets.push_back(set);
 }
 
-void UI_Item::SetAppearanceSet(uint index)
+void UI_Item::SaveDefaultApSet()
+{
+	if (appearance_sets.size() == 0)
+		AddApSet();
+	appearance_sets[0] = SaveCurrentApState();
+	appearance_sets[0].name = "Default";
+}
+
+void UI_Item::SetAppearanceSet(uint index, float trans_time)
 {
 	if (index < appearance_sets.size())
 	{
-		Appearance_Set& set = appearance_sets[index];
-		if (set.item_ap != nullptr)
-		{
-			if (set.item_ap->attributes["position"] == true)
-				transform.SetPos(set.item_ap->transform.GetPos());
-			if (set.item_ap->attributes["scale"] == true)
-				transform.SetScale(set.item_ap->transform.GetScale());
-			if (set.item_ap->attributes["angle"] == true)
-				transform.SetRotationDeg(set.item_ap->transform.GetRotation());
-			if (set.item_ap->attributes["size"] == true)
-				SetSize(set.item_ap->size);
-			if (set.item_ap->attributes["pivot"] == true)
-				SetPivot(set.item_ap->pivot);
-		}
+		previous_set = SaveCurrentApState();
+		current_set_index = index;
+		transition_max_timer = trans_time;
+		transition_timer = 0.0f;
+		transitioning = true;
 	}
+}
+
+Appearance_Set UI_Item::SaveCurrentApState()
+{
+	Appearance_Set set;
+	set.item_ap = new Item_Ap();
+	set.item_ap->SetAllAttributesTrue();
+
+	set.item_ap->transform = transform;
+	set.item_ap->pivot = pivot;
+	set.item_ap->size = size;
+
+	return set;
+}
+
+void UI_Item::UpdateApSetTransition(float dt)
+{
+	transition_timer += dt;
+	float lerpRatio = transition_timer / transition_max_timer;
+
+	Appearance_Set& set = appearance_sets[current_set_index];
+	if (set.item_ap != nullptr)
+	{
+		Transform& p_tr = previous_set.item_ap->transform;
+		Transform& n_tr = set.item_ap->transform;
+		if (set.item_ap->attributes["position"] == true)
+			transform.SetPos(Vec2::Lerp(p_tr.GetPos(), n_tr.GetPos(), lerpRatio));
+		if (set.item_ap->attributes["scale"] == true)
+			transform.SetScale(Vec2::Lerp(p_tr.GetScale(), n_tr.GetScale(), lerpRatio));
+		if (set.item_ap->attributes["angle"] == true)
+			transform.SetRotationDeg(Math::Lerp(p_tr.GetRotation(), n_tr.GetRotation(), lerpRatio));
+		if (set.item_ap->attributes["size"] == true)
+			SetSize(Vec2::Lerp(previous_set.item_ap->size, set.item_ap->size, lerpRatio));
+		if (set.item_ap->attributes["pivot"] == true)
+			SetPivot(set.item_ap->pivot);
+	}
+
+	if (transition_timer >= transition_max_timer) transitioning = false;
 }

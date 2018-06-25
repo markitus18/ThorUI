@@ -44,24 +44,20 @@ void UI_Button::OnItemEvent(Item_Event event)
 	{
 		case(Mouse_Enter):
 		{
-			//color = color_data[1];
 			break;
 		}
 		case(Mouse_Down):
 		{
-			//color = color_data[2];
 			s_pressed.Emit();
 			break;
 		}
 		case(Mouse_Up):
 		{
-			//color = color_data[1];
 			s_clicked.Emit();
 			break;
 		}
 		case(Mouse_Exit):
 		{
-			//color = color_data[0];
 			break;
 		}
 	}
@@ -158,20 +154,29 @@ std::vector<std::string> UI_Button::GetSignalsStr()
 	return ret;
 }
 
-void UI_Button::SetAppearanceSet(uint index)
+Appearance_Set UI_Button::SaveCurrentApState()
 {
-	UI_Item::SetAppearanceSet(index);
+	Appearance_Set set = UI_Item::SaveCurrentApState();
 
-	if (index < appearance_sets.size())
+	set.button_ap = new Button_Ap();
+	set.button_ap->SetAllAttributesTrue();
+	set.button_ap->color = color;
+	set.button_ap->texture_id = texture_id;
+
+	return set;
+}
+
+void UI_Button::UpdateApSetTransition(float dt)
+{
+	UI_Item::UpdateApSetTransition(dt);
+	float lerpRatio = transition_timer / transition_max_timer;
+
+	Appearance_Set& set = appearance_sets[current_set_index];
+	if (set.button_ap != nullptr)
 	{
-		Appearance_Set& set = appearance_sets[index];
-		if (set.button_ap != nullptr)
-		{
-			if (set.button_ap->attributes["color"] == true)
-				color = set.button_ap->color;
-			if (set.button_ap->attributes["texture"] == true)
-				SetTexture(set.button_ap->texture_id);
-		}
+		if (set.button_ap->attributes["color"] == true)
+			color = Color::Lerp(previous_set.button_ap->color, set.button_ap->color, lerpRatio);
+		if (set.button_ap->attributes["texture"] == true)
+			SetTexture(set.button_ap->texture_id);
 	}
-
 }

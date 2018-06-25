@@ -106,6 +106,7 @@ void Signal_Event::Save(Config& data)
 		f_values_arr.AddNumber(f_values[i]);
 
 	data.SetNumber("Apperance_Set", apperance_set);
+	data.SetNumber("Transition_Time", transition_time);
 }
 
 void Signal_Event::Load(Config& data)
@@ -134,6 +135,8 @@ void Signal_Event::Load(Config& data)
 		f_values.push_back(f_values_arr.GetNumber(i));
 
 	apperance_set = data.GetNumber("Apperance_Set");
+	transition_time = data.GetNumber("Transition_Time");
+
 	s_event_loaded = true;
 }
 

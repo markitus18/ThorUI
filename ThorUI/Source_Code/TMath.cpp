@@ -36,4 +36,17 @@ namespace Math
 	{
 		return Rand(); //TODO: Rand only returns up to 32,767, unsigned int max = 4,294,967,295
 	}
+
+	float Lerp(float v1, float v2, float ratio)
+	{
+		Clamp(ratio, 0, 1);
+		return v1 + (v2 - v1) * ratio;
+	}
+
+	float Clamp(float v, float min, float max)
+	{
+		if (v < min) v = min;
+		if (v > max) v = max;
+		return v;
+	}
 }

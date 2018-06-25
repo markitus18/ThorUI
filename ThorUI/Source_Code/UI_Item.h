@@ -69,6 +69,7 @@ public:
 	THORUI_API inline uint ChildCount() const { return transform.GetChildren().size(); }
 	THORUI_API void CollectChildren(std::vector<UI_Item*>& vector);
 
+	THORUI_API virtual void Update(float dt);
 	THORUI_API virtual void Draw() {}; //TODO: draw here, or in ThorUI?
 
 	THORUI_API void InternalOnItemEvent(Item_Event event);
@@ -112,7 +113,7 @@ public:
 				if (s_events[i].ProcessArgs(args...))
 				{
 					if (s_events[i].apperance_set != -1)
-						SetAppearanceSet(s_events[i].apperance_set);
+						SetAppearanceSet(s_events[i].apperance_set, s_events[i].transition_time);
 				}
 				break;
 			}
@@ -121,9 +122,13 @@ public:
 
 	THORUI_API inline std::vector<Signal_Event>& GetSignalEvents() { return s_events; }
 
+	//Appearance sets management
 	THORUI_API void AddApSet();
+	THORUI_API void SaveDefaultApSet();
 	THORUI_API inline std::vector<Appearance_Set>& GetApSets() { return appearance_sets; }
-	THORUI_API virtual void SetAppearanceSet(uint index);
+	THORUI_API void SetAppearanceSet(uint index, float trans_time);
+	THORUI_API virtual Appearance_Set SaveCurrentApState();
+	THORUI_API virtual void UpdateApSetTransition(float dt);
 
 protected:
 	THORUI_API virtual void Save(Config& config) = 0;
@@ -153,6 +158,12 @@ protected:
 
 	std::vector<Appearance_Set> appearance_sets;
 	std::vector<Signal_Event> s_events;
+
+	Appearance_Set previous_set;
+	uint current_set_index = 0;
+	float transition_timer = 0;
+	float transition_max_timer = 0;
+	bool transitioning = false;
 
 public:
 	Signal<> s_hovered;

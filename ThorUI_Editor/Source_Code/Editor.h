@@ -74,6 +74,10 @@ public:
 	int angle_interval = 15;
 	float scale_interval = 0.5;
 
+	//ImGui data
+	bool capture_mouse = false;
+	bool capture_keyboard = false;
+
 	Hierarchy* hierarchy = nullptr;
 private:
 	SDL_Window* window = nullptr;
@@ -81,6 +85,7 @@ private:
 
 	ImFont* bold_font = nullptr;
 
+	//Windows display
 	bool canvas_win = false;
 	bool grid_win = false;
 	bool snap_win = false;

@@ -25,11 +25,8 @@ public:
 	THORUI_API void Save(Config& config);
 	THORUI_API void Load(Config& config);
 
-	THORUI_API virtual void SetAppearanceSet(uint index);
-
-	template <typename... Args>
-	void SignalManager(int s_id, Args... args) {};
-
+	THORUI_API virtual Appearance_Set SaveCurrentApState();
+	THORUI_API virtual void UpdateApSetTransition(float dt);
 public:
 
 private:

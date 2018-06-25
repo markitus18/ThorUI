@@ -49,23 +49,32 @@ void UI_Image::Load(Config& config)
 	color = config.GetArray("Color").GetColor(0);
 }
 
-void UI_Image::SetAppearanceSet(uint index)
+Appearance_Set UI_Image::SaveCurrentApState()
 {
-	UI_Item::SetAppearanceSet(index);
+	Appearance_Set set = UI_Item::SaveCurrentApState();
 
-	if (index < appearance_sets.size())
-	{
-		Appearance_Set& set = appearance_sets[index];
-		if (set.image_ap != nullptr)
-		{
-			if (set.image_ap->attributes["color"] == true)
-				color = set.button_ap->color;
-			if (set.image_ap->attributes["texture"] == true)
-				SetTexture(set.image_ap->texture_id);
-		}
-	}
+	set.image_ap = new Image_Ap();
+	set.image_ap->SetAllAttributesTrue();
+	set.image_ap->color = color;
+	set.image_ap->texture_id = texture_id;
+
+	return set;
 }
 
+void UI_Image::UpdateApSetTransition(float dt)
+{
+	UI_Item::UpdateApSetTransition(dt);
+	float lerpRatio = transition_timer / transition_max_timer;
+
+	Appearance_Set& set = appearance_sets[current_set_index];
+	if (set.image_ap != nullptr)
+	{
+		if (set.image_ap->attributes["color"] == true)
+			color = Color::Lerp(previous_set.image_ap->color, set.image_ap->color, lerpRatio);
+		if (set.image_ap->attributes["texture"] == true)
+			SetTexture(set.image_ap->texture_id);
+	}
+}
 void UI_Image::SetColor(Color color)
 {
 	this->color = color;

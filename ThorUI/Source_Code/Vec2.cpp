@@ -1,5 +1,6 @@
 #include "Vec2.h"
 #include "Mat3x3.h"
+#include "TMath.h"
 
 Vec2 Vec2::FitInRect(const Vec2& rect)
 {
@@ -33,4 +34,10 @@ void Vec2::Transform(const Mat3x3& mat)
 	int v_x = x;
 	x = x * mat[0][0] + y * mat[0][1] + mat[0][2];
 	y = v_x * mat[1][0] + y * mat[1][1] + mat[1][2];
+}
+
+Vec2 Vec2::Lerp(Vec2 begin, Vec2 end, float ratio)
+{
+	ratio = Math::Clamp(ratio, 0, 1);
+	return begin + (end - begin) * ratio;
 }

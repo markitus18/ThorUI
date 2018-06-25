@@ -93,6 +93,7 @@ void UI_Editor::Draw()
 	ThorUI::PreStart(); //Just to use ThorUI keyboard and mouse input
 	if (run_simulation == false)
 	{
+		ThorUI::GenerateDefaultApSets();
 		glBindFramebuffer(GL_FRAMEBUFFER, scene->frameBuffer);
 		glClearColor(0.7f, 0.7f, 0.7f, 1.f);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -130,26 +131,26 @@ void UI_Editor::Draw()
 		}
 		DrawIconBar();
 	}
-
 	ImGui::Render();
 }
 
+
 void UI_Editor::HandleInput()
 {
-	if (ThorUI::GetKeyState(SDL_SCANCODE_G) == KEY_DOWN)
+	ImGuiIO& io = ImGui::GetIO();
+	capture_keyboard = io.WantCaptureKeyboard;
+	capture_mouse = io.WantCaptureMouse;
+
+	if (capture_keyboard == false && ThorUI::GetKeyState(SDL_SCANCODE_G) == KEY_DOWN)
 	{
 		grid = !grid;
 	}
-	if (ThorUI::GetKeyState(SDL_SCANCODE_DELETE) == KEY_DOWN)
+	if (capture_keyboard == false && ThorUI::GetKeyState(SDL_SCANCODE_DELETE) == KEY_DOWN)
 	{
 		DeleteSelected();
 	}
 }
 
-void Function()
-{
-
-}
 void UI_Editor::DrawMainMenuBar()
 {
 	if (ImGui::BeginMainMenuBar())
@@ -246,7 +247,6 @@ void UI_Editor::DrawMainMenuBar()
 			}
 			ImGui::EndMenu();
 		}
-
 		if (ImGui::BeginMenu("Dev Tools"))
 		{
 			if (ImGui::Checkbox("Enable", &dev_tools))

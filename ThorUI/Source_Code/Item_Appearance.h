@@ -13,6 +13,7 @@ struct Generic_Ap
 {
 	std::unordered_map<std::string, bool> attributes;
 
+	THORUI_API void SetAllAttributesTrue();
 	THORUI_API virtual void Save(Config& config) = 0;
 	THORUI_API virtual void Load(Config& config) = 0;
 };
@@ -23,7 +24,7 @@ struct Item_Ap : Generic_Ap
 	{
 		attributes["position"] = false;
 		attributes["size"] = false;
-		attributes["scale"] = false;
+		attributes["scale"] = false; 
 		attributes["angle"] = false;
 		attributes["pivot"] = false;
 	}

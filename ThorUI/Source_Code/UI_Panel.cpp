@@ -72,21 +72,32 @@ void UI_Panel::Load(Config& config)
 	border_width = config.GetNumber("Border_Width");
 }
 
-void UI_Panel::SetAppearanceSet(uint index)
+Appearance_Set UI_Panel::SaveCurrentApState()
 {
-	UI_Item::SetAppearanceSet(index);
+	Appearance_Set set = UI_Item::SaveCurrentApState();
 
-	if (index < appearance_sets.size())
+	set.panel_ap = new Panel_Ap();
+	set.panel_ap->SetAllAttributesTrue();
+	set.panel_ap->color = color;
+	set.panel_ap->border_color = border_color;
+	set.panel_ap->border_width = border_width;
+
+	return set;
+}
+
+void UI_Panel::UpdateApSetTransition(float dt)
+{
+	UI_Item::UpdateApSetTransition(dt);
+	float lerpRatio = transition_timer / transition_max_timer;
+
+	Appearance_Set& set = appearance_sets[current_set_index];
+	if (set.panel_ap != nullptr)
 	{
-		Appearance_Set& set = appearance_sets[index];
-		if (set.panel_ap != nullptr)
-		{
-			if (set.panel_ap->attributes["color"] == true)
-				color = set.panel_ap->color;
-			if (set.panel_ap->attributes["border_color"] == true)
-				border_color = set.panel_ap->border_color;
-			if (set.panel_ap->attributes["border_width"] == true)
-				border_width = set.panel_ap->border_width;
-		}
+		if (set.panel_ap->attributes["color"] == true)
+			color = Color::Lerp(previous_set.panel_ap->color, set.panel_ap->color, lerpRatio);
+		if (set.panel_ap->attributes["border_color"] == true)
+			border_color = Color::Lerp(previous_set.panel_ap->border_color, set.panel_ap->border_color, lerpRatio);
+		if (set.panel_ap->attributes["border_width"] == true)
+			border_width = Math::Lerp(previous_set.panel_ap->border_width, set.panel_ap->border_width, lerpRatio);
 	}
 }

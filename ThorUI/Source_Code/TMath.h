@@ -24,6 +24,10 @@ namespace Math
 	THORUI_API int Rand(int min, int max);
 	//Returns a random value 0 and 4,294,967,295 (max unsigned int size)
 	THORUI_API unsigned int RandUInt();
+	//Returns the result of a linear interpolation between value 1 and value 2. Ratio range [0, 1]
+	THORUI_API float Lerp(float v1, float v2, float ratio);
+	//Returns the input value clamped between [min, max], both included
+	THORUI_API float Clamp(float v, float min, float max);
 }
 
 							

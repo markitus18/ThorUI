@@ -35,7 +35,7 @@ class Config
 	///Brief parson explanation
 	/*
 	-	Save a JSON file into a buffer then create a new file with fileSystem:
-	JSON_Status json_serialize_to_buffer(const JSON_Value *value, char *buf, size_t buf_size_in_bytes);
+		JSON_Status json_serialize_to_buffer(const JSON_Value *value, char *buf, size_t buf_size_in_bytes);
 	-	JSON nodes are called objects
 	-	Append attributes to object: json_object_set_[type of attribute]. Attribute types are bool, number, string and value (any attribute or an object)
 	-	Get values from a node: same function as append, but with "get"

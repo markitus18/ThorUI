@@ -343,7 +343,7 @@ namespace ThorUI
 
 		//TODO: check RGBA masks, depending on SDL data saving
 		gl_surf = SDL_CreateRGBSurface(SDL_SWSURFACE, surf->w, surf->h, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
-
+		gl_surf->format->Ashift = 24;
 		//TOOD: save surface format to restore it later
 
 		SDL_SetSurfaceAlphaMod(surf, SDL_ALPHA_OPAQUE);
@@ -358,8 +358,6 @@ namespace ThorUI
 			GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, gl_surf->pixels);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		//TODO: modify surface to power of 2 surf and generate mipmap
-		//glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -518,6 +516,7 @@ namespace ThorUI
 				if (last_event != Mouse_Exit)
 					(*it)->InternalOnItemEvent(Mouse_Exit);
 			}
+			(*it)->Update(1);
 		}
 	}
 
@@ -646,6 +645,14 @@ namespace ThorUI
 				ConnectLoadedItems();
 			}
 			SDL_RWclose(rw);
+		}
+	}
+
+	void GenerateDefaultApSets()
+	{
+		for (uint i = 1; i < items.size(); ++i)
+		{
+			items[i]->SaveDefaultApSet();
 		}
 	}
 

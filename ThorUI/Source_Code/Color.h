@@ -2,6 +2,7 @@
 #define __COLOR_H__
 
 #include "SDL2-2.0.6\include\SDL_pixels.h"
+#include "TMath.h"
 
 struct Color
 {
@@ -13,6 +14,10 @@ struct Color
 	THORUI_API SDL_Color ToSDL() { SDL_Color ret; ret.r = r*255; ret.g = g*255; ret.b = b*255; ret.a = a*255; return ret; }
 	THORUI_API bool operator==(const Color& other) { return (r == other.r && g == other.g && b == other.b && a == other.a); }
 	THORUI_API bool operator!=(const Color& other) { return !(r == other.r && g == other.g && b == other.b && a == other.a); }
+	static THORUI_API Color Lerp(Color v1, Color v2, float ratio)
+	{
+		return Color(Math::Lerp(v1.r, v2.r, ratio), Math::Lerp(v1.g, v2.g, ratio), Math::Lerp(v1.b, v2.b, ratio), Math::Lerp(v1.a, v2.a, ratio));
+	}
 
 	static THORUI_API Color White()	{ return Color(1.0f, 1.0f, 1.0f, 1.0f); };
 	static THORUI_API Color Red()		{ return Color(1.0f, 0.05f, 0.2f, 1.0f); };

@@ -29,7 +29,10 @@ public:
 	THORUI_API virtual bool DisconnectItemWithSignal(UI_Item* item, Signal_Event& s_ev);
 	THORUI_API virtual std::vector<std::string> GetSignalsStr();
 
-	THORUI_API virtual void SetAppearanceSet(uint index);
+	THORUI_API virtual Appearance_Set SaveCurrentApState();
+	THORUI_API virtual void UpdateApSetTransition(float dt);
+
+
 public:
 	//Signals
 	//* Emitted when the mouse is pressed (mouse down)

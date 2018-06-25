@@ -61,6 +61,7 @@ struct Vec2
 	//		*angle - angle of the rotation in radians
 	THORUI_API void Rotate(Vec2 pivot, float angle);
 	THORUI_API void Transform(const Mat3x3& mat);
+	static THORUI_API Vec2 Lerp(Vec2 begin, Vec2 end, float ratio);
 
 	//Variables
 	float x = 0, y = 0;

@@ -34,7 +34,7 @@ public:
 
 	THORUI_API Vec2 GetTranslation() const;
 	THORUI_API Vec2 GetScale() const;
-	//Returns rotation in radians
+	//* Returns rotation in radians
 	THORUI_API float GetRotation() const;
 
 	THORUI_API const MToV<4>& operator[] (int row) const;

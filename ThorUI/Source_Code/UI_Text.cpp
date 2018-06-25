@@ -81,23 +81,31 @@ Vec2 UI_Text::GetTexSize() const
 	return texture_size;
 }
 
-void UI_Text::SetAppearanceSet(uint index)
+Appearance_Set UI_Text::SaveCurrentApState()
 {
-	UI_Item::SetAppearanceSet(index);
+	Appearance_Set set = UI_Item::SaveCurrentApState();
 
-	if (index < appearance_sets.size())
-	{
-		Appearance_Set& set = appearance_sets[index];
-		if (set.text_ap != nullptr)
-		{
-			if (set.text_ap->attributes["color"] == true)
-				color = set.text_ap->color;
-			if (set.text_ap->attributes["text"] == true)
-				SetText(set.text_ap->text.c_str());
-		}
-	}
+	set.text_ap = new Text_Ap();
+	set.text_ap->SetAllAttributesTrue();
+	set.text_ap->color = color;
+	set.text_ap->text = text;
+
+	return set;
 }
 
+void UI_Text::UpdateApSetTransition(float dt)
+{
+	UI_Item::UpdateApSetTransition(dt);
+
+	Appearance_Set& set = appearance_sets[current_set_index];
+	if (set.text_ap != nullptr)
+	{
+		if (set.text_ap->attributes["color"] == true)
+			color = set.text_ap->color;
+		if (set.text_ap->attributes["text"] == true)
+			SetText(set.text_ap->text.c_str());
+	}
+}
 void UI_Text::Draw()
 {
 	if (IsActiveHierarchy() == true && texture_id != 0)

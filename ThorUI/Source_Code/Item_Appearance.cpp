@@ -3,6 +3,15 @@
 #include "ThorUI.h"
 #include "Config.h"
 
+void Generic_Ap::SetAllAttributesTrue()
+{
+	std::unordered_map<std::string, bool>::iterator it;
+	for (it = attributes.begin(); it != attributes.end(); ++it)
+	{
+		(*it).second = true;
+	}
+}
+
 void Item_Ap::Save(Config& config)
 {
 	if (attributes["position"] == true)

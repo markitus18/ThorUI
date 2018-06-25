@@ -25,7 +25,8 @@ public:
 	THORUI_API Color GetColor() const;
 	THORUI_API Vec2 GetTexSize() const;
 
-	THORUI_API virtual void SetAppearanceSet(uint index);
+	THORUI_API virtual Appearance_Set SaveCurrentApState();
+	THORUI_API virtual void UpdateApSetTransition(float dt);
 
 protected:
 	THORUI_API void Save(Config& config);

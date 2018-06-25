@@ -49,11 +49,11 @@ private:
 	void DisplayItemApSet(UI_Item* item, Appearance_Set& set);
 
 	void DisplayApHeader(Generic_Ap* ap, std::string text);
-	void DisplayItemAp(UI_Item* item, Item_Ap* ap);
-	void DisplayButtonAp(UI_Item* item, Button_Ap* ap);
-	void DisplayImageAp(UI_Item* item, Image_Ap* ap);
-	void DisplayTextAp(UI_Item* item, Text_Ap* ap);
-	void DisplayPanelAp(UI_Item* item, Panel_Ap* ap);
+	void DisplayItemAp(Item_Ap* ap);
+	void DisplayButtonAp(Button_Ap* ap);
+	void DisplayImageAp(Image_Ap* ap);
+	void DisplayTextAp(Text_Ap* ap);
+	void DisplayPanelAp(Panel_Ap* ap);
 };
 
 #endif

@@ -148,6 +148,9 @@ struct Signal_Event
 	//* Event to trigger when all conditions are satisfied
 	int apperance_set = -1;
 
+	//* Time to transition to the new appearance set
+	float transition_time = 40.0f;
+
 	bool s_event_loaded = false;
 	bool link_error = false;
 };

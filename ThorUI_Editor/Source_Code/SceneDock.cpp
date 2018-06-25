@@ -111,11 +111,11 @@ void Scene::GenScreenBuffers()
 
 void Scene::HandleInput()
 {
-	if (ThorUI::GetKeyState(SDL_SCANCODE_W) == KEY_DOWN)
+	if (editor->capture_keyboard == false && ThorUI::GetKeyState(SDL_SCANCODE_W) == KEY_DOWN)
 		SetGizmoOp(Gizmo_Op::TRANSLATION);
-	if (ThorUI::GetKeyState(SDL_SCANCODE_E) == KEY_DOWN)
+	if (editor->capture_keyboard == false && ThorUI::GetKeyState(SDL_SCANCODE_E) == KEY_DOWN)
 		SetGizmoOp(Gizmo_Op::ROTATION);
-	if (ThorUI::GetKeyState(SDL_SCANCODE_R) == KEY_DOWN)
+	if (editor->capture_keyboard == false && ThorUI::GetKeyState(SDL_SCANCODE_R) == KEY_DOWN)
 		SetGizmoOp(Gizmo_Op::SCALE);
 
 	if (ImGui::IsItemHovered() && drag == Drag_Type::NONE && ThorUI::GetMouseState(SDL_BUTTON_LEFT) == KEY_DOWN)
