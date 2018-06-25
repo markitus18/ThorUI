@@ -62,6 +62,7 @@ private:
 	void DrawCanvasWindow();
 	void DrawGridWindow();
 	void DrawSnapWindow();
+	void DrawSaveWindow();
 
 	void DeleteSelected();
 
@@ -89,6 +90,7 @@ private:
 	bool canvas_win = false;
 	bool grid_win = false;
 	bool snap_win = false;
+	bool save_win = false;
 
 	//Grid edition variables
 	bool grid = true;

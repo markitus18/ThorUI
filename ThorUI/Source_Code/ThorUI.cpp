@@ -606,33 +606,36 @@ namespace ThorUI
 					Item_Type type = (Item_Type)(int)node.GetNumber("Item_Type");
 					UI_Item* item = nullptr;
 
-					switch (type)
+					if (type != Item_Type::Item)
 					{
-					case(Item_Type::Image):
-					{
-						item = new UI_Image();
-						break;
+						switch (type)
+						{
+						case(Item_Type::Image):
+						{
+							item = new UI_Image();
+							break;
+						}
+						case(Item_Type::Button):
+						{
+							item = new UI_Button();
+							break;
+						}
+						case(Item_Type::Text):
+						{
+							item = new UI_Text();
+							break;
+						}
+						case (Item_Type::Panel):
+						{
+							item = new UI_Panel();
+							break;
+						}
+						}
+						item->InternalLoad(node);
+						AddItem(item);
+						parent_ids.push_back(node.GetNumber("Parent ID", -1));
+						new_items.push_back(item);
 					}
-					case(Item_Type::Button):
-					{
-						item = new UI_Button();
-						break;
-					}
-					case(Item_Type::Text):
-					{
-						item = new UI_Text();
-						break;
-					}
-					case (Item_Type::Panel):
-					{
-						item = new UI_Panel();
-						break;
-					}
-					}
-					item->InternalLoad(node);
-					AddItem(item);
-					parent_ids.push_back(node.GetNumber("Parent ID", -1));
-					new_items.push_back(item);
 				}
 
 				//Set all parent hierarchy after all items are created

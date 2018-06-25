@@ -161,13 +161,21 @@ void UI_Editor::DrawMainMenuBar()
 			{
 				ThorUI::SaveScene("scene_save.thor");
 			}
+			if (ImGui::MenuItem("Save as..."))
+			{
+				save_win = true;
+			}
 			if (ImGui::MenuItem("Load"))
 			{
-				hierarchy->ClearTree();
-				ThorUI::LoadScene("scene_save.thor");
-				for (uint i = 1; i < ThorUI::items.size(); ++i)
+				std::string file = FileSystem::OpenFileDialog();
+				if (file.find(".thor") != std::string::npos)
 				{
-					hierarchy->AddNode(ThorUI::items[i]);
+					hierarchy->ClearTree();
+					ThorUI::LoadScene(file.c_str());
+					for (uint i = 1; i < ThorUI::items.size(); ++i)
+					{
+						hierarchy->AddNode(ThorUI::items[i]);
+					}
 				}
 			}
 			if (ImGui::MenuItem("New Scene"))
@@ -265,6 +273,8 @@ void UI_Editor::DrawMainMenuBar()
 				DrawGridWindow();
 			if (snap_win)
 				DrawSnapWindow();
+			if (save_win)
+				DrawSaveWindow();
 		}
 	}
 }
@@ -382,6 +392,24 @@ void UI_Editor::DrawSnapWindow()
 
 		ImGui::Text("Scale Interval");
 		ImGui::InputFloat("##scale_snap", &scale_interval);
+	}
+	ImGui::End();
+}
+
+void UI_Editor::DrawSaveWindow()
+{
+	if (ImGui::Begin("Save Scene", &save_win))
+	{
+		ImGui::Text("Scene Name: "); ImGui::SameLine();
+		static char name[50] = "scene_save";
+		ImGui::InputText("##Scene Name", name, 50);
+		if (ImGui::Button("Save"))
+		{
+			std::string str = name;
+			str.append(".thor");
+			ThorUI::SaveScene(str.c_str());
+			save_win = false;
+		}
 	}
 	ImGui::End();
 }
